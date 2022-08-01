@@ -6,76 +6,31 @@ type Props = {
   pitch: number;
 };
 
+const config = {
+  center: { vx: 1, vy: 3 },
+  width: 3,
+  height: 6,
+};
+
 const Pmos4: React.FC<Props> = ({ upperLeft, point, pitch }) => {
   const center = toRealGrid(point, pitch, upperLeft);
   return (
-    <svg>
-      <polyline
-        points={`
-          ${center.x + 2 * pitch}, ${center.y - 3 * pitch}
-          ${center.x + 2 * pitch}, ${center.y - 2 * pitch}
-          ${center.x}, ${center.y - 2 * pitch}
-        `}
-        stroke="black"
-        strokeWidth={2}
-        fill="none"
-      />
-      <line x1={center.x} y1={center.y} x2={center.x + 0.5 * pitch} y2={center.y} stroke="black" strokeWidth={2} />
-      <polyline
-        points={`
-              ${center.x + 2 * pitch}, ${center.y}
-              ${center.x + 0.5 * pitch}, ${center.y + 0.25 * pitch}
-              ${center.x + 0.5 * pitch}, ${center.y - 0.25 * pitch}
-              ${center.x + 2 * pitch}, ${center.y}
-            `}
-        stroke="black"
-        strokeWidth={2}
-        fill="none"
-      />
-      <polyline
-        points={`
-              ${center.x + 2 * pitch}, ${center.y + 3 * pitch}
-              ${center.x + 2 * pitch}, ${center.y + 2 * pitch}
-              ${center.x}, ${center.y + 2 * pitch}
-            `}
-        stroke="black"
-        strokeWidth={2}
-        fill="none"
-      />
-      <line
-        x1={center.x}
-        y1={center.y - 2.5 * pitch}
-        x2={center.x}
-        y2={center.y - 1.5 * pitch}
-        stroke="black"
-        strokeWidth={2}
-      />
-      <line
-        x1={center.x}
-        y1={center.y - 0.5 * pitch}
-        x2={center.x}
-        y2={center.y + 0.5 * pitch}
-        stroke="black"
-        strokeWidth={2}
-      />
-      <line
-        x1={center.x}
-        y1={center.y + 1.5 * pitch}
-        x2={center.x}
-        y2={center.y + 2.5 * pitch}
-        stroke="black"
-        strokeWidth={2}
-      />
-      <polyline
-        points={`
-              ${center.x - pitch}, ${center.y + 2 * pitch}
-              ${center.x - 0.5 * pitch}, ${center.y + 2 * pitch}
-              ${center.x - 0.5 * pitch}, ${center.y - 2 * pitch}
-            `}
-        stroke="black"
-        strokeWidth={2}
-        fill="none"
-      />
+    <svg
+      x={center.x - config.center.vx * pitch}
+      y={center.y - config.center.vy * pitch}
+      width={config.width * pitch}
+      height={config.height * pitch}
+    >
+      <svg viewBox="0 0 109 216">
+        <polyline stroke="black" strokeWidth={4} fill="none" points="0 180 18 180 18 36" />
+        <line stroke="black" strokeWidth={4} fill="none" x1="36" y1="18" x2="36" y2="54" />
+        <line stroke="black" strokeWidth={4} fill="none" x1="36" y1="162" x2="36" y2="198" />
+        <polygon stroke="black" strokeWidth={4} fill="none" points="108 108 54 99 54 108 54 117 108 108" />
+        <line stroke="black" strokeWidth={4} fill="none" x1="36" y1="108" x2="54" y2="108" />
+        <polyline stroke="black" strokeWidth={4} fill="none" points="36 36 108 36 108 18 108 0" />
+        <polyline stroke="black" strokeWidth={4} fill="none" points="36 180 108 180 108 198 108 216" />
+        <line stroke="black" strokeWidth={4} fill="none" x1="36" y1="90" x2="36" y2="126" />
+      </svg>
     </svg>
   );
 };
