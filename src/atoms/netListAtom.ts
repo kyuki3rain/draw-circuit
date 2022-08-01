@@ -51,7 +51,7 @@ export const netListSelector = selector({
       }
     });
 
-    const netList: string[] = [`* made by spice-designer ${formatDate(new Date())}`];
+    const netList: string[] = [`* made by draw-circuit ${formatDate(new Date())}`];
 
     symbols.forEach((sarr, k) => {
       sarr.every((s, si) => {
