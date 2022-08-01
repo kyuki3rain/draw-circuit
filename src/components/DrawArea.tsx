@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import Grid from './drawArea/Grid';
-import { Symbol } from './drawArea/Symbol';
+import { Symbols } from './drawArea/Symbols';
 import { RealPoint, toFixedVirtualGrid } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useWire } from '../hooks/useWire';
@@ -48,7 +48,7 @@ const DrawArea: React.FC = () => {
     >
       <Grid />
       <Wire />
-      <Symbol />
+      <Symbols />
       <Label />
       <Node />
     </svg>

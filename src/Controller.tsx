@@ -4,12 +4,12 @@
 import React, { useEffect, useRef } from 'react';
 import './App.css';
 import { useRecoilState } from 'recoil';
-import { nextType } from './symbols';
 import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
 import { modeAtom, pitchAtom, symbolTypeAtom, upperLeftAtom } from './atoms';
 import { usePrevious } from './hooks/usePrevious';
 import { usePreview } from './hooks/usePreview';
+import { nextType } from './helpers/symbolHelper';
 
 type Props = {
   children: React.ReactNode;
