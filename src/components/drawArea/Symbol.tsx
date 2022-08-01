@@ -9,12 +9,12 @@ export const Symbol: React.FC = () => {
   const previewSymbol = useRecoilValue(previewSymbolAtom);
 
   return (
-    <svg>
+    <>
       {Array.from(symbols.values())
         .flat()
         .map((c, i) => createSymbol(c, pitch, upperLeft, `symbol_${i}_${c.type}`))}
       {previewSymbol && createSymbol(previewSymbol, pitch, upperLeft, `symbol_preview`)}
-    </svg>
+    </>
   );
 };
 
