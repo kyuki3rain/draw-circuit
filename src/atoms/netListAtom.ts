@@ -1,6 +1,6 @@
 import { selector } from 'recoil';
 import { add } from '../helpers/gridhelper';
-import { symbolNodes } from '../symbols';
+import { componentStateFamily } from './componentAtom';
 import { nodeIdToLabelAtom } from './labelAtom';
 import { symbolsAtom } from './symbolAtom';
 import { NodeId, nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
@@ -51,19 +51,19 @@ export const netListSelector = selector({
       }
     });
 
-    const netList: string[] = [`* made by spice-designer ${formatDate(new Date())}`];
+    const netList: string[] = [`* made by draw-circuit ${formatDate(new Date())}`];
 
     symbols.forEach((sarr, k) => {
       sarr.every((s, si) => {
-        const points = symbolNodes(s.type);
-        const labels = points.map((p) => {
+        const points = get(componentStateFamily(s.type))?.nodes;
+        const labels = points?.map((p) => {
           const nodeId = pointToNodeIdMap.get(JSON.stringify(add(p, s.point)));
           const dl = nodeId && allMap.get(nodeId);
           const label = dl && (labelDict.get(dl) || dl);
           return label === 'gnd' ? '0' : label;
         });
 
-        const net = `${k}${si + 1} ${labels.join(' ')} ${s.config}`;
+        const net = `${k}${si + 1} ${labels?.join(' ') ?? ''} ${s.config}`;
 
         netList.push(net);
 

@@ -1,19 +1,27 @@
 import { useRecoilValue } from 'recoil';
-import { pitchAtom, previewSymbolAtom, symbolsAtom, upperLeftAtom } from '../../atoms';
-import { createSymbol } from '../../symbols';
+import SVG from 'react-inlinesvg';
+import { toRealGrid, VirtualPoint } from '../../helpers/gridhelper';
+import { componentStateFamily } from '../../atoms';
 
-export const Symbol: React.FC = () => {
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
-  const symbols = useRecoilValue(symbolsAtom);
-  const previewSymbol = useRecoilValue(previewSymbolAtom);
+type Props = {
+  componentName: string;
+  upperLeft: VirtualPoint;
+  point: VirtualPoint;
+  pitch: number;
+};
 
+const Symbol: React.FC<Props> = ({ componentName, upperLeft, point, pitch }) => {
+  const center = toRealGrid(point, pitch, upperLeft);
+  const componentState = useRecoilValue(componentStateFamily(componentName));
+  if (!componentState) return null;
   return (
-    <svg>
-      {Array.from(symbols.values())
-        .flat()
-        .map((c, i) => createSymbol(c, pitch, upperLeft, `symbol_${i}_${c.type}`))}
-      {previewSymbol && createSymbol(previewSymbol, pitch, upperLeft, `symbol_preview`)}
+    <svg
+      x={center.x - componentState.center.vx * pitch}
+      y={center.y - componentState.center.vy * pitch}
+      width={componentState.width * pitch}
+      height={componentState.height * pitch}
+    >
+      <SVG src={componentState.svg} />
     </svg>
   );
 };

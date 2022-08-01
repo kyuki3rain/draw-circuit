@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { SymbolState } from '../symbols';
+import { SymbolState } from '../helpers/symbolHelper';
 
 export const symbolsAtom = atom({
   key: 'symbols',
