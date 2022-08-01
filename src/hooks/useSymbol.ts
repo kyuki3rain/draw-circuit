@@ -1,30 +1,31 @@
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { symbolsAtom, symbolTypeAtom } from '../atoms';
+import { componentStateFamily, symbolsAtom, symbolTypeAtom } from '../atoms';
 import { add, VirtualPoint } from '../helpers/gridhelper';
-import { defaultConfig, elementType, symbolNodes } from '../symbols';
 import { useNode } from './useNode';
 
 export const useSymbol = () => {
   const [symbols, setSymbols] = useRecoilState(symbolsAtom);
   const symbolType = useRecoilValue(symbolTypeAtom);
+  const componentState = useRecoilValue(componentStateFamily(symbolType));
   const { setNode } = useNode();
 
   const setSymbol = useCallback(
     (point: VirtualPoint) => {
-      const sarr = symbols.get(elementType(symbolType)) ?? [];
+      if (!componentState) return;
+      const sarr = symbols.get(componentState.componentType) ?? [];
       setSymbols(
         symbols.set(
-          elementType(symbolType),
+          componentState.componentType,
           sarr.concat({
             type: symbolType,
             point,
-            key: `symbol_${elementType(symbolType)}${sarr.length}`,
-            config: defaultConfig(symbolType),
+            key: `symbol_${componentState.componentType}${sarr.length}`,
+            config: componentState.defaultConfig ?? '',
           })
         )
       );
-      symbolNodes(symbolType).map((rp) => setNode(add(rp, point)));
+      componentState.nodes.map((rp) => setNode(add(rp, point)));
     },
     [symbols, symbolType]
   );

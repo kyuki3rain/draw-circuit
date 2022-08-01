@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+  componentStateFamily,
   previewLabelNameAtom,
   previewLabelPositionAtom,
   previewPointAtom,
@@ -10,7 +11,6 @@ import {
 } from '../atoms';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { Mode, ModeType } from '../helpers/modehelper';
-import { defaultConfig, SymbolTypes } from '../symbols';
 
 export const usePreview = () => {
   const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
@@ -20,6 +20,7 @@ export const usePreview = () => {
   const setPreviewLabelPosition = useSetRecoilState(previewLabelPositionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const symbolType = useRecoilValue(symbolTypeAtom);
+  const componentState = useRecoilValue(componentStateFamily(symbolType));
 
   const resetPreview = useCallback((mode: ModeType) => {
     switch (mode) {
@@ -28,7 +29,7 @@ export const usePreview = () => {
         setPreviewPoint({} as VirtualPoint);
         break;
       case Mode.SYMBOL:
-        setSymbolType(SymbolTypes.CELL);
+        setSymbolType('cell');
         setPreviewSymbol(null);
         break;
       case Mode.LABEL:
@@ -46,7 +47,12 @@ export const usePreview = () => {
           setPreviewPoint(point);
           break;
         case Mode.SYMBOL:
-          setPreviewSymbol({ type: symbolType, point, key: `symbol_preview`, config: defaultConfig(symbolType) });
+          setPreviewSymbol({
+            type: symbolType,
+            point,
+            key: `symbol_preview`,
+            config: componentState?.defaultConfig ?? '',
+          });
           break;
         case Mode.LABEL:
           setPreviewLabelPosition(point);

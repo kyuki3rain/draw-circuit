@@ -1,8 +1,8 @@
 import { atom, selector } from 'recoil';
-import { nextType, SymbolType, SymbolTypes } from '../symbols';
 import { Mode, ModeType } from '../helpers/modehelper';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { NodeId } from './wireAtom';
+import { nextType } from '../helpers/symbolHelper';
 
 export const modeAtom = atom({
   key: 'mode',
@@ -11,7 +11,7 @@ export const modeAtom = atom({
 
 export const symbolTypeAtom = atom({
   key: 'symbolType',
-  default: SymbolTypes.CELL as SymbolType,
+  default: 'cell',
 });
 
 export const modeSelector = selector({
