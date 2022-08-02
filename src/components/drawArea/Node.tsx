@@ -12,7 +12,7 @@ import { toRealGrid, VirtualPoint } from '../../helpers/gridhelper';
 
 const createCircleNode = (point: VirtualPoint, pitch: number, upperLeft: VirtualPoint, key: string) => {
   const rp = toRealGrid(point, pitch, upperLeft);
-  return <circle x={rp.x} y={rp.y} fill="black" stroke="black" strokeWidth={1} radius={4} key={key} />;
+  return <circle cx={rp.x} cy={rp.y} fill="black" stroke="black" r={4} key={key} />;
 };
 
 const createRectNode = (point: VirtualPoint, pitch: number, upperLeft: VirtualPoint, key: string) => {

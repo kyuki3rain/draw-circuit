@@ -12,6 +12,7 @@ import { useSymbol } from '../hooks/useSymbol';
 import { useLabel } from '../hooks/useLabel';
 import Label from './drawArea/Label';
 import Node from './drawArea/Node';
+import { usePreview } from '../hooks/usePreview';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -23,6 +24,7 @@ const DrawArea: React.FC = () => {
   const [upperLeft] = useRecoilState(upperLeftAtom);
   const [mode] = useRecoilState(modeAtom);
   const setLogs = useSetRecoilState(logSelector);
+  const { resetPreview } = usePreview();
 
   useEffect(() => {
     setLogs();
@@ -51,6 +53,16 @@ const DrawArea: React.FC = () => {
             setLogs();
             break;
           default:
+        }
+      }}
+      onContextMenu={(e) => {
+        switch (mode) {
+          case Mode.WIRE:
+            e.preventDefault();
+            resetPreview(Mode.WIRE);
+            return false;
+          default:
+            return true;
         }
       }}
     >
