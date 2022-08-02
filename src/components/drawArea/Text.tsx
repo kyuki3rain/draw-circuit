@@ -21,7 +21,7 @@ const Text: React.FC = () => {
           <text
             x={rp?.x}
             y={rp?.y}
-            fontFamily="serif"
+            fontFamily="monospace, monospace"
             fontWeight="bold"
             fontSize="20"
             fontStyle="italic"
@@ -36,7 +36,7 @@ const Text: React.FC = () => {
         <text
           x={prp.x}
           y={prp.y}
-          fontFamily="serif"
+          fontFamily="monospace, monospace"
           fontWeight="bold"
           fontSize="20"
           fontStyle="italic"

@@ -25,7 +25,15 @@ const createLabel = (rp: RealPoint, label: string, key: string, pitch: number) =
   }
 
   return (
-    <text x={rp.x} y={rp.y} fontFamily="serif" fontWeight="bold" fontSize="20" fontStyle="italic" key={key}>
+    <text
+      x={rp.x}
+      y={rp.y}
+      fontFamily="monospace, monospace"
+      fontWeight="bold"
+      fontSize="20"
+      fontStyle="italic"
+      key={key}
+    >
       {label}
     </text>
   );
