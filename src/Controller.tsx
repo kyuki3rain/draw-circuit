@@ -10,6 +10,7 @@ import { modeAtom, pitchAtom, symbolTypeAtom, upperLeftAtom } from './atoms';
 import { usePrevious } from './hooks/usePrevious';
 import { usePreview } from './hooks/usePreview';
 import { nextType } from './helpers/symbolHelper';
+import { useLog } from './hooks/useLog';
 
 type Props = {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   const [symbolType, setSymbolType] = useRecoilState(symbolTypeAtom);
   const { setPreview, resetPreview } = usePreview();
   const prevMode = usePrevious(mode);
+  const { undo, canUndo, redo, canRedo } = useLog();
 
   const divref = useRef<HTMLDivElement>(null);
 
@@ -79,6 +81,13 @@ const Controller: React.FC<Props> = ({ children }) => {
             break;
           case 'KeyR':
             setPitch(pitch - 1);
+            break;
+          case 'KeyZ':
+            if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+              if (e.shiftKey) {
+                if (canRedo) redo();
+              } else if (canUndo) undo();
+            }
             break;
           default:
         }
