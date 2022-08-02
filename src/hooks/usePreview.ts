@@ -41,7 +41,7 @@ export const usePreview = () => {
         setPreviewLabelName('');
         break;
       case Mode.TEXT:
-        setPreviewText('');
+        setPreviewText(null);
         setPreviewTextPosition(null);
         break;
       default:

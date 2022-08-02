@@ -26,6 +26,7 @@ const Text: React.FC = () => {
             fontSize="20"
             fontStyle="italic"
             key={`label_${JSON.stringify(textState)}`}
+            fill={textState.isSpiceDirective ? 'black' : 'blue'}
           >
             {textState.body}
           </text>
@@ -40,8 +41,9 @@ const Text: React.FC = () => {
           fontSize="20"
           fontStyle="italic"
           key="label_preview"
+          fill={previewText.isSpiceDirective ? 'black' : 'blue'}
         >
-          {previewText}
+          {previewText.body}
         </text>
       )}
     </svg>

@@ -36,14 +36,13 @@ const LabelModal = () => {
       >
         <Box sx={style}>
           <TextField
-            placeholder="Placeholder"
-            id="standard-basic"
-            label="Standard"
+            placeholder="gnd"
+            label="LABEL"
             variant="standard"
             value={labelName}
             onChange={(e) => setLabelName(e.target.value)}
           />
-          <Button onClick={handleClose}>enter</Button>
+          <Button onClick={handleClose}>OK</Button>
         </Box>
       </Modal>
     </div>

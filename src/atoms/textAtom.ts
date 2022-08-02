@@ -4,7 +4,7 @@ import { VirtualPoint } from '../helpers/gridhelper';
 export type TextState = {
   body: string;
   point?: VirtualPoint;
-  isSpiceDirective?: boolean;
+  isSpiceDirective: boolean;
 };
 
 export const textsAtom = atom({

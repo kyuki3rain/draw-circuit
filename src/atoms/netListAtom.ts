@@ -3,6 +3,7 @@ import { add } from '../helpers/gridhelper';
 import { componentStateFamily } from './componentAtom';
 import { nodeIdToLabelAtom } from './labelAtom';
 import { symbolsAtom } from './symbolAtom';
+import { textsAtom } from './textAtom';
 import { NodeId, nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
@@ -21,6 +22,7 @@ export const netListSelector = selector({
     const nodeIdToEdgeIdMap = get(nodeIdToEdgeIdAtom);
     const nodeIdToLabelMap = get(nodeIdToLabelAtom);
     const nodeList = get(nodeListAtom);
+    const texts = get(textsAtom).filter((ts) => ts.isSpiceDirective);
 
     const allMap = new Map() as Map<NodeId, string>;
     const labelDict = new Map() as Map<string, string>;
@@ -71,6 +73,6 @@ export const netListSelector = selector({
       });
     });
 
-    return netList.join('\n');
+    return netList.concat(texts.map((t) => t.body)).join('\n');
   },
 });

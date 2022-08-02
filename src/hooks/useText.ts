@@ -11,8 +11,9 @@ export const useText = () => {
 
   const setText = useCallback(
     (point: VirtualPoint) => {
-      setTextStates(textStates.concat([{ body: text, point }]));
-      setPreviewText('');
+      if (!text) return;
+      setTextStates(textStates.concat([{ ...text, point }]));
+      setPreviewText(null);
       setMode(Mode.NONE);
     },
     [setMode, setPreviewText, setTextStates, text, textStates]
