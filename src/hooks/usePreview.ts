@@ -6,6 +6,8 @@ import {
   previewLabelPositionAtom,
   previewPointAtom,
   previewSymbolAtom,
+  previewTextAtom,
+  previewTextPositionAtom,
   selectedNodeIdAtom,
   symbolTypeAtom,
 } from '../atoms';
@@ -19,6 +21,8 @@ export const usePreview = () => {
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const setPreviewLabelPosition = useSetRecoilState(previewLabelPositionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
+  const setPreviewText = useSetRecoilState(previewTextAtom);
+  const setPreviewTextPosition = useSetRecoilState(previewTextPositionAtom);
   const symbolType = useRecoilValue(symbolTypeAtom);
   const componentState = useRecoilValue(componentStateFamily(symbolType));
 
@@ -35,6 +39,10 @@ export const usePreview = () => {
       case Mode.LABEL:
         setPreviewLabelPosition(null);
         setPreviewLabelName('');
+        break;
+      case Mode.TEXT:
+        setPreviewText(null);
+        setPreviewTextPosition(null);
         break;
       default:
     }
@@ -56,6 +64,9 @@ export const usePreview = () => {
           break;
         case Mode.LABEL:
           setPreviewLabelPosition(point);
+          break;
+        case Mode.TEXT:
+          setPreviewTextPosition(point);
           break;
         default:
       }

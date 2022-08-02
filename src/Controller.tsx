@@ -3,10 +3,10 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useRef } from 'react';
 import './App.css';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
-import { modeAtom, pitchAtom, symbolTypeAtom, upperLeftAtom } from './atoms';
+import { modalSelector, modeAtom, pitchAtom, symbolTypeAtom, upperLeftAtom } from './atoms';
 import { usePrevious } from './hooks/usePrevious';
 import { usePreview } from './hooks/usePreview';
 import { nextType } from './helpers/symbolHelper';
@@ -24,6 +24,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   const { setPreview, resetPreview } = usePreview();
   const prevMode = usePrevious(mode);
   const { undo, canUndo, redo, canRedo } = useLog();
+  const open = useRecoilValue(modalSelector);
 
   const divref = useRef<HTMLDivElement>(null);
 
@@ -65,6 +66,8 @@ const Controller: React.FC<Props> = ({ children }) => {
       ref={divref}
       tabIndex={1}
       onKeyDown={(e) => {
+        if (open) return;
+
         switch (e.code) {
           case 'Escape':
             setMode(Mode.NONE);

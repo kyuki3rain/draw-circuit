@@ -1,6 +1,7 @@
 export const Mode = {
   WIRE: 'wire',
   SYMBOL: 'symbol',
+  TEXT: 'text',
   HAND: 'hand',
   MOVE: 'move',
   COPY: 'copy',

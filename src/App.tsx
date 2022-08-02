@@ -5,6 +5,7 @@ import Controller from './Controller';
 import ButtonArea from './components/ButtonArea';
 import DrawArea from './components/DrawArea';
 import LabelModal from './components/LabelModal';
+import TextModal from './components/TextModal';
 
 const App: React.FC = () => (
   <RecoilRoot>
@@ -12,6 +13,7 @@ const App: React.FC = () => (
       <ButtonArea />
       <DrawArea />
       <LabelModal />
+      <TextModal />
     </Controller>
   </RecoilRoot>
 );

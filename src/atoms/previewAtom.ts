@@ -5,14 +5,26 @@ import { modeAtom } from './statusAtom';
 import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
 import { NodeId } from './wireAtom';
+import { TextState } from './textAtom';
 
 export const previewLabelNameAtom = atom({
   key: 'previewLabelName',
   default: '',
 });
+
 export const previewLabelPositionAtom = atom({
   key: 'previewLabelPosition',
   default: null as VirtualPoint | null,
+});
+
+export const previewTextAtom = atom({
+  key: 'previewText',
+  default: null as TextState | null,
+});
+
+export const previewTextPositionAtom = atom({
+  key: 'previewTextPosition',
+  default: {} as VirtualPoint | null,
 });
 
 export const previewSymbolAtom = atom({
