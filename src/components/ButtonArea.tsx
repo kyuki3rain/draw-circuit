@@ -2,22 +2,16 @@
 import { Fab, Tooltip } from '@mui/material';
 import React from 'react';
 import { useRecoilCallback, useSetRecoilState } from 'recoil';
-import { Add, Description, HorizontalRule, Label, Save } from '@mui/icons-material';
-import {
-  edgeListAtom,
-  labelModalAtom,
-  modeAtom,
-  modeSelector,
-  nodeIdToEdgeIdAtom,
-  nodeListAtom,
-  pointToNodeIdAtom,
-} from '../atoms';
+import { Add, Description, HorizontalRule, Label, Save, Undo, Redo } from '@mui/icons-material';
+import { labelModalAtom, logIndexAtom, logsAtom, modeAtom, modeSelector, viewSelector } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { netListSelector } from '../atoms/netListAtom';
+import { useLog } from '../hooks/useLog';
 
 const ButtonArea: React.FC = () => {
   const setMode = useSetRecoilState(modeSelector);
   const setLabelModal = useSetRecoilState(labelModalAtom);
+  const { undo, canUndo, redo, canRedo } = useLog();
   const showNetList = useRecoilCallback(
     ({ snapshot }) =>
       () => {
@@ -47,17 +41,15 @@ const ButtonArea: React.FC = () => {
   const showInfo = useRecoilCallback(
     ({ snapshot }) =>
       () => {
-        const nodeList = snapshot.getLoadable(nodeListAtom).getValue();
-        const nodeMap = snapshot.getLoadable(pointToNodeIdAtom).getValue();
-        const edgeList = snapshot.getLoadable(edgeListAtom).getValue();
-        const edgeMap = snapshot.getLoadable(nodeIdToEdgeIdAtom).getValue();
+        const view = snapshot.getLoadable(viewSelector).getValue();
+        const logIndex = snapshot.getLoadable(logIndexAtom).getValue();
+        const logs = snapshot.getLoadable(logsAtom).getValue();
         const mode = snapshot.getLoadable(modeAtom).getValue();
         const netlist = snapshot.getLoadable(netListSelector).getValue();
         console.log('mode: ', mode);
-        console.log('nodeList: ', nodeList);
-        console.log('nodeMap: ', nodeMap);
-        console.log('edgeList: ', edgeList);
-        console.log('edgeMap: ', edgeMap);
+        console.log('view: ', view);
+        console.log('logIndex: ', logIndex);
+        console.log('logs: ', logs);
         console.log(netlist);
       },
     []
@@ -86,6 +78,20 @@ const ButtonArea: React.FC = () => {
         >
           <Label />
         </Fab>
+      </Tooltip>
+      <Tooltip title="undo" style={{ marginLeft: 10 }}>
+        <span style={!canUndo ? { pointerEvents: 'none', marginLeft: 10 } : { marginLeft: 10 }}>
+          <Fab color="primary" aria-label="undo" onClick={undo} disabled={!canUndo}>
+            <Undo />
+          </Fab>
+        </span>
+      </Tooltip>
+      <Tooltip title="redo" style={{ marginLeft: 10 }}>
+        <span style={!canRedo ? { pointerEvents: 'none', marginLeft: 10 } : { marginLeft: 10 }}>
+          <Fab color="primary" aria-label="redo" onClick={redo} disabled={!canRedo}>
+            <Redo />
+          </Fab>
+        </span>
       </Tooltip>
       <Tooltip title="save as netlist" style={{ marginLeft: 10 }}>
         <Fab aria-label="netlist" onClick={showNetList}>

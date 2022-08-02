@@ -1,7 +1,5 @@
 import { atom, selector } from 'recoil';
 import { Mode, ModeType } from '../helpers/modehelper';
-import { VirtualPoint } from '../helpers/gridhelper';
-import { NodeId } from './wireAtom';
 import { nextType } from '../helpers/symbolHelper';
 
 export const modeAtom = atom({
@@ -12,6 +10,11 @@ export const modeAtom = atom({
 export const symbolTypeAtom = atom({
   key: 'symbolType',
   default: 'cell',
+});
+
+export const labelModalAtom = atom({
+  key: 'labelModal',
+  default: false,
 });
 
 export const modeSelector = selector({
@@ -33,14 +36,4 @@ export const nextSymbolTypeSelector = selector({
   key: 'nextSymbolType',
   get: ({ get }) => nextType(get(symbolTypeAtom)),
   set: ({ set, get }) => set(symbolTypeAtom, nextType(get(symbolTypeAtom))),
-});
-
-export const selectedNodeIdAtom = atom({
-  key: 'selectedNodeId',
-  default: null as NodeId | null,
-});
-
-export const previewPointAtom = atom({
-  key: 'previewPoint',
-  default: {} as VirtualPoint,
 });
