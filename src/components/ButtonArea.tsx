@@ -57,17 +57,17 @@ const ButtonArea: React.FC = () => {
 
   return (
     <div style={{ float: 'left', marginTop: 5 }}>
-      <Tooltip title="wire" style={{ marginLeft: 5 }}>
+      <Tooltip title="wire" style={{ marginLeft: 5 }} arrow>
         <Fab aria-label="wire" color="primary" onClick={() => setMode(Mode.WIRE)}>
           <HorizontalRule />
         </Fab>
       </Tooltip>
-      <Tooltip title="symbol" style={{ marginLeft: 10 }}>
+      <Tooltip title="symbol" style={{ marginLeft: 10 }} arrow>
         <Fab aria-label="symbol" color="primary" onClick={() => setMode(Mode.SYMBOL)}>
           <Add />
         </Fab>
       </Tooltip>
-      <Tooltip title="label" style={{ marginLeft: 10 }}>
+      <Tooltip title="label" style={{ marginLeft: 10 }} arrow>
         <Fab
           color="primary"
           aria-label="add label"
@@ -79,26 +79,22 @@ const ButtonArea: React.FC = () => {
           <Label />
         </Fab>
       </Tooltip>
-      <Tooltip title="undo" style={{ marginLeft: 10 }}>
-        <span style={!canUndo ? { pointerEvents: 'none', marginLeft: 10 } : { marginLeft: 10 }}>
-          <Fab color="primary" aria-label="undo" onClick={undo} disabled={!canUndo}>
-            <Undo />
-          </Fab>
-        </span>
+      <Tooltip title="undo" style={{ marginLeft: 10 }} arrow>
+        <Fab color="primary" aria-label="undo" onClick={undo} disabled={!canUndo}>
+          <Undo />
+        </Fab>
       </Tooltip>
-      <Tooltip title="redo" style={{ marginLeft: 10 }}>
-        <span style={!canRedo ? { pointerEvents: 'none', marginLeft: 10 } : { marginLeft: 10 }}>
-          <Fab color="primary" aria-label="redo" onClick={redo} disabled={!canRedo}>
-            <Redo />
-          </Fab>
-        </span>
+      <Tooltip title="redo" arrow style={{ marginLeft: 10 }}>
+        <Fab color="primary" aria-label="redo" onClick={redo} disabled={!canRedo}>
+          <Redo />
+        </Fab>
       </Tooltip>
-      <Tooltip title="save as netlist" style={{ marginLeft: 10 }}>
+      <Tooltip title="save as netlist" style={{ marginLeft: 10 }} arrow>
         <Fab aria-label="netlist" onClick={showNetList}>
           <Save />
         </Fab>
       </Tooltip>
-      <Tooltip title="console log" style={{ marginLeft: 10 }}>
+      <Tooltip title="console log" style={{ marginLeft: 10 }} arrow>
         <Fab aria-label="get log" onClick={showInfo}>
           <Description />
         </Fab>

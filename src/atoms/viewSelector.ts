@@ -46,7 +46,6 @@ export const viewSelector = selector<ViewState>({
   }),
   set: ({ set }, v) => {
     if (!(v instanceof DefaultValue)) {
-      console.log(v);
       set(nodeIdToLabelAtom, v.nodeIdToLabelAtom);
       set(symbolsAtom, v.symbolsAtom);
       set(nodeListAtom, v.nodeListAtom);
@@ -64,9 +63,6 @@ export const logSelector = selector({
     const view = get(viewSelector);
     const logs = get(logsAtom);
     const logIndex = get(logIndexAtom);
-    // eslint-disable-next-line eqeqeq
-    if (view == logs[logIndex - 1]) return;
-    console.log(view, logs);
     const newLogs = logs.slice(0, logIndex);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     newLogs.push(clone(view));
