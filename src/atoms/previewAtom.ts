@@ -10,9 +10,19 @@ export const previewLabelNameAtom = atom({
   key: 'previewLabelName',
   default: '',
 });
+
 export const previewLabelPositionAtom = atom({
   key: 'previewLabelPosition',
   default: null as VirtualPoint | null,
+});
+
+export const previewTextAtom = atom({
+  key: 'previewText',
+  default: '',
+});
+export const previewTextPositionAtom = atom({
+  key: 'previewTextPosition',
+  default: {} as VirtualPoint | null,
 });
 
 export const previewSymbolAtom = atom({

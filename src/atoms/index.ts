@@ -8,3 +8,4 @@ export * from './componentAtom';
 export * from './netListAtom';
 export * from './previewAtom';
 export * from './viewSelector';
+export * from './textAtom';

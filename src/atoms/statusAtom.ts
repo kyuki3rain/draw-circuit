@@ -16,6 +16,15 @@ export const labelModalAtom = atom({
   key: 'labelModal',
   default: false,
 });
+export const textModalAtom = atom({
+  key: 'textModal',
+  default: false,
+});
+
+export const modalSelector = selector({
+  key: 'modal',
+  get: ({ get }) => get(labelModalAtom) || get(textModalAtom),
+});
 
 export const modeSelector = selector({
   key: 'mode/sel',

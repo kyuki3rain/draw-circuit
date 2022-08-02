@@ -2,8 +2,8 @@
 import { Fab, Tooltip } from '@mui/material';
 import React from 'react';
 import { useRecoilCallback, useSetRecoilState } from 'recoil';
-import { Add, Description, HorizontalRule, Label, Save, Undo, Redo } from '@mui/icons-material';
-import { labelModalAtom, logIndexAtom, logsAtom, modeAtom, modeSelector, viewSelector } from '../atoms';
+import { Add, Description, HorizontalRule, Label, Save, Undo, Redo, TextFields } from '@mui/icons-material';
+import { labelModalAtom, logIndexAtom, logsAtom, modeAtom, modeSelector, textModalAtom, viewSelector } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { netListSelector } from '../atoms/netListAtom';
 import { useLog } from '../hooks/useLog';
@@ -11,6 +11,7 @@ import { useLog } from '../hooks/useLog';
 const ButtonArea: React.FC = () => {
   const setMode = useSetRecoilState(modeSelector);
   const setLabelModal = useSetRecoilState(labelModalAtom);
+  const setTextModal = useSetRecoilState(textModalAtom);
   const { undo, canUndo, redo, canRedo } = useLog();
   const showNetList = useRecoilCallback(
     ({ snapshot }) =>
@@ -77,6 +78,18 @@ const ButtonArea: React.FC = () => {
           }}
         >
           <Label />
+        </Fab>
+      </Tooltip>
+      <Tooltip title="text" style={{ marginLeft: 10 }} arrow>
+        <Fab
+          color="primary"
+          aria-label="add text"
+          onClick={() => {
+            setMode(Mode.TEXT);
+            setTextModal(true);
+          }}
+        >
+          <TextFields />
         </Fab>
       </Tooltip>
       <Tooltip title="undo" style={{ marginLeft: 10 }} arrow>
