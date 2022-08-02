@@ -12,7 +12,9 @@ import { useSymbol } from '../hooks/useSymbol';
 import { useLabel } from '../hooks/useLabel';
 import Label from './drawArea/Label';
 import Node from './drawArea/Node';
+import Text from './drawArea/Text';
 import { usePreview } from '../hooks/usePreview';
+import { useText } from '../hooks/useText';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -20,6 +22,7 @@ const DrawArea: React.FC = () => {
   const { setWire } = useWire();
   const { setSymbol } = useSymbol();
   const { setLabel } = useLabel();
+  const { setText } = useText();
   const [pitch] = useRecoilState(pitchAtom);
   const [upperLeft] = useRecoilState(upperLeftAtom);
   const [mode] = useRecoilState(modeAtom);
@@ -52,6 +55,10 @@ const DrawArea: React.FC = () => {
             setLabel(vpos);
             setLogs();
             break;
+          case Mode.TEXT:
+            setText(vpos);
+            setLogs();
+            break;
           default:
         }
       }}
@@ -71,6 +78,7 @@ const DrawArea: React.FC = () => {
       <Symbols />
       <Label />
       <Node />
+      <Text />
     </svg>
   );
 };

@@ -3,6 +3,7 @@ import { clone } from '../helpers/cloneHelper';
 import { SymbolState } from '../helpers/symbolHelper';
 import { nodeIdToLabelAtom } from './labelAtom';
 import { symbolsAtom } from './symbolAtom';
+import { textsAtom, TextState } from './textAtom';
 import {
   EdgeList,
   edgeListAtom,
@@ -22,6 +23,7 @@ export type ViewState = {
   pointToNodeIdAtom: PointToNodeIdMap;
   edgeListAtom: EdgeList;
   nodeIdToEdgeIdAtom: NodeIdToEdgeIdMap;
+  textsAtom: TextState[];
 };
 
 export const logsAtom = atom({
@@ -43,6 +45,7 @@ export const viewSelector = selector<ViewState>({
     pointToNodeIdAtom: get(pointToNodeIdAtom),
     edgeListAtom: get(edgeListAtom),
     nodeIdToEdgeIdAtom: get(nodeIdToEdgeIdAtom),
+    textsAtom: get(textsAtom),
   }),
   set: ({ set }, v) => {
     if (!(v instanceof DefaultValue)) {
@@ -52,6 +55,7 @@ export const viewSelector = selector<ViewState>({
       set(pointToNodeIdAtom, v.pointToNodeIdAtom);
       set(edgeListAtom, v.edgeListAtom);
       set(nodeIdToEdgeIdAtom, v.nodeIdToEdgeIdAtom);
+      set(textsAtom, v.textsAtom);
     }
   },
 });
