@@ -1,17 +1,18 @@
-import React from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useEffect } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import Grid from './drawArea/Grid';
 import { Symbols } from './drawArea/Symbols';
 import { RealPoint, toFixedVirtualGrid } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useWire } from '../hooks/useWire';
 import { Mode } from '../helpers/modehelper';
-import { modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
+import { logSelector, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
 import Wire from './drawArea/Wire';
 import { useSymbol } from '../hooks/useSymbol';
 import { useLabel } from '../hooks/useLabel';
 import Label from './drawArea/Label';
 import Node from './drawArea/Node';
+import { usePreview } from '../hooks/usePreview';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -22,6 +23,12 @@ const DrawArea: React.FC = () => {
   const [pitch] = useRecoilState(pitchAtom);
   const [upperLeft] = useRecoilState(upperLeftAtom);
   const [mode] = useRecoilState(modeAtom);
+  const setLogs = useSetRecoilState(logSelector);
+  const { resetPreview } = usePreview();
+
+  useEffect(() => {
+    setLogs();
+  }, []);
 
   return (
     <svg
@@ -35,14 +42,27 @@ const DrawArea: React.FC = () => {
         switch (mode) {
           case Mode.WIRE:
             setWire(vpos);
+            setLogs();
             break;
           case Mode.SYMBOL:
             setSymbol(vpos);
+            setLogs();
             break;
           case Mode.LABEL:
             setLabel(vpos);
+            setLogs();
             break;
           default:
+        }
+      }}
+      onContextMenu={(e) => {
+        switch (mode) {
+          case Mode.WIRE:
+            e.preventDefault();
+            resetPreview(Mode.WIRE);
+            return false;
+          default:
+            return true;
         }
       }}
     >
