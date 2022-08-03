@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { NodeId } from './wireAtom';
+import { NodeId } from '../helpers/wireHelper';
 
 export const nodeIdToLabelAtom = atom({
   key: 'nodeIdToLabel',

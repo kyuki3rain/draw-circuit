@@ -1,20 +1,11 @@
 import { atom, DefaultValue, selector } from 'recoil';
 import { clone } from '../helpers/cloneHelper';
 import { SymbolState } from '../helpers/symbolHelper';
+import { EdgeList, NodeId, NodeList, NodeIdToEdgeIdMap, PointToNodeIdMap } from '../helpers/wireHelper';
 import { nodeIdToLabelAtom } from './labelAtom';
 import { symbolsAtom } from './symbolAtom';
 import { textsAtom, TextState } from './textAtom';
-import {
-  EdgeList,
-  edgeListAtom,
-  NodeId,
-  nodeIdToEdgeIdAtom,
-  NodeIdToEdgeIdMap,
-  nodeListAtom,
-  pointToNodeIdAtom,
-  PointToNodeIdMap,
-  NodeList,
-} from './wireAtom';
+import { edgeListAtom, nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
 
 export type ViewState = {
   nodeIdToLabelAtom: Map<NodeId, string>;
@@ -64,6 +55,7 @@ export const logSelector = selector({
   key: 'logsel',
   get: () => {},
   set: ({ get, set }) => {
+    console.log('set logs');
     const view = get(viewSelector);
     const logs = get(logsAtom);
     const logIndex = get(logIndexAtom);

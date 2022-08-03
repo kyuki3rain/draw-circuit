@@ -1,5 +1,13 @@
-import { useRecoilValue } from 'recoil';
-import { modeAtom, nodeListAtom, pitchAtom, previewPointAtom, selectedNodeIdAtom, upperLeftAtom } from '../../atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  logSelector,
+  modeAtom,
+  nodeListAtom,
+  pitchAtom,
+  previewPointAtom,
+  selectedNodeIdAtom,
+  upperLeftAtom,
+} from '../../atoms';
 import { toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useWire } from '../../hooks/useWire';
@@ -12,6 +20,7 @@ const Wire: React.FC = () => {
   const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
   const previewPoint = useRecoilValue(previewPointAtom);
   const { cutWire, edgeList } = useWire();
+  const setLogs = useSetRecoilState(logSelector);
 
   const selectedNode = selectedNodeId && nodeList.get(selectedNodeId);
   const pa = selectedNode && toRealGrid(selectedNode.point, pitch, upperLeft);
@@ -38,6 +47,7 @@ const Wire: React.FC = () => {
             onClick={() => {
               if (mode === Mode.CUT) {
                 cutWire(id);
+                setLogs();
               }
             }}
           />
