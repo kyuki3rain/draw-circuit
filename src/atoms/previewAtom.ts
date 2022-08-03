@@ -51,7 +51,7 @@ export const previewPositionSelector = selector({
     switch (get(modeAtom)) {
       case Mode.SYMBOL:
         if (symbol === null) return null;
-        return componentState?.nodes.map((p) => add(p, symbol.point));
+        return componentState?.nodePoints.map((p) => add(p, symbol.point));
       case Mode.LABEL:
         return [get(previewLabelPositionAtom)];
       default:

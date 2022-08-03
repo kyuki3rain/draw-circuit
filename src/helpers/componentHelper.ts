@@ -10,7 +10,7 @@ export type ComponentState = {
   center: VirtualPoint;
   width: number;
   height: number;
-  nodes: VirtualPoint[];
+  nodePoints: VirtualPoint[];
   svg: string;
   defaultConfig?: string;
 };
@@ -32,7 +32,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
         center: { vx: 2, vy: 2 },
         width: 4,
         height: 4,
-        nodes: [
+        nodePoints: [
           { vx: 0, vy: -2 },
           { vx: 0, vy: 2 },
         ],
@@ -46,7 +46,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
         center: { vx: 2, vy: 2 },
         width: 4,
         height: 5,
-        nodes: [
+        nodePoints: [
           { vx: 0, vy: -2 },
           { vx: 0, vy: 3 },
         ],
@@ -60,7 +60,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
         center: { vx: 1, vy: 3 },
         width: 3,
         height: 6,
-        nodes: [
+        nodePoints: [
           { vx: 2, vy: -3 },
           { vx: -1, vy: 2 },
           { vx: 2, vy: 3 },
@@ -76,7 +76,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
         center: { vx: 1, vy: 3 },
         width: 3,
         height: 6,
-        nodes: [
+        nodePoints: [
           { vx: 2, vy: -3 },
           { vx: -1, vy: 2 },
           { vx: 2, vy: 3 },
