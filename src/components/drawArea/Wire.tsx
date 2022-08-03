@@ -36,21 +36,25 @@ const Wire: React.FC = () => {
         const a = toRealGrid(node1.point, pitch, upperLeft);
         const b = toRealGrid(node2.point, pitch, upperLeft);
         return (
-          <line
-            key={`wire_${id}`}
-            x1={a.x}
-            x2={b.x}
-            y1={a.y}
-            y2={b.y}
-            stroke="black"
-            strokeWidth={2}
-            onClick={() => {
-              if (mode === Mode.CUT) {
-                cutWire(id);
-                setLogs();
-              }
-            }}
-          />
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+          <svg key={`wire_${id}`}>
+            <line x1={a.x} x2={b.x} y1={a.y} y2={b.y} stroke="black" strokeWidth={2} />
+            <line
+              x1={a.x}
+              x2={b.x}
+              y1={a.y}
+              y2={b.y}
+              strokeOpacity="0"
+              stroke="black"
+              strokeWidth={10}
+              onClick={() => {
+                if (mode === Mode.CUT) {
+                  cutWire(id);
+                  setLogs();
+                }
+              }}
+            />
+          </svg>
         );
       })}
       {selectedNode ? (
