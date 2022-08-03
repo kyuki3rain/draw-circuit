@@ -4,7 +4,7 @@ import {
   modeAtom,
   nodeListAtom,
   pitchAtom,
-  previewPointAtom,
+  previewPointsAtom,
   selectedNodeIdAtom,
   upperLeftAtom,
 } from '../../atoms';
@@ -18,13 +18,13 @@ const Wire: React.FC = () => {
   const upperLeft = useRecoilValue(upperLeftAtom);
   const nodeList = useRecoilValue(nodeListAtom);
   const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
-  const previewPoint = useRecoilValue(previewPointAtom);
+  const previewPoints = useRecoilValue(previewPointsAtom);
   const { cutWire, edgeList } = useWire();
   const setLogs = useSetRecoilState(logSelector);
 
   const selectedNode = selectedNodeId && nodeList.get(selectedNodeId);
-  const pa = selectedNode && toRealGrid(selectedNode.point, pitch, upperLeft);
-  const pb = toRealGrid(previewPoint, pitch, upperLeft);
+  const pa = previewPoints[0] && toRealGrid(previewPoints[0], pitch, upperLeft);
+  const pb = previewPoints[1] && toRealGrid(previewPoints[1], pitch, upperLeft);
 
   return (
     <svg>
@@ -57,8 +57,8 @@ const Wire: React.FC = () => {
           </svg>
         );
       })}
-      {selectedNode ? (
-        <line key="prev_wire" x1={pa?.x} x2={pb.x} y1={pa?.y} y2={pb.y} stroke="black" strokeWidth={2} />
+      {selectedNode && pa && pb ? (
+        <line key="prev_wire" x1={pa.x} x2={pb.x} y1={pa.y} y2={pb.y} stroke="black" strokeWidth={2} />
       ) : null}
     </svg>
   );

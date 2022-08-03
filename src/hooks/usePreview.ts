@@ -4,7 +4,7 @@ import {
   componentStateFamily,
   previewLabelNameAtom,
   previewLabelPositionAtom,
-  previewPointAtom,
+  previewPointsAtom,
   previewSymbolAtom,
   previewTextAtom,
   previewTextPositionAtom,
@@ -17,7 +17,7 @@ import { Mode, ModeType } from '../helpers/modehelper';
 
 export const usePreview = () => {
   const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
-  const setPreviewPoint = useSetRecoilState(previewPointAtom);
+  const setPreviewPoints = useSetRecoilState(previewPointsAtom);
   const setSymbolType = useSetRecoilState(symbolTypeAtom);
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const setPreviewLabelPosition = useSetRecoilState(previewLabelPositionAtom);
@@ -31,7 +31,7 @@ export const usePreview = () => {
     switch (mode) {
       case Mode.WIRE:
         setSelectedNodeId(null);
-        setPreviewPoint({} as VirtualPoint);
+        setPreviewPoints([{} as VirtualPoint, {} as VirtualPoint]);
         break;
       case Mode.SYMBOL:
         setSymbolType('cell');
@@ -53,7 +53,7 @@ export const usePreview = () => {
     (mode: ModeType, point: VirtualPoint) => {
       switch (mode) {
         case Mode.WIRE:
-          setPreviewPoint(point);
+          setPreviewPoints((prev) => [prev[0], point]);
           break;
         case Mode.SYMBOL:
           setPreviewSymbol({

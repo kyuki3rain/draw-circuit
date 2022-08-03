@@ -37,9 +37,9 @@ export const selectedNodeIdAtom = atom({
   default: null as NodeId | null,
 });
 
-export const previewPointAtom = atom({
-  key: 'previewPoint',
-  default: {} as VirtualPoint,
+export const previewPointsAtom = atom({
+  key: 'previewPoints',
+  default: [null as VirtualPoint | null, null as VirtualPoint | null],
 });
 
 export const previewPositionSelector = selector({

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
-import { selectedNodeIdAtom } from '../atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { previewPointsAtom, selectedNodeIdAtom } from '../atoms';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { EdgeId } from '../helpers/wireHelper';
 import { useEdge } from './useEdge';
@@ -9,6 +9,7 @@ import { useNode } from './useNode';
 
 export const useWire = () => {
   const [selectedNodeId, setSelectedNodeId] = useRecoilState(selectedNodeIdAtom);
+  const setPreviewPoints = useSetRecoilState(previewPointsAtom);
   const { edgeList, setEdge, removeEdge } = useEdge();
   const { setNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
@@ -23,8 +24,9 @@ export const useWire = () => {
       }
 
       setSelectedNodeId(id);
+      setPreviewPoints((prev) => [point, prev[1]]);
     },
-    [selectedNodeId, setEdge, setNode, setSelectedNodeId]
+    [selectedNodeId, setEdge, setNode, setPreviewPoints, setSelectedNodeId]
   );
 
   const cutWire = useCallback(
