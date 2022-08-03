@@ -2,6 +2,7 @@ export const Mode = {
   WIRE: 'wire',
   SYMBOL: 'symbol',
   TEXT: 'text',
+  CUT: 'cut',
   HAND: 'hand',
   MOVE: 'move',
   COPY: 'copy',

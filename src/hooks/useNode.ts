@@ -49,7 +49,26 @@ export const useNode = () => {
     [nodeList, pointToNodeIdAtom, edgeList]
   );
 
-  return { setNode };
+  const removeNode = useCallback(
+    (nodeId: NodeId) => {
+      const node = nodeList.get(nodeId);
+      if (!node) return false;
+
+      setNodeList((prev) => {
+        prev.delete(nodeId);
+        return prev;
+      });
+      setPointToNodeIdMap((prev) => {
+        prev.delete(JSON.stringify(node.point));
+        return prev;
+      });
+
+      return true;
+    },
+    [nodeList, setNodeList, setPointToNodeIdMap]
+  );
+
+  return { setNode, removeNode };
 };
 
 export default useNode;
