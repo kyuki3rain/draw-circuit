@@ -1,27 +1,30 @@
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
-  edgeListAtom,
+  logSelector,
+  modeAtom,
   nodeListAtom,
   pitchAtom,
   previewPointAtom,
   selectedNodeIdAtom,
   upperLeftAtom,
 } from '../../atoms';
-import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
-
-export const createLine = (a: RealPoint, b: RealPoint, key: string) => (
-  <line key={key} x1={a.x} x2={b.x} y1={a.y} y2={b.y} stroke="black" strokeWidth={2} />
-);
+import { toRealGrid } from '../../helpers/gridhelper';
+import { Mode } from '../../helpers/modehelper';
+import { useWire } from '../../hooks/useWire';
 
 const Wire: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
+  const mode = useRecoilValue(modeAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
-  const edgeList = useRecoilValue(edgeListAtom);
   const nodeList = useRecoilValue(nodeListAtom);
   const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
   const previewPoint = useRecoilValue(previewPointAtom);
+  const { cutWire, edgeList } = useWire();
+  const setLogs = useSetRecoilState(logSelector);
 
   const selectedNode = selectedNodeId && nodeList.get(selectedNodeId);
+  const pa = selectedNode && toRealGrid(selectedNode.point, pitch, upperLeft);
+  const pb = toRealGrid(previewPoint, pitch, upperLeft);
 
   return (
     <svg>
@@ -30,19 +33,33 @@ const Wire: React.FC = () => {
         const node2 = nodeList.get(edge.node2);
         if (!node1 || !node2) return null;
 
-        return createLine(
-          toRealGrid(node1.point, pitch, upperLeft),
-          toRealGrid(node2.point, pitch, upperLeft),
-          `wire_${id}`
+        const a = toRealGrid(node1.point, pitch, upperLeft);
+        const b = toRealGrid(node2.point, pitch, upperLeft);
+        return (
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+          <svg key={`wire_${id}`}>
+            <line x1={a.x} x2={b.x} y1={a.y} y2={b.y} stroke="black" strokeWidth={2} />
+            <line
+              x1={a.x}
+              x2={b.x}
+              y1={a.y}
+              y2={b.y}
+              strokeOpacity="0"
+              stroke="black"
+              strokeWidth={10}
+              onClick={() => {
+                if (mode === Mode.CUT) {
+                  cutWire(id);
+                  setLogs();
+                }
+              }}
+            />
+          </svg>
         );
       })}
-      {selectedNode
-        ? createLine(
-            toRealGrid(selectedNode.point, pitch, upperLeft),
-            toRealGrid(previewPoint, pitch, upperLeft),
-            'prev_wire'
-          )
-        : null}
+      {selectedNode ? (
+        <line key="prev_wire" x1={pa?.x} x2={pb.x} y1={pa?.y} y2={pb.y} stroke="black" strokeWidth={2} />
+      ) : null}
     </svg>
   );
 };

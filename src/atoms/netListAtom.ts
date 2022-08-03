@@ -1,10 +1,11 @@
 import { selector } from 'recoil';
 import { add } from '../helpers/gridhelper';
+import { NodeId } from '../helpers/wireHelper';
 import { componentStateFamily } from './componentAtom';
 import { nodeIdToLabelAtom } from './labelAtom';
 import { symbolsAtom } from './symbolAtom';
 import { textsAtom } from './textAtom';
-import { NodeId, nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
+import { nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
 function formatDate(dt: Date) {
@@ -57,7 +58,7 @@ export const netListSelector = selector({
 
     symbols.forEach((sarr, k) => {
       sarr.every((s, si) => {
-        const points = get(componentStateFamily(s.type))?.nodes;
+        const points = get(componentStateFamily(s.type))?.nodePoints;
         const labels = points?.map((p) => {
           const nodeId = pointToNodeIdMap.get(JSON.stringify(add(p, s.point)));
           const dl = nodeId && allMap.get(nodeId);

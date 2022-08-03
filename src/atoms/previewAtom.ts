@@ -4,8 +4,8 @@ import { add, VirtualPoint } from '../helpers/gridhelper';
 import { modeAtom } from './statusAtom';
 import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
-import { NodeId } from './wireAtom';
 import { TextState } from './textAtom';
+import { NodeId } from '../helpers/wireHelper';
 
 export const previewLabelNameAtom = atom({
   key: 'previewLabelName',
@@ -51,7 +51,7 @@ export const previewPositionSelector = selector({
     switch (get(modeAtom)) {
       case Mode.SYMBOL:
         if (symbol === null) return null;
-        return componentState?.nodes.map((p) => add(p, symbol.point));
+        return componentState?.nodePoints.map((p) => add(p, symbol.point));
       case Mode.LABEL:
         return [get(previewLabelPositionAtom)];
       default:

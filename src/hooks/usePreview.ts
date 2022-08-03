@@ -11,6 +11,7 @@ import {
   selectedNodeIdAtom,
   symbolTypeAtom,
 } from '../atoms';
+import { ComponentTypes } from '../helpers/componentHelper';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { Mode, ModeType } from '../helpers/modehelper';
 
@@ -57,9 +58,11 @@ export const usePreview = () => {
         case Mode.SYMBOL:
           setPreviewSymbol({
             type: symbolType,
+            componentType: componentState?.componentType ?? ComponentTypes.ERROR,
             point,
             key: `symbol_preview`,
             config: componentState?.defaultConfig ?? '',
+            nodeIds: [],
           });
           break;
         case Mode.LABEL:

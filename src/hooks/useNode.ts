@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { NodeId, nodeListAtom, pointToNodeIdAtom } from '../atoms';
+import { nodeListAtom, pointToNodeIdAtom } from '../atoms';
 import { getRandomId } from '../helpers/createIdHelper';
 import { VirtualPoint } from '../helpers/gridhelper';
+import { NodeId } from '../helpers/wireHelper';
 import { useEdge } from './useEdge';
 
 const isOnEdge = (a: VirtualPoint, b: VirtualPoint, c: VirtualPoint) => {
@@ -49,7 +50,26 @@ export const useNode = () => {
     [nodeList, pointToNodeIdAtom, edgeList]
   );
 
-  return { setNode };
+  const removeNode = useCallback(
+    (nodeId: NodeId) => {
+      const node = nodeList.get(nodeId);
+      if (!node) return false;
+
+      setNodeList((prev) => {
+        prev.delete(nodeId);
+        return prev;
+      });
+      setPointToNodeIdMap((prev) => {
+        prev.delete(JSON.stringify(node.point));
+        return prev;
+      });
+
+      return true;
+    },
+    [nodeList, setNodeList, setPointToNodeIdMap]
+  );
+
+  return { setNode, removeNode };
 };
 
 export default useNode;

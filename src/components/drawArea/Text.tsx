@@ -1,7 +1,17 @@
-import { useRecoilValue } from 'recoil';
-import { pitchAtom, previewTextAtom, previewTextPositionAtom, textModalAtom, upperLeftAtom } from '../../atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  logSelector,
+  modeAtom,
+  pitchAtom,
+  previewTextAtom,
+  previewTextPositionAtom,
+  textModalAtom,
+  upperLeftAtom,
+} from '../../atoms';
 import { textsAtom } from '../../atoms/textAtom';
 import { toRealGrid } from '../../helpers/gridhelper';
+import { Mode } from '../../helpers/modehelper';
+import { useText } from '../../hooks/useText';
 
 const Text: React.FC = () => {
   const previewText = useRecoilValue(previewTextAtom);
@@ -10,6 +20,9 @@ const Text: React.FC = () => {
   const textStates = useRecoilValue(textsAtom);
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
+  const { removeText } = useText();
+  const mode = useRecoilValue(modeAtom);
+  const setLogs = useSetRecoilState(logSelector);
 
   const prp = previewTextPoint && toRealGrid(previewTextPoint, pitch, upperLeft);
 
@@ -27,6 +40,12 @@ const Text: React.FC = () => {
             fontStyle="italic"
             key={`label_${JSON.stringify(textState)}`}
             fill={textState.isSpiceDirective ? 'black' : 'blue'}
+            onClick={() => {
+              if (mode === Mode.CUT) {
+                removeText(textState);
+                setLogs();
+              }
+            }}
           >
             {textState.body}
           </text>
