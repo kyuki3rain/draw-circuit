@@ -1,5 +1,5 @@
-import { useRecoilValue } from 'recoil';
-import { modeAtom, pitchAtom, previewSymbolAtom, symbolsAtom, upperLeftAtom } from '../../atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { logSelector, modeAtom, pitchAtom, previewSymbolAtom, symbolsAtom, upperLeftAtom } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useSymbol } from '../../hooks/useSymbol';
 import Symbol from './Symbol';
@@ -11,6 +11,7 @@ export const Symbols: React.FC = () => {
   const previewSymbol = useRecoilValue(previewSymbolAtom);
   const mode = useRecoilValue(modeAtom);
   const { removeSymbol } = useSymbol();
+  const setLogs = useSetRecoilState(logSelector);
 
   return (
     <>
@@ -26,6 +27,7 @@ export const Symbols: React.FC = () => {
             onClick={() => {
               if (mode === Mode.CUT) {
                 removeSymbol(c);
+                setLogs();
               }
             }}
           />

@@ -1,5 +1,7 @@
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+  logSelector,
+  modeAtom,
   nodeIdToLabelAtom,
   nodeListAtom,
   pitchAtom,
@@ -8,7 +10,7 @@ import {
   upperLeftAtom,
 } from '../../atoms';
 import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
-import { NodeId } from '../../helpers/wireHelper';
+import { Mode } from '../../helpers/modehelper';
 import { useLabel } from '../../hooks/useLabel';
 
 const createLabel = (rp: RealPoint, label: string, pitch: number) => {
@@ -40,23 +42,27 @@ const Label: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const { removeLabel } = useLabel();
+  const mode = useRecoilValue(modeAtom);
+  const setLogs = useSetRecoilState(logSelector);
 
   const prp = previewLabelPosition && toRealGrid(previewLabelPosition, pitch, upperLeft);
 
   return (
     <svg>
       {Array.from(nodeIdToLabel.entries()).map(([nodeId, label]) => {
-        const id = nodeId as NodeId;
-        const node = nodeList.get(id);
+        const node = nodeList.get(nodeId);
         if (!node) return null;
 
         const rp = toRealGrid(node.point, pitch, upperLeft);
         return (
           <svg
             onClick={() => {
-              removeLabel(id);
+              if (mode === Mode.CUT) {
+                removeLabel(nodeId);
+                setLogs();
+              }
             }}
-            key={`label_${id}`}
+            key={`label_${nodeId}`}
           >
             {createLabel(rp, label, pitch)}
           </svg>
