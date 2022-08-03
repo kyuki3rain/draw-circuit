@@ -58,7 +58,7 @@ export const netListSelector = selector({
 
     symbols.forEach((sarr, k) => {
       sarr.every((s, si) => {
-        const points = get(componentStateFamily(s.type))?.nodes;
+        const points = get(componentStateFamily(s.type))?.nodePoints;
         const labels = points?.map((p) => {
           const nodeId = pointToNodeIdMap.get(JSON.stringify(add(p, s.point)));
           const dl = nodeId && allMap.get(nodeId);

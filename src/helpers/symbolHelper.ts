@@ -8,7 +8,7 @@ export type SymbolState = {
   componentType: ComponentType;
   config: string;
   key: string;
-  nodes: NodeId[];
+  nodeIds: NodeId[];
 };
 
 export const nextType = (cn: string) => {

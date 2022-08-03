@@ -16,7 +16,7 @@ export const useSymbol = () => {
   const setSymbol = useCallback(
     (point: VirtualPoint) => {
       if (!componentState) return;
-      const nodes = componentState.nodes.map((rp) => setNode(add(rp, point)).id);
+      const nodes = componentState.nodePoints.map((rp) => setNode(add(rp, point)).id);
       const sarr = symbols.get(componentState.componentType) ?? [];
       setSymbols(
         symbols.set(
@@ -25,7 +25,7 @@ export const useSymbol = () => {
             type: symbolType,
             componentType: componentState.componentType,
             point,
-            nodes,
+            nodeIds: nodes,
             key: `symbol_${componentState.componentType}${sarr.length}`,
             config: componentState.defaultConfig ?? '',
           })
@@ -47,7 +47,7 @@ export const useSymbol = () => {
           )
       );
 
-      c.nodes.filter((n) => isIsolatedNode(n)).map(removeNode);
+      c.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
     },
     [symbols, symbolType]
   );

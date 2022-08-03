@@ -15,7 +15,7 @@ export const useIsolatedNode = () => {
       if (
         Array.from(symbols.values())
           .flat()
-          .some((s) => s.nodes.includes(id))
+          .some((s) => s.nodeIds.includes(id))
       )
         return false;
       return true;
