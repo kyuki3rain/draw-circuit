@@ -1,10 +1,11 @@
 import { selector } from 'recoil';
 import { add } from '../helpers/gridhelper';
+import { NodeId } from '../helpers/wireHelper';
 import { componentStateFamily } from './componentAtom';
 import { nodeIdToLabelAtom } from './labelAtom';
 import { symbolsAtom } from './symbolAtom';
 import { textsAtom } from './textAtom';
-import { NodeId, nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
+import { nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
 function formatDate(dt: Date) {

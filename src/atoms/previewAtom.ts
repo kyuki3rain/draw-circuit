@@ -4,8 +4,8 @@ import { add, VirtualPoint } from '../helpers/gridhelper';
 import { modeAtom } from './statusAtom';
 import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
-import { NodeId } from './wireAtom';
 import { TextState } from './textAtom';
+import { NodeId } from '../helpers/wireHelper';
 
 export const previewLabelNameAtom = atom({
   key: 'previewLabelName',

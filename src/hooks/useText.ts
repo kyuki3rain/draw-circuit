@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { textsAtom, previewTextAtom, modeAtom } from '../atoms';
+import { textsAtom, previewTextAtom, modeAtom, TextState } from '../atoms';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
 
@@ -19,7 +19,14 @@ export const useText = () => {
     [setMode, setPreviewText, setTextStates, text, textStates]
   );
 
-  return { setText };
+  const removeText = useCallback(
+    (state: TextState) => {
+      setTextStates(textStates.filter((ts) => state.body !== ts.body || state.point !== ts.point));
+    },
+    [setTextStates, textStates]
+  );
+
+  return { setText, removeText };
 };
 
 export default useText;

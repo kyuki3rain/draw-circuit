@@ -42,6 +42,7 @@ const DrawArea: React.FC = () => {
       onClick={(e) => {
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
         const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
+
         switch (mode) {
           case Mode.WIRE:
             setWire(vpos);
