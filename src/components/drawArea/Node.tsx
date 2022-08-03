@@ -38,8 +38,8 @@ const Node: React.FC = () => {
           return null;
         }
 
-        if (!edgeList) return createRectNode(n.point, pitch, upperLeft, `node_${n.id}`);
-        if (edgeList.size >= 3) return createCircleNode(n.point, pitch, upperLeft, `node_${n.id}`);
+        if ((edgeList?.size ?? 0) === 0) return createRectNode(n.point, pitch, upperLeft, `node_${n.id}`);
+        if (edgeList && edgeList.size >= 3) return createCircleNode(n.point, pitch, upperLeft, `node_${n.id}`);
         return null;
       })}
       {!labelModal &&

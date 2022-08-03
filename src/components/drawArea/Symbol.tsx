@@ -8,9 +8,10 @@ type Props = {
   upperLeft: VirtualPoint;
   point: VirtualPoint;
   pitch: number;
+  onClick?: () => void;
 };
 
-const Symbol: React.FC<Props> = ({ componentName, upperLeft, point, pitch }) => {
+const Symbol: React.FC<Props> = ({ componentName, upperLeft, point, pitch, onClick }) => {
   const center = toRealGrid(point, pitch, upperLeft);
   const componentState = useRecoilValue(componentStateFamily(componentName));
   if (!componentState) return null;
@@ -20,6 +21,7 @@ const Symbol: React.FC<Props> = ({ componentName, upperLeft, point, pitch }) => 
       y={center.y - componentState.center.vy * pitch}
       width={componentState.width * pitch}
       height={componentState.height * pitch}
+      onClick={onClick}
     >
       <SVG src={componentState.svg} />
     </svg>

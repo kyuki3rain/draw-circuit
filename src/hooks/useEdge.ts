@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { EdgeId, edgeListAtom, NodeId, nodeIdToEdgeIdAtom, NodeIdToEdgeIdMap, WireEdge } from '../atoms';
+import { edgeListAtom, nodeIdToEdgeIdAtom } from '../atoms';
 import { getRandomId } from '../helpers/createIdHelper';
+import { EdgeId, NodeId, NodeIdToEdgeIdMap, WireEdge } from '../helpers/wireHelper';
 
 export const useEdge = () => {
   const [edgeList, setEdgeList] = useRecoilState(edgeListAtom);
@@ -34,10 +35,6 @@ export const useEdge = () => {
       const node2List = nodeIdToEdgeIdMap.get(node2);
       if (!node1List || !node2List) return null;
 
-      const res = [];
-      if (node1List.size === 0) res.push(node1);
-      if (node2List.size === 0) res.push(node2);
-
       node1List.delete(node2);
       node2List.delete(node1);
       setNodeIdToEdgeIdMap(nodeIdToEdgeIdMap.set(node1, node1List).set(node2, node2List));
@@ -45,7 +42,7 @@ export const useEdge = () => {
       edgeList.delete(edgeId);
       setEdgeList(new Map(edgeList));
 
-      return res;
+      return [node1, node2];
     },
     [edgeList, nodeIdToEdgeIdMap, setEdgeList, setNodeIdToEdgeIdMap]
   );

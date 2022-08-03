@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { NodeId, nodeListAtom, pointToNodeIdAtom } from '../atoms';
+import { nodeListAtom, pointToNodeIdAtom } from '../atoms';
 import { getRandomId } from '../helpers/createIdHelper';
 import { VirtualPoint } from '../helpers/gridhelper';
+import { NodeId } from '../helpers/wireHelper';
 import { useEdge } from './useEdge';
 
 const isOnEdge = (a: VirtualPoint, b: VirtualPoint, c: VirtualPoint) => {
