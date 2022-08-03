@@ -43,7 +43,7 @@ export const useEdge = () => {
       setNodeIdToEdgeIdMap(nodeIdToEdgeIdMap.set(node1, node1List).set(node2, node2List));
 
       edgeList.delete(edgeId);
-      setEdgeList(edgeList);
+      setEdgeList(new Map(edgeList));
 
       return res;
     },
