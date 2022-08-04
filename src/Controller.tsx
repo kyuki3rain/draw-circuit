@@ -98,7 +98,6 @@ const Controller: React.FC<Props> = ({ children }) => {
       onMouseMove={(e) => {
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
         const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
-
         setPreview(mode, vpos);
       }}
       style={{ cursor: modeToCursorStyle(mode) }}

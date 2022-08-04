@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { componentStateFamily, symbolsAtom, symbolTypeAtom } from '../atoms';
+import { getRandomId } from '../helpers/createIdHelper';
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { SymbolState } from '../helpers/symbolHelper';
 import { useIsolatedNode } from './useIsoratedNode';
@@ -16,7 +17,7 @@ export const useSymbol = () => {
   const setSymbol = useCallback(
     (point: VirtualPoint) => {
       if (!componentState) return;
-      const nodes = componentState.nodePoints.map((rp) => setNode(add(rp, point)).id);
+      const nodes = componentState.nodePoints.map((rp) => setNode(add(rp, point)));
       const sarr = symbols.get(componentState.componentType) ?? [];
       setSymbols(
         symbols.set(
@@ -26,7 +27,7 @@ export const useSymbol = () => {
             componentType: componentState.componentType,
             point,
             nodeIds: nodes,
-            key: `symbol_${componentState.componentType}${sarr.length}`,
+            key: `symbol_${getRandomId()}`,
             config: componentState.defaultConfig ?? '',
           })
         )

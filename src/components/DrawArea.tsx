@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import Grid from './drawArea/Grid';
 import { Symbols } from './drawArea/Symbols';
 import { RealPoint, toFixedVirtualGrid } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useWire } from '../hooks/useWire';
 import { Mode } from '../helpers/modehelper';
-import { logSelector, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
+import { copyObjectTypeAtom, logSelector, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
 import Wire from './drawArea/Wire';
 import { useSymbol } from '../hooks/useSymbol';
 import { useLabel } from '../hooks/useLabel';
@@ -19,15 +19,16 @@ import { useText } from '../hooks/useText';
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
 
-  const { setWire } = useWire();
+  const { setWire, setCopyWire } = useWire();
   const { setSymbol } = useSymbol();
   const { setLabel } = useLabel();
   const { setText } = useText();
   const [pitch] = useRecoilState(pitchAtom);
   const [upperLeft] = useRecoilState(upperLeftAtom);
-  const [mode] = useRecoilState(modeAtom);
+  const [mode, setMode] = useRecoilState(modeAtom);
   const setLogs = useSetRecoilState(logSelector);
   const { resetPreview } = usePreview();
+  const copyObjectType = useRecoilValue(copyObjectTypeAtom);
 
   useEffect(() => {
     setLogs();
@@ -58,7 +59,30 @@ const DrawArea: React.FC = () => {
             break;
           case Mode.TEXT:
             setText(vpos);
+            setMode(Mode.NONE);
+
             setLogs();
+            break;
+          case Mode.COPY:
+            switch (copyObjectType) {
+              case Mode.WIRE:
+                setCopyWire(vpos);
+                setLogs();
+                break;
+              case Mode.SYMBOL:
+                setSymbol(vpos);
+                setLogs();
+                break;
+              case Mode.LABEL:
+                setLabel(vpos);
+                setLogs();
+                break;
+              case Mode.TEXT:
+                setText(vpos);
+                setLogs();
+                break;
+              default:
+            }
             break;
           default:
         }

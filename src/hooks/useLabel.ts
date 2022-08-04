@@ -14,7 +14,7 @@ export const useLabel = () => {
 
   const setLabel = useCallback(
     (point: VirtualPoint) => {
-      const { id } = setNode(point);
+      const id = setNode(point);
       setLabelList(labelList.set(id, labelName));
     },
     [labelName, labelList]

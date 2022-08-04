@@ -1,5 +1,6 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+  copyObjectTypeAtom,
   logSelector,
   modeAtom,
   pitchAtom,
@@ -14,8 +15,8 @@ import { Mode } from '../../helpers/modehelper';
 import { useText } from '../../hooks/useText';
 
 const Text: React.FC = () => {
-  const previewText = useRecoilValue(previewTextAtom);
-  const previewTextPoint = useRecoilValue(previewTextPositionAtom);
+  const [previewText, setPreviewText] = useRecoilState(previewTextAtom);
+  const [previewTextPoint, setPreviewTextPosition] = useRecoilState(previewTextPositionAtom);
   const open = useRecoilValue(textModalAtom);
   const textStates = useRecoilValue(textsAtom);
   const pitch = useRecoilValue(pitchAtom);
@@ -23,6 +24,7 @@ const Text: React.FC = () => {
   const { removeText } = useText();
   const mode = useRecoilValue(modeAtom);
   const setLogs = useSetRecoilState(logSelector);
+  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const prp = previewTextPoint && toRealGrid(previewTextPoint, pitch, upperLeft);
 
@@ -41,9 +43,17 @@ const Text: React.FC = () => {
             key={`label_${JSON.stringify(textState)}`}
             fill={textState.isSpiceDirective ? 'black' : 'blue'}
             onClick={() => {
-              if (mode === Mode.CUT) {
-                removeText(textState);
-                setLogs();
+              switch (mode) {
+                case Mode.CUT:
+                  removeText(textState);
+                  setLogs();
+                  break;
+                case Mode.COPY:
+                  setCopyObjectType(Mode.TEXT);
+                  setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
+                  setPreviewTextPosition(null);
+                  break;
+                default:
               }
             }}
           >

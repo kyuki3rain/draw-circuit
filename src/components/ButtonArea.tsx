@@ -2,7 +2,18 @@
 import { Fab, Tooltip } from '@mui/material';
 import React from 'react';
 import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil';
-import { Add, Description, HorizontalRule, Label, Save, Undo, Redo, TextFields, ContentCut } from '@mui/icons-material';
+import {
+  Add,
+  Description,
+  HorizontalRule,
+  Label,
+  Save,
+  Undo,
+  Redo,
+  TextFields,
+  ContentCut,
+  ContentCopy,
+} from '@mui/icons-material';
 import { labelModalAtom, logIndexAtom, logsAtom, modeAtom, modeSelector, textModalAtom, viewSelector } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { netListSelector } from '../atoms/netListAtom';
@@ -105,6 +116,17 @@ const ButtonArea: React.FC = () => {
           }}
         >
           <ContentCut />
+        </Fab>
+      </Tooltip>
+      <Tooltip title="copy" style={{ marginLeft: 10 }} arrow>
+        <Fab
+          color={mode === Mode.COPY ? 'secondary' : 'primary'}
+          aria-label="copy"
+          onClick={() => {
+            setMode(Mode.COPY);
+          }}
+        >
+          <ContentCopy />
         </Fab>
       </Tooltip>
       <Tooltip title="undo" style={{ marginLeft: 10 }} arrow>
