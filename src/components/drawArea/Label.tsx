@@ -1,5 +1,6 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+  copyObjectTypeAtom,
   logSelector,
   modeAtom,
   nodeIdToLabelAtom,
@@ -36,14 +37,15 @@ const createLabel = (rp: RealPoint, label: string, pitch: number) => {
 
 const Label: React.FC = () => {
   const nodeIdToLabel = useRecoilValue(nodeIdToLabelAtom);
-  const previewLabelName = useRecoilValue(previewLabelNameAtom);
-  const previewLabelPosition = useRecoilValue(previewLabelPositionAtom);
+  const [previewLabelName, setLabelName] = useRecoilState(previewLabelNameAtom);
+  const [previewLabelPosition, setPreviewLabelPoision] = useRecoilState(previewLabelPositionAtom);
   const nodeList = useRecoilValue(nodeListAtom);
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const { removeLabel } = useLabel();
   const mode = useRecoilValue(modeAtom);
   const setLogs = useSetRecoilState(logSelector);
+  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const prp = previewLabelPosition && toRealGrid(previewLabelPosition, pitch, upperLeft);
 
@@ -57,9 +59,24 @@ const Label: React.FC = () => {
         return (
           <svg
             onClick={() => {
-              if (mode === Mode.CUT) {
-                removeLabel(nodeId);
-                setLogs();
+              switch (mode) {
+                case Mode.CUT:
+                  removeLabel(nodeId);
+                  setLogs();
+                  break;
+                case Mode.MOVE:
+                  removeLabel(nodeId);
+                  setLogs();
+                  setCopyObjectType(Mode.LABEL);
+                  setLabelName(label);
+                  setPreviewLabelPoision(node.point);
+                  break;
+                case Mode.COPY:
+                  setCopyObjectType(Mode.LABEL);
+                  setLabelName(label);
+                  setPreviewLabelPoision(node.point);
+                  break;
+                default:
               }
             }}
             key={`label_${nodeId}`}

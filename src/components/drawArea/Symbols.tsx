@@ -1,5 +1,14 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { logSelector, modeAtom, pitchAtom, previewSymbolAtom, symbolsAtom, upperLeftAtom } from '../../atoms';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  copyObjectTypeAtom,
+  logSelector,
+  modeAtom,
+  pitchAtom,
+  previewSymbolAtom,
+  symbolsAtom,
+  symbolTypeAtom,
+  upperLeftAtom,
+} from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useSymbol } from '../../hooks/useSymbol';
 import Symbol from './Symbol';
@@ -8,10 +17,12 @@ export const Symbols: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const symbols = useRecoilValue(symbolsAtom);
-  const previewSymbol = useRecoilValue(previewSymbolAtom);
+  const [previewSymbol, setPreviewSymbol] = useRecoilState(previewSymbolAtom);
   const mode = useRecoilValue(modeAtom);
   const { removeSymbol } = useSymbol();
   const setLogs = useSetRecoilState(logSelector);
+  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
+  const setSymbolType = useSetRecoilState(symbolTypeAtom);
 
   return (
     <>
@@ -25,9 +36,24 @@ export const Symbols: React.FC = () => {
             pitch={pitch}
             key={`symbol_${c.key}_${c.type}`}
             onClick={() => {
-              if (mode === Mode.CUT) {
-                removeSymbol(c);
-                setLogs();
+              switch (mode) {
+                case Mode.CUT:
+                  removeSymbol(c);
+                  setLogs();
+                  break;
+                case Mode.MOVE:
+                  removeSymbol(c);
+                  setLogs();
+                  setCopyObjectType(Mode.SYMBOL);
+                  setSymbolType(c.type);
+                  setPreviewSymbol(null);
+                  break;
+                case Mode.COPY:
+                  setCopyObjectType(Mode.SYMBOL);
+                  setSymbolType(c.type);
+                  setPreviewSymbol(null);
+                  break;
+                default:
               }
             }}
           />

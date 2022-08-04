@@ -6,7 +6,7 @@ import './App.css';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
-import { modalSelector, modeAtom, pitchAtom, symbolTypeAtom, upperLeftAtom } from './atoms';
+import { copyObjectTypeAtom, modalSelector, modeAtom, pitchAtom, symbolTypeAtom, upperLeftAtom } from './atoms';
 import { usePrevious } from './hooks/usePrevious';
 import { usePreview } from './hooks/usePreview';
 import { nextType } from './helpers/symbolHelper';
@@ -25,6 +25,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   const prevMode = usePrevious(mode);
   const { undo, canUndo, redo, canRedo } = useLog();
   const open = useRecoilValue(modalSelector);
+  const copyObjectType = useRecoilValue(copyObjectTypeAtom);
 
   const divref = useRef<HTMLDivElement>(null);
 
@@ -71,6 +72,7 @@ const Controller: React.FC<Props> = ({ children }) => {
         switch (e.code) {
           case 'Escape':
             setMode(Mode.NONE);
+            if (mode === Mode.MOVE && copyObjectType !== Mode.NONE) undo();
             break;
           case 'KeyL':
             setMode(Mode.WIRE);
@@ -98,7 +100,6 @@ const Controller: React.FC<Props> = ({ children }) => {
       onMouseMove={(e) => {
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
         const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
-
         setPreview(mode, vpos);
       }}
       style={{ cursor: modeToCursorStyle(mode) }}

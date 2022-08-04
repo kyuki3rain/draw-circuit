@@ -2,7 +2,19 @@
 import { Fab, Tooltip } from '@mui/material';
 import React from 'react';
 import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil';
-import { Add, Description, HorizontalRule, Label, Save, Undo, Redo, TextFields, ContentCut } from '@mui/icons-material';
+import {
+  Add,
+  Description,
+  HorizontalRule,
+  Label,
+  Save,
+  Undo,
+  Redo,
+  TextFields,
+  ContentCut,
+  ContentCopy,
+  MoveUp,
+} from '@mui/icons-material';
 import { labelModalAtom, logIndexAtom, logsAtom, modeAtom, modeSelector, textModalAtom, viewSelector } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { netListSelector } from '../atoms/netListAtom';
@@ -67,7 +79,7 @@ const ButtonArea: React.FC = () => {
         <Fab
           aria-label="symbol"
           color={mode === Mode.SYMBOL ? 'secondary' : 'primary'}
-          onClick={() => setMode(Mode.SYMBOL)}
+          onClick={() => (mode === Mode.SYMBOL ? setMode(Mode.NONE) : setMode(Mode.SYMBOL))}
         >
           <Add />
         </Fab>
@@ -77,8 +89,12 @@ const ButtonArea: React.FC = () => {
           color={mode === Mode.LABEL ? 'secondary' : 'primary'}
           aria-label="add label"
           onClick={() => {
-            setMode(Mode.LABEL);
-            setLabelModal(true);
+            if (mode === Mode.LABEL) {
+              setMode(Mode.NONE);
+            } else {
+              setMode(Mode.LABEL);
+              setLabelModal(true);
+            }
           }}
         >
           <Label />
@@ -89,8 +105,12 @@ const ButtonArea: React.FC = () => {
           color={mode === Mode.TEXT ? 'secondary' : 'primary'}
           aria-label="add text"
           onClick={() => {
-            setMode(Mode.TEXT);
-            setTextModal(true);
+            if (mode === Mode.TEXT) {
+              setMode(Mode.NONE);
+            } else {
+              setMode(Mode.TEXT);
+              setTextModal(true);
+            }
           }}
         >
           <TextFields />
@@ -100,11 +120,27 @@ const ButtonArea: React.FC = () => {
         <Fab
           color={mode === Mode.CUT ? 'secondary' : 'primary'}
           aria-label="cut"
-          onClick={() => {
-            setMode(Mode.CUT);
-          }}
+          onClick={() => (mode === Mode.CUT ? setMode(Mode.NONE) : setMode(Mode.CUT))}
         >
           <ContentCut />
+        </Fab>
+      </Tooltip>
+      <Tooltip title="copy" style={{ marginLeft: 10 }} arrow>
+        <Fab
+          color={mode === Mode.COPY ? 'secondary' : 'primary'}
+          aria-label="copy"
+          onClick={() => (mode === Mode.COPY ? setMode(Mode.NONE) : setMode(Mode.COPY))}
+        >
+          <ContentCopy />
+        </Fab>
+      </Tooltip>
+      <Tooltip title="move" style={{ marginLeft: 10 }} arrow>
+        <Fab
+          color={mode === Mode.MOVE ? 'secondary' : 'primary'}
+          aria-label="move"
+          onClick={() => (mode === Mode.MOVE ? setMode(Mode.NONE) : setMode(Mode.MOVE))}
+        >
+          <MoveUp />
         </Fab>
       </Tooltip>
       <Tooltip title="undo" style={{ marginLeft: 10 }} arrow>

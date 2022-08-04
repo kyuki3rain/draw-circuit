@@ -7,6 +7,11 @@ export const modeAtom = atom({
   default: Mode.NONE as ModeType,
 });
 
+export const copyObjectTypeAtom = atom({
+  key: 'copyObjectType',
+  default: Mode.NONE as ModeType,
+});
+
 export const symbolTypeAtom = atom({
   key: 'symbolType',
   default: 'cell',
