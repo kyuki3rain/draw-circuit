@@ -25,7 +25,7 @@ const DrawArea: React.FC = () => {
   const { setText } = useText();
   const [pitch] = useRecoilState(pitchAtom);
   const [upperLeft] = useRecoilState(upperLeftAtom);
-  const [mode] = useRecoilState(modeAtom);
+  const [mode, setMode] = useRecoilState(modeAtom);
   const setLogs = useSetRecoilState(logSelector);
   const { resetPreview } = usePreview();
   const copyObjectType = useRecoilValue(copyObjectTypeAtom);
@@ -59,6 +59,8 @@ const DrawArea: React.FC = () => {
             break;
           case Mode.TEXT:
             setText(vpos);
+            setMode(Mode.NONE);
+
             setLogs();
             break;
           case Mode.COPY:
