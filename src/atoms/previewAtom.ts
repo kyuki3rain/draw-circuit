@@ -1,7 +1,7 @@
 import { atom, selector } from 'recoil';
 import { Mode } from '../helpers/modehelper';
 import { add, VirtualPoint } from '../helpers/gridhelper';
-import { modeAtom } from './statusAtom';
+import { copyObjectTypeAtom, modeAtom } from './statusAtom';
 import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
 import { TextState } from './textAtom';
@@ -39,7 +39,7 @@ export const selectedNodeIdAtom = atom({
 
 export const previewPointsAtom = atom({
   key: 'previewPoints',
-  default: [null as VirtualPoint | null, null as VirtualPoint | null],
+  default: [null as VirtualPoint | null, null as VirtualPoint | null, null as VirtualPoint | null],
 });
 
 export const previewPositionSelector = selector({
@@ -54,6 +54,16 @@ export const previewPositionSelector = selector({
         return componentState?.nodePoints.map((p) => add(p, symbol.point));
       case Mode.LABEL:
         return [get(previewLabelPositionAtom)];
+      case Mode.COPY:
+        switch (get(copyObjectTypeAtom)) {
+          case Mode.SYMBOL:
+            if (symbol === null) return null;
+            return componentState?.nodePoints.map((p) => add(p, symbol.point));
+          case Mode.LABEL:
+            return [get(previewLabelPositionAtom)];
+          default:
+            return null;
+        }
       default:
         return null;
     }
