@@ -19,13 +19,12 @@ import { Mode, ModeType } from '../helpers/modehelper';
 export const usePreview = () => {
   const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
   const setPreviewPoints = useSetRecoilState(previewPointsAtom);
-  const setSymbolType = useSetRecoilState(symbolTypeAtom);
+  const [symbolType, setSymbolType] = useRecoilState(symbolTypeAtom);
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const setPreviewLabelPosition = useSetRecoilState(previewLabelPositionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const setPreviewText = useSetRecoilState(previewTextAtom);
   const setPreviewTextPosition = useSetRecoilState(previewTextPositionAtom);
-  const symbolType = useRecoilValue(symbolTypeAtom);
   const componentState = useRecoilValue(componentStateFamily(symbolType));
   // const mode = useRecoilValue(modeAtom);
   const [copyObjectType, setCopyObjectType] = useRecoilState(copyObjectTypeAtom);
@@ -37,7 +36,7 @@ export const usePreview = () => {
         setPreviewPoints([null, null]);
         break;
       case Mode.SYMBOL:
-        setSymbolType('cell');
+        setSymbolType('');
         setPreviewSymbol(null);
         break;
       case Mode.LABEL:
@@ -52,7 +51,7 @@ export const usePreview = () => {
       case Mode.COPY:
         setSelectedNodeId(null);
         setPreviewPoints([null, null, null]);
-        setSymbolType('cell');
+        setSymbolType('');
         setPreviewSymbol(null);
         setPreviewLabelPosition(null);
         setPreviewLabelName('');
@@ -97,14 +96,6 @@ export const usePreview = () => {
               ]);
               break;
             case Mode.SYMBOL:
-              console.log({
-                type: symbolType,
-                componentType: componentState?.componentType ?? ComponentTypes.ERROR,
-                point,
-                key: `symbol_preview`,
-                config: componentState?.defaultConfig ?? '',
-                nodeIds: [],
-              });
               setPreviewSymbol({
                 type: symbolType,
                 componentType: componentState?.componentType ?? ComponentTypes.ERROR,
