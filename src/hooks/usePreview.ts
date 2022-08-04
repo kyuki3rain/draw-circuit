@@ -49,7 +49,6 @@ export const usePreview = () => {
         setPreviewTextPosition(null);
         break;
       case Mode.COPY:
-        console.log('escape from copy mode: ', copyObjectType);
         setSelectedNodeId(null);
         setPreviewPoints([null, null, null]);
         setSymbolType('cell');
@@ -87,7 +86,6 @@ export const usePreview = () => {
           setPreviewTextPosition(point);
           break;
         case Mode.COPY:
-          console.log('copy object: ', copyObjectType);
           switch (copyObjectType) {
             case Mode.WIRE:
               setPreviewPoints((prev) => [
