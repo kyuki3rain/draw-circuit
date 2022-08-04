@@ -6,7 +6,6 @@ import {
   pitchAtom,
   previewTextAtom,
   previewTextPositionAtom,
-  textModalAtom,
   upperLeftAtom,
 } from '../../atoms';
 import { textsAtom } from '../../atoms/textAtom';
@@ -17,7 +16,6 @@ import { useText } from '../../hooks/useText';
 const Text: React.FC = () => {
   const [previewText, setPreviewText] = useRecoilState(previewTextAtom);
   const [previewTextPoint, setPreviewTextPosition] = useRecoilState(previewTextPositionAtom);
-  const open = useRecoilValue(textModalAtom);
   const textStates = useRecoilValue(textsAtom);
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
@@ -68,7 +66,7 @@ const Text: React.FC = () => {
           </text>
         );
       })}
-      {!open && previewText && prp && (
+      {previewText && prp && (
         <text
           x={prp.x}
           y={prp.y}

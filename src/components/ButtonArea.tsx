@@ -15,15 +15,24 @@ import {
   ContentCopy,
   MoveUp,
 } from '@mui/icons-material';
-import { labelModalAtom, logIndexAtom, logsAtom, modeAtom, modeSelector, textModalAtom, viewSelector } from '../atoms';
+import {
+  labelModalAtom,
+  logIndexAtom,
+  logsAtom,
+  modeAtom,
+  selectSymbolModalAtom,
+  textModalAtom,
+  viewSelector,
+} from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { netListSelector } from '../atoms/netListAtom';
 import { useLog } from '../hooks/useLog';
 
 const ButtonArea: React.FC = () => {
-  const [mode, setMode] = useRecoilState(modeSelector);
+  const [mode, setMode] = useRecoilState(modeAtom);
   const setLabelModal = useSetRecoilState(labelModalAtom);
   const setTextModal = useSetRecoilState(textModalAtom);
+  const setSelectSymbolModal = useSetRecoilState(selectSymbolModalAtom);
   const { undo, canUndo, redo, canRedo } = useLog();
   const showNetList = useRecoilCallback(
     ({ snapshot }) =>
@@ -79,7 +88,15 @@ const ButtonArea: React.FC = () => {
         <Fab
           aria-label="symbol"
           color={mode === Mode.SYMBOL ? 'secondary' : 'primary'}
-          onClick={() => (mode === Mode.SYMBOL ? setMode(Mode.NONE) : setMode(Mode.SYMBOL))}
+          onClick={() => {
+            if (mode === Mode.SYMBOL) {
+              setMode(Mode.NONE);
+            } else {
+              console.log(mode);
+              setMode(Mode.SYMBOL);
+              setSelectSymbolModal(true);
+            }
+          }}
         >
           <Add />
         </Fab>
