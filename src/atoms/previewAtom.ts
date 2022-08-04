@@ -54,6 +54,7 @@ export const previewPositionSelector = selector({
         return componentState?.nodePoints.map((p) => add(p, symbol.point));
       case Mode.LABEL:
         return [get(previewLabelPositionAtom)];
+      case Mode.MOVE:
       case Mode.COPY:
         switch (get(copyObjectTypeAtom)) {
           case Mode.SYMBOL:

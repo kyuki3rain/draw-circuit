@@ -60,8 +60,32 @@ const DrawArea: React.FC = () => {
           case Mode.TEXT:
             setText(vpos);
             setMode(Mode.NONE);
-
             setLogs();
+            break;
+          case Mode.MOVE:
+            switch (copyObjectType) {
+              case Mode.WIRE:
+                setCopyWire(vpos);
+                resetPreview(Mode.MOVE);
+                setLogs();
+                break;
+              case Mode.SYMBOL:
+                setSymbol(vpos);
+                resetPreview(Mode.MOVE);
+                setLogs();
+                break;
+              case Mode.LABEL:
+                setLabel(vpos);
+                resetPreview(Mode.MOVE);
+                setLogs();
+                break;
+              case Mode.TEXT:
+                setText(vpos);
+                resetPreview(Mode.MOVE);
+                setLogs();
+                break;
+              default:
+            }
             break;
           case Mode.COPY:
             switch (copyObjectType) {

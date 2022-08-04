@@ -48,6 +48,13 @@ const Text: React.FC = () => {
                   removeText(textState);
                   setLogs();
                   break;
+                case Mode.MOVE:
+                  removeText(textState);
+                  setLogs();
+                  setCopyObjectType(Mode.TEXT);
+                  setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
+                  setPreviewTextPosition(null);
+                  break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.TEXT);
                   setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
