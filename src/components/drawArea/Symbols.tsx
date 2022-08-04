@@ -41,6 +41,13 @@ export const Symbols: React.FC = () => {
                   removeSymbol(c);
                   setLogs();
                   break;
+                case Mode.MOVE:
+                  removeSymbol(c);
+                  setLogs();
+                  setCopyObjectType(Mode.SYMBOL);
+                  setSymbolType(c.type);
+                  setPreviewSymbol(null);
+                  break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.SYMBOL);
                   setSymbolType(c.type);

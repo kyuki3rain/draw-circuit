@@ -64,6 +64,13 @@ const Label: React.FC = () => {
                   removeLabel(nodeId);
                   setLogs();
                   break;
+                case Mode.MOVE:
+                  removeLabel(nodeId);
+                  setLogs();
+                  setCopyObjectType(Mode.LABEL);
+                  setLabelName(label);
+                  setPreviewLabelPoision(node.point);
+                  break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.LABEL);
                   setLabelName(label);

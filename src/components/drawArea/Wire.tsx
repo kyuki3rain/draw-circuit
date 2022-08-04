@@ -54,6 +54,12 @@ const Wire: React.FC = () => {
                     cutWire(id);
                     setLogs();
                     break;
+                  case Mode.MOVE:
+                    cutWire(id);
+                    setLogs();
+                    setCopyObjectType(Mode.WIRE);
+                    setPreviewPoints([node1.point, node2.point, vpos]);
+                    break;
                   case Mode.COPY:
                     setCopyObjectType(Mode.WIRE);
                     setPreviewPoints([node1.point, node2.point, vpos]);

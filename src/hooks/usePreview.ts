@@ -48,6 +48,7 @@ export const usePreview = () => {
         setPreviewText(null);
         setPreviewTextPosition(null);
         break;
+      case Mode.MOVE:
       case Mode.COPY:
         setSelectedNodeId(null);
         setPreviewPoints([null, null, null]);
@@ -85,6 +86,7 @@ export const usePreview = () => {
         case Mode.TEXT:
           setPreviewTextPosition(point);
           break;
+        case Mode.MOVE:
         case Mode.COPY:
           switch (copyObjectType) {
             case Mode.WIRE:
@@ -95,6 +97,14 @@ export const usePreview = () => {
               ]);
               break;
             case Mode.SYMBOL:
+              console.log({
+                type: symbolType,
+                componentType: componentState?.componentType ?? ComponentTypes.ERROR,
+                point,
+                key: `symbol_preview`,
+                config: componentState?.defaultConfig ?? '',
+                nodeIds: [],
+              });
               setPreviewSymbol({
                 type: symbolType,
                 componentType: componentState?.componentType ?? ComponentTypes.ERROR,

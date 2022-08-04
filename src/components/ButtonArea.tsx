@@ -13,6 +13,7 @@ import {
   TextFields,
   ContentCut,
   ContentCopy,
+  MoveUp,
 } from '@mui/icons-material';
 import { labelModalAtom, logIndexAtom, logsAtom, modeAtom, modeSelector, textModalAtom, viewSelector } from '../atoms';
 import { Mode } from '../helpers/modehelper';
@@ -127,6 +128,17 @@ const ButtonArea: React.FC = () => {
           }}
         >
           <ContentCopy />
+        </Fab>
+      </Tooltip>
+      <Tooltip title="move" style={{ marginLeft: 10 }} arrow>
+        <Fab
+          color={mode === Mode.MOVE ? 'secondary' : 'primary'}
+          aria-label="move"
+          onClick={() => {
+            setMode(Mode.MOVE);
+          }}
+        >
+          <MoveUp />
         </Fab>
       </Tooltip>
       <Tooltip title="undo" style={{ marginLeft: 10 }} arrow>
