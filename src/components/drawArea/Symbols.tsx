@@ -5,6 +5,8 @@ import {
   modeAtom,
   pitchAtom,
   previewSymbolAtom,
+  symbolConfigAtom,
+  symbolConfigModalAtom,
   symbolsAtom,
   symbolTypeAtom,
   upperLeftAtom,
@@ -23,6 +25,8 @@ export const Symbols: React.FC = () => {
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
   const setSymbolType = useSetRecoilState(symbolTypeAtom);
+  const setConfigSymbolModal = useSetRecoilState(symbolConfigModalAtom);
+  const setConfigSymbol = useSetRecoilState(symbolConfigAtom);
 
   return (
     <>
@@ -30,11 +34,15 @@ export const Symbols: React.FC = () => {
         .flat()
         .map((c) => (
           <Symbol
-            componentName={c.type}
+            symbolState={c}
             upperLeft={upperLeft}
             point={c.point}
             pitch={pitch}
-            key={`symbol_${c.key}_${c.type}`}
+            key={`symbol_${c.key}`}
+            onContextMenu={() => {
+              setConfigSymbolModal(true);
+              setConfigSymbol(c);
+            }}
             onClick={() => {
               switch (mode) {
                 case Mode.CUT:
@@ -60,7 +68,7 @@ export const Symbols: React.FC = () => {
         ))}
       {previewSymbol && (
         <Symbol
-          componentName={previewSymbol.type}
+          symbolState={previewSymbol}
           upperLeft={upperLeft}
           point={previewSymbol.point}
           pitch={pitch}

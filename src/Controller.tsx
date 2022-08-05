@@ -6,10 +6,9 @@ import './App.css';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
-import { copyObjectTypeAtom, modalSelector, modeAtom, pitchAtom, symbolTypeAtom, upperLeftAtom } from './atoms';
+import { copyObjectTypeAtom, modalSelector, modeAtom, pitchAtom, upperLeftAtom } from './atoms';
 import { usePrevious } from './hooks/usePrevious';
 import { usePreview } from './hooks/usePreview';
-import { nextType } from './helpers/symbolHelper';
 import { useLog } from './hooks/useLog';
 
 type Props = {
@@ -20,7 +19,6 @@ const Controller: React.FC<Props> = ({ children }) => {
   const [pitch, setPitch] = useRecoilState(pitchAtom);
   const [upperLeft, setUpperLeft] = useRecoilState(upperLeftAtom);
   const [mode, setMode] = useRecoilState(modeAtom);
-  const [symbolType, setSymbolType] = useRecoilState(symbolTypeAtom);
   const { setPreview, resetPreview } = usePreview();
   const prevMode = usePrevious(mode);
   const { undo, canUndo, redo, canRedo } = useLog();
@@ -78,8 +76,7 @@ const Controller: React.FC<Props> = ({ children }) => {
             setMode(Mode.WIRE);
             break;
           case 'KeyP':
-            if (mode === Mode.SYMBOL) setSymbolType(nextType(symbolType));
-            else setMode(Mode.SYMBOL);
+            setMode(Mode.SYMBOL);
             break;
           case 'KeyE':
             setPitch(pitch + 1);
@@ -98,6 +95,8 @@ const Controller: React.FC<Props> = ({ children }) => {
         }
       }}
       onMouseMove={(e) => {
+        if (open) return;
+
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
         const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
         setPreview(mode, vpos);

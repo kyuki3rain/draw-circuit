@@ -12,7 +12,9 @@ export type ComponentState = {
   height: number;
   nodePoints: VirtualPoint[];
   svg: string;
-  defaultConfig?: string;
+  value?: string;
+  modelName?: string;
+  defaultConfig?: { key: string; value: string; name: string }[];
 };
 
 export const ComponentTypes = {
@@ -22,6 +24,8 @@ export const ComponentTypes = {
 } as const;
 
 export type ComponentType = typeof ComponentTypes[keyof typeof ComponentTypes];
+
+export const builtinComponentList = ['cell', 'signal', 'nmos4', 'pmos4'];
 
 export const builtinComponents = (cn: string): ComponentState | null => {
   switch (cn) {
@@ -37,7 +41,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 0, vy: 2 },
         ],
         svg: cell,
-        defaultConfig: '1.8',
+        value: '1.8',
       };
     case 'signal':
       return {
@@ -51,7 +55,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 0, vy: 3 },
         ],
         svg: signal,
-        defaultConfig: 'PULSE(0 1.8 50p 5p 5p 150p 300p)',
+        value: 'PULSE(0 1.8 50p 5p 5p 150p 300p)',
       };
     case 'nmos4':
       return {
@@ -67,7 +71,11 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 2, vy: 0 },
         ],
         svg: nmos4,
-        defaultConfig: 'N l=180n w=1u',
+        modelName: 'NMOS',
+        defaultConfig: [
+          { key: 'l', value: '180n', name: 'length' },
+          { key: 'w', value: '1u', name: 'width' },
+        ],
       };
     case 'pmos4':
       return {
@@ -83,7 +91,11 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 2, vy: 0 },
         ],
         svg: pmos4,
-        defaultConfig: 'P l=180n w=1u',
+        modelName: 'PMOS',
+        defaultConfig: [
+          { key: 'l', value: '180n', name: 'length' },
+          { key: 'w', value: '1u', name: 'width' },
+        ],
       };
     default:
       return null;
