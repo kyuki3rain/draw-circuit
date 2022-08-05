@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const mapForMap = (f: (a: any) => any) => (a: Map<any, any>) => new Map([...a].map(([key, value]) => [key, f(value)]));
 const mapForSet = (f: (a: any) => any) => (a: Map<any, any>) => new Set([...a].map(f));
 const entriesMapIntoObj = (f: (arg0: any) => any) => (xs: any[]) =>

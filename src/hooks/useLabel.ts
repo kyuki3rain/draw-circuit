@@ -17,16 +17,19 @@ export const useLabel = () => {
       const id = setNode(point);
       setLabelList(labelList.set(id, labelName));
     },
-    [labelName, labelList]
+    [setNode, setLabelList, labelList, labelName]
   );
 
-  const removeLabel = useCallback((id: NodeId) => {
-    setLabelList((prev) => {
-      prev.delete(id);
-      return new Map(prev);
-    });
-    if (isIsolatedNode(id)) removeNode(id);
-  }, []);
+  const removeLabel = useCallback(
+    (id: NodeId) => {
+      setLabelList((prev) => {
+        prev.delete(id);
+        return new Map(prev);
+      });
+      if (isIsolatedNode(id)) removeNode(id);
+    },
+    [isIsolatedNode, removeNode, setLabelList]
+  );
 
   return { setLabel, removeLabel };
 };

@@ -21,7 +21,7 @@ export const useEdge = () => {
 
       return edgeId;
     },
-    [edgeList, nodeIdToEdgeIdMap]
+    [edgeList, setEdgeList, setNodeIdToEdgeIdMap]
   );
 
   const removeEdge = useCallback(

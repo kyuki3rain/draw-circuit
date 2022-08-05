@@ -46,7 +46,7 @@ export const useNode = () => {
 
       return newId;
     },
-    [nodeList, pointToNodeIdAtom, edgeList]
+    [pointToNodeIdMap, setNodeList, nodeList, setPointToNodeIdMap, edgeList, separateEdge]
   );
 
   const removeNode = useCallback(

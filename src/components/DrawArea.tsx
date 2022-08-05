@@ -32,6 +32,7 @@ const DrawArea: React.FC = () => {
 
   useEffect(() => {
     setLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

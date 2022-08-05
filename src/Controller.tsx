@@ -51,6 +51,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     divref.current?.addEventListener('wheel', onWheel, { passive: false });
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       divref.current?.removeEventListener('wheel', onWheel);
     };
   });
@@ -58,6 +59,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     resetPreview(prevMode);
     setPreview(mode, { vx: 0, vy: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
   return (
