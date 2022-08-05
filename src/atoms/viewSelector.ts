@@ -55,7 +55,6 @@ export const logSelector = selector({
   key: 'logsel',
   get: () => {},
   set: ({ get, set }) => {
-    console.log('set logs');
     const view = get(viewSelector);
     const logs = get(logsAtom);
     const logIndex = get(logIndexAtom);
