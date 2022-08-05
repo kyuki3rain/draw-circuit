@@ -7,6 +7,7 @@ import DrawArea from './components/DrawArea';
 import LabelModal from './components/LabelModal';
 import TextModal from './components/TextModal';
 import SelectSymbolModal from './components/SelectSymbolModal';
+import SymbolConfigModal from './components/SymbolConfigModal';
 
 const App: React.FC = () => (
   <RecoilRoot>
@@ -16,6 +17,7 @@ const App: React.FC = () => (
       <LabelModal />
       <TextModal />
       <SelectSymbolModal />
+      <SymbolConfigModal />
     </Controller>
   </RecoilRoot>
 );

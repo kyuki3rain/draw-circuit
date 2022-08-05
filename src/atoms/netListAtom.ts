@@ -1,5 +1,6 @@
 import { selector } from 'recoil';
 import { add } from '../helpers/gridhelper';
+import { getConfig } from '../helpers/symbolHelper';
 import { NodeId } from '../helpers/wireHelper';
 import { componentStateFamily } from './componentAtom';
 import { nodeIdToLabelAtom } from './labelAtom';
@@ -66,7 +67,9 @@ export const netListSelector = selector({
           return label === 'gnd' ? '0' : label;
         });
 
-        const net = `${k}${si + 1} ${labels?.join(' ') ?? ''} ${s.config}`;
+        let net = `${k}${si + 1} ${labels?.join(' ') ?? ''}`;
+        const config = getConfig(s);
+        if (config !== '') net += ` ${config}`;
 
         netList.push(net);
 

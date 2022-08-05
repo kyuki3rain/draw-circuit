@@ -29,39 +29,52 @@ export const usePreview = () => {
   // const mode = useRecoilValue(modeAtom);
   const [copyObjectType, setCopyObjectType] = useRecoilState(copyObjectTypeAtom);
 
-  const resetPreview = useCallback((mode: ModeType) => {
-    switch (mode) {
-      case Mode.WIRE:
-        setSelectedNodeId(null);
-        setPreviewPoints([null, null]);
-        break;
-      case Mode.SYMBOL:
-        setSymbolType('');
-        setPreviewSymbol(null);
-        break;
-      case Mode.LABEL:
-        setPreviewLabelPosition(null);
-        setPreviewLabelName('');
-        break;
-      case Mode.TEXT:
-        setPreviewText(null);
-        setPreviewTextPosition(null);
-        break;
-      case Mode.MOVE:
-      case Mode.COPY:
-        setSelectedNodeId(null);
-        setPreviewPoints([null, null, null]);
-        setSymbolType('');
-        setPreviewSymbol(null);
-        setPreviewLabelPosition(null);
-        setPreviewLabelName('');
-        setPreviewText(null);
-        setPreviewTextPosition(null);
-        setCopyObjectType(Mode.NONE);
-        break;
-      default:
-    }
-  }, []);
+  const resetPreview = useCallback(
+    (mode: ModeType) => {
+      switch (mode) {
+        case Mode.WIRE:
+          setSelectedNodeId(null);
+          setPreviewPoints([null, null]);
+          break;
+        case Mode.SYMBOL:
+          setSymbolType('');
+          setPreviewSymbol(null);
+          break;
+        case Mode.LABEL:
+          setPreviewLabelPosition(null);
+          setPreviewLabelName('');
+          break;
+        case Mode.TEXT:
+          setPreviewText(null);
+          setPreviewTextPosition(null);
+          break;
+        case Mode.MOVE:
+        case Mode.COPY:
+          setSelectedNodeId(null);
+          setPreviewPoints([null, null, null]);
+          setSymbolType('');
+          setPreviewSymbol(null);
+          setPreviewLabelPosition(null);
+          setPreviewLabelName('');
+          setPreviewText(null);
+          setPreviewTextPosition(null);
+          setCopyObjectType(Mode.NONE);
+          break;
+        default:
+      }
+    },
+    [
+      setCopyObjectType,
+      setPreviewLabelName,
+      setPreviewLabelPosition,
+      setPreviewPoints,
+      setPreviewSymbol,
+      setPreviewText,
+      setPreviewTextPosition,
+      setSelectedNodeId,
+      setSymbolType,
+    ]
+  );
 
   const setPreview = useCallback(
     (mode: ModeType, point: VirtualPoint) => {
@@ -70,14 +83,16 @@ export const usePreview = () => {
           setPreviewPoints((prev) => [prev[0], point, null]);
           break;
         case Mode.SYMBOL:
-          setPreviewSymbol({
+          setPreviewSymbol(() => ({
             type: symbolType,
             componentType: componentState?.componentType ?? ComponentTypes.ERROR,
             point,
             key: `symbol_preview`,
-            config: componentState?.defaultConfig ?? '',
+            value: componentState?.value ?? '',
+            modelName: componentState?.modelName ?? '',
+            config: componentState?.defaultConfig ?? [],
             nodeIds: [],
-          });
+          }));
           break;
         case Mode.LABEL:
           setPreviewLabelPosition(point);
@@ -96,14 +111,16 @@ export const usePreview = () => {
               ]);
               break;
             case Mode.SYMBOL:
-              setPreviewSymbol({
+              setPreviewSymbol((prev) => ({
                 type: symbolType,
                 componentType: componentState?.componentType ?? ComponentTypes.ERROR,
                 point,
                 key: `symbol_preview`,
-                config: componentState?.defaultConfig ?? '',
+                value: prev?.value ?? componentState?.value ?? '',
+                modelName: prev?.modelName ?? componentState?.modelName ?? '',
+                config: prev?.config ?? componentState?.defaultConfig ?? [],
                 nodeIds: [],
-              });
+              }));
               break;
             case Mode.LABEL:
               setPreviewLabelPosition(point);
@@ -120,6 +137,8 @@ export const usePreview = () => {
     [
       componentState?.componentType,
       componentState?.defaultConfig,
+      componentState?.modelName,
+      componentState?.value,
       copyObjectType,
       setPreviewLabelPosition,
       setPreviewPoints,
