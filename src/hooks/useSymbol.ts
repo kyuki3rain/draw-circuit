@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { componentStateFamily, symbolsAtom, symbolTypeAtom } from '../atoms';
-import { getRandomId } from '../helpers/createIdHelper';
+import { componentStateFamily, previewSymbolAtom, symbolIdAtomFamily, symbolsAtom, symbolTypeAtom } from '../atoms';
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { SymbolState } from '../helpers/symbolHelper';
 import { useIsolatedNode } from './useIsoratedNode';
@@ -11,6 +10,8 @@ export const useSymbol = () => {
   const [symbols, setSymbols] = useRecoilState(symbolsAtom);
   const symbolType = useRecoilValue(symbolTypeAtom);
   const componentState = useRecoilValue(componentStateFamily(symbolType));
+  const [symbolId, setSymbolId] = useRecoilState(symbolIdAtomFamily(componentState?.componentType));
+  const previewSymbol = useRecoilValue(previewSymbolAtom);
   const { setNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
 
@@ -27,13 +28,28 @@ export const useSymbol = () => {
             componentType: componentState.componentType,
             point,
             nodeIds: nodes,
-            key: `symbol_${getRandomId()}`,
-            config: componentState.defaultConfig ?? '',
+            key: `${componentState.componentType}${symbolId}`,
+            value: previewSymbol?.value ?? componentState.value ?? '',
+            modelName: previewSymbol?.modelName ?? componentState.modelName ?? '',
+            config: previewSymbol?.config ?? componentState.defaultConfig ?? [],
           })
         )
       );
+
+      setSymbolId((prev) => prev + 1);
     },
-    [symbols, symbolType]
+    [
+      componentState,
+      symbols,
+      setSymbols,
+      symbolType,
+      symbolId,
+      previewSymbol?.value,
+      previewSymbol?.modelName,
+      previewSymbol?.config,
+      setSymbolId,
+      setNode,
+    ]
   );
 
   const removeSymbol = useCallback(
@@ -50,10 +66,22 @@ export const useSymbol = () => {
 
       c.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
     },
-    [symbols, symbolType]
+    [setSymbols, removeNode, isIsolatedNode]
   );
 
-  return { setSymbol, removeSymbol };
+  const updateSymbol = useCallback(
+    (c: SymbolState) => {
+      setSymbols(
+        (prev) =>
+          new Map(
+            prev.set(c.componentType, (prev.get(c.componentType) ?? []).filter((cc) => cc.key !== c.key).concat(c))
+          )
+      );
+    },
+    [setSymbols]
+  );
+
+  return { setSymbol, removeSymbol, updateSymbol };
 };
 
 export default useSymbol;

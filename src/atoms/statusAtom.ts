@@ -1,5 +1,6 @@
 import { atom, selector } from 'recoil';
 import { Mode, ModeType } from '../helpers/modehelper';
+import { SymbolState } from '../helpers/symbolHelper';
 
 export const modeAtom = atom({
   key: 'mode',
@@ -30,7 +31,18 @@ export const selectSymbolModalAtom = atom({
   default: false,
 });
 
+export const symbolConfigModalAtom = atom({
+  key: 'SymbolConfigModal',
+  default: false,
+});
+
 export const modalSelector = selector({
   key: 'modal',
-  get: ({ get }) => get(labelModalAtom) || get(textModalAtom) || get(selectSymbolModalAtom),
+  get: ({ get }) =>
+    get(labelModalAtom) || get(textModalAtom) || get(selectSymbolModalAtom) || get(symbolConfigModalAtom),
+});
+
+export const symbolConfigAtom = atom({
+  key: 'SymbolConfig',
+  default: null as SymbolState | null,
 });
