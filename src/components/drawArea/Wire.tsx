@@ -6,7 +6,7 @@ import {
   modeAtom,
   nodeListAtom,
   pitchAtom,
-  previewPointsAtom,
+  previewWirePointsAtom,
   upperLeftAtom,
 } from '../../atoms';
 import { RealPoint, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
@@ -18,14 +18,14 @@ const Wire: React.FC = () => {
   const mode = useRecoilValue(modeAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const nodeList = useRecoilValue(nodeListAtom);
-  const [previewPoints, setPreviewPoints] = useRecoilState(previewPointsAtom);
+  const [previewWirePoints, setPreviewWirePoints] = useRecoilState(previewWirePointsAtom);
   const edgeList = useRecoilValue(edgeListAtom);
   const { cutWire } = useWire();
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
-  const pa = previewPoints[0] && toRealGrid(previewPoints[0], pitch, upperLeft);
-  const pb = previewPoints[1] && toRealGrid(previewPoints[1], pitch, upperLeft);
+  const point1 = previewWirePoints.point1 && toRealGrid(previewWirePoints.point1, pitch, upperLeft);
+  const point2 = previewWirePoints.point2 && toRealGrid(previewWirePoints.point2, pitch, upperLeft);
 
   return (
     <svg>
@@ -60,11 +60,11 @@ const Wire: React.FC = () => {
                     cutWire(id);
                     setLogs();
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewPoints([node1.point, node2.point, vpos]);
+                    setPreviewWirePoints({ point1: node1.point, point2: node2.point, prevCursorPoint: vpos });
                     break;
                   case Mode.COPY:
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewPoints([node1.point, node2.point, vpos]);
+                    setPreviewWirePoints({ point1: node1.point, point2: node2.point, prevCursorPoint: vpos });
                     break;
                   default:
                 }
@@ -73,8 +73,8 @@ const Wire: React.FC = () => {
           </svg>
         );
       })}
-      {pa && pb ? (
-        <line key="prev_wire" x1={pa.x} x2={pb.x} y1={pa.y} y2={pb.y} stroke="black" strokeWidth={2} />
+      {point1 && point2 ? (
+        <line key="prev_wire" x1={point1.x} x2={point2.x} y1={point1.y} y2={point2.y} stroke="black" strokeWidth={2} />
       ) : null}
     </svg>
   );

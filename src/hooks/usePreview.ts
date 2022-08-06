@@ -3,7 +3,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
   previewLabelNameAtom,
-  previewPointsAtom,
+  previewWirePointsAtom,
   previewSymbolAtom,
   previewTextAtom,
   selectedNodeIdAtom,
@@ -16,7 +16,7 @@ import { Mode, ModeType } from '../helpers/modehelper';
 
 export const usePreview = () => {
   const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
-  const setPreviewPoints = useSetRecoilState(previewPointsAtom);
+  const setPreviewWirePoints = useSetRecoilState(previewWirePointsAtom);
   const setComponentName = useSetRecoilState(componentNameAtom);
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const setPosition = useSetRecoilState(positionAtom);
@@ -29,7 +29,7 @@ export const usePreview = () => {
       switch (mode) {
         case Mode.WIRE:
           setSelectedNodeId(null);
-          setPreviewPoints([null, null]);
+          setPreviewWirePoints({ point1: null, point2: null, prevCursorPoint: null });
           break;
         case Mode.SYMBOL:
           setComponentName('' as ComponentName);
@@ -46,7 +46,7 @@ export const usePreview = () => {
         case Mode.MOVE:
         case Mode.COPY:
           setSelectedNodeId(null);
-          setPreviewPoints([null, null, null]);
+          setPreviewWirePoints({ point1: null, point2: null, prevCursorPoint: null });
           setComponentName('' as ComponentName);
           setPreviewSymbol(null);
           setPosition(null);
@@ -59,14 +59,14 @@ export const usePreview = () => {
       }
     },
     [
-      setCopyObjectType,
-      setPreviewLabelName,
-      setPosition,
-      setPreviewPoints,
-      setPreviewSymbol,
-      setPreviewText,
       setSelectedNodeId,
+      setPreviewWirePoints,
       setComponentName,
+      setPreviewSymbol,
+      setPosition,
+      setPreviewLabelName,
+      setPreviewText,
+      setCopyObjectType,
     ]
   );
 
@@ -74,7 +74,7 @@ export const usePreview = () => {
     (mode: ModeType, point: VirtualPoint) => {
       switch (mode) {
         case Mode.WIRE:
-          setPreviewPoints((prev) => [prev[0], point, null]);
+          setPreviewWirePoints((prev) => ({ point1: prev.point1, point2: point, prevCursorPoint: null }));
           break;
         case Mode.SYMBOL:
           setPreviewSymbol((prev) => ({
@@ -98,11 +98,11 @@ export const usePreview = () => {
         case Mode.COPY:
           switch (copyObjectType) {
             case Mode.WIRE:
-              setPreviewPoints((prev) => [
-                prev[0] && prev[2] && add(prev[0], sub(point, prev[2])),
-                prev[1] && prev[2] && add(prev[1], sub(point, prev[2])),
-                point,
-              ]);
+              setPreviewWirePoints((prev) => ({
+                point1: prev.point1 && prev.prevCursorPoint && add(prev.point1, sub(point, prev.prevCursorPoint)),
+                point2: prev.point2 && prev.prevCursorPoint && add(prev.point2, sub(point, prev.prevCursorPoint)),
+                prevCursorPoint: point,
+              }));
               break;
             case Mode.SYMBOL:
               setPreviewSymbol((prev) => ({
@@ -128,7 +128,7 @@ export const usePreview = () => {
         default:
       }
     },
-    [copyObjectType, setPosition, setPreviewPoints, setPreviewSymbol]
+    [copyObjectType, setPosition, setPreviewSymbol, setPreviewWirePoints]
   );
 
   return { setPreview, resetPreview };
