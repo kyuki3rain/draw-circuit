@@ -6,7 +6,6 @@ import {
   previewPointsAtom,
   previewSymbolAtom,
   previewTextAtom,
-  previewTextPositionAtom,
   selectedNodeIdAtom,
   componentNameAtom,
 } from '../atoms';
@@ -23,7 +22,6 @@ export const usePreview = () => {
   const setPosition = useSetRecoilState(positionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const setPreviewText = useSetRecoilState(previewTextAtom);
-  const setPreviewTextPosition = useSetRecoilState(previewTextPositionAtom);
   const [copyObjectType, setCopyObjectType] = useRecoilState(copyObjectTypeAtom);
 
   const resetPreview = useCallback(
@@ -43,7 +41,7 @@ export const usePreview = () => {
           break;
         case Mode.TEXT:
           setPreviewText(null);
-          setPreviewTextPosition(null);
+          setPosition(null);
           break;
         case Mode.MOVE:
         case Mode.COPY:
@@ -54,7 +52,7 @@ export const usePreview = () => {
           setPosition(null);
           setPreviewLabelName('');
           setPreviewText(null);
-          setPreviewTextPosition(null);
+          setPosition(null);
           setCopyObjectType(Mode.NONE);
           break;
         default:
@@ -67,7 +65,6 @@ export const usePreview = () => {
       setPreviewPoints,
       setPreviewSymbol,
       setPreviewText,
-      setPreviewTextPosition,
       setSelectedNodeId,
       setComponentName,
     ]
@@ -95,7 +92,7 @@ export const usePreview = () => {
           setPosition(point);
           break;
         case Mode.TEXT:
-          setPreviewTextPosition(point);
+          setPosition(point);
           break;
         case Mode.MOVE:
         case Mode.COPY:
@@ -123,7 +120,7 @@ export const usePreview = () => {
               setPosition(point);
               break;
             case Mode.TEXT:
-              setPreviewTextPosition(point);
+              setPosition(point);
               break;
             default:
           }
@@ -131,7 +128,7 @@ export const usePreview = () => {
         default:
       }
     },
-    [copyObjectType, setPosition, setPreviewPoints, setPreviewSymbol, setPreviewTextPosition]
+    [copyObjectType, setPosition, setPreviewPoints, setPreviewSymbol]
   );
 
   return { setPreview, resetPreview };

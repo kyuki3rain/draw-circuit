@@ -18,11 +18,6 @@ export const previewTextAtom = atom({
   default: null as TextState | null,
 });
 
-export const previewTextPositionAtom = atom({
-  key: 'previewTextPosition',
-  default: {} as VirtualPoint | null,
-});
-
 export const previewSymbolAtom = atom({
   key: 'previewSymbol',
   default: null as SymbolState | null,
