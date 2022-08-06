@@ -3,7 +3,6 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
   previewLabelNameAtom,
-  previewLabelPositionAtom,
   previewPointsAtom,
   previewSymbolAtom,
   previewTextAtom,
@@ -11,6 +10,7 @@ import {
   selectedNodeIdAtom,
   componentNameAtom,
 } from '../atoms';
+import { positionAtom } from '../atoms/positionAtom';
 import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
 import { add, sub, VirtualPoint } from '../helpers/gridhelper';
 import { Mode, ModeType } from '../helpers/modehelper';
@@ -20,7 +20,7 @@ export const usePreview = () => {
   const setPreviewPoints = useSetRecoilState(previewPointsAtom);
   const setComponentName = useSetRecoilState(componentNameAtom);
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
-  const setPreviewLabelPosition = useSetRecoilState(previewLabelPositionAtom);
+  const setPosition = useSetRecoilState(positionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const setPreviewText = useSetRecoilState(previewTextAtom);
   const setPreviewTextPosition = useSetRecoilState(previewTextPositionAtom);
@@ -38,7 +38,7 @@ export const usePreview = () => {
           setPreviewSymbol(null);
           break;
         case Mode.LABEL:
-          setPreviewLabelPosition(null);
+          setPosition(null);
           setPreviewLabelName('');
           break;
         case Mode.TEXT:
@@ -51,7 +51,7 @@ export const usePreview = () => {
           setPreviewPoints([null, null, null]);
           setComponentName('' as ComponentName);
           setPreviewSymbol(null);
-          setPreviewLabelPosition(null);
+          setPosition(null);
           setPreviewLabelName('');
           setPreviewText(null);
           setPreviewTextPosition(null);
@@ -63,7 +63,7 @@ export const usePreview = () => {
     [
       setCopyObjectType,
       setPreviewLabelName,
-      setPreviewLabelPosition,
+      setPosition,
       setPreviewPoints,
       setPreviewSymbol,
       setPreviewText,
@@ -92,7 +92,7 @@ export const usePreview = () => {
           }));
           break;
         case Mode.LABEL:
-          setPreviewLabelPosition(point);
+          setPosition(point);
           break;
         case Mode.TEXT:
           setPreviewTextPosition(point);
@@ -120,7 +120,7 @@ export const usePreview = () => {
               }));
               break;
             case Mode.LABEL:
-              setPreviewLabelPosition(point);
+              setPosition(point);
               break;
             case Mode.TEXT:
               setPreviewTextPosition(point);
@@ -131,7 +131,7 @@ export const usePreview = () => {
         default:
       }
     },
-    [copyObjectType, setPreviewLabelPosition, setPreviewPoints, setPreviewSymbol, setPreviewTextPosition]
+    [copyObjectType, setPosition, setPreviewPoints, setPreviewSymbol, setPreviewTextPosition]
   );
 
   return { setPreview, resetPreview };
