@@ -1,25 +1,25 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { textsAtom, previewTextAtom, TextState } from '../atoms';
 import { VirtualPoint } from '../helpers/gridhelper';
 
 export const useText = () => {
-  const [textStates, setTextStates] = useRecoilState(textsAtom);
+  const setTextStates = useSetRecoilState(textsAtom);
   const [text] = useRecoilState(previewTextAtom);
 
   const setText = useCallback(
     (point: VirtualPoint) => {
       if (!text) return;
-      setTextStates(textStates.concat([{ ...text, point }]));
+      setTextStates((prev) => prev.concat([{ ...text, point }]));
     },
-    [setTextStates, text, textStates]
+    [setTextStates, text]
   );
 
   const removeText = useCallback(
     (state: TextState) => {
-      setTextStates(textStates.filter((ts) => state.body !== ts.body || state.point !== ts.point));
+      setTextStates((prev) => prev.filter((ts) => state.body !== ts.body || state.point !== ts.point));
     },
-    [setTextStates, textStates]
+    [setTextStates]
   );
 
   return { setText, removeText };

@@ -1,76 +1,62 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { edgeListAtom, nodeIdToEdgeIdAtom } from '../atoms';
 import { getRandomId } from '../helpers/createIdHelper';
-import { EdgeId, NodeId, WireEdge } from '../helpers/wireHelper';
+import { EdgeId, NodeId } from '../helpers/wireHelper';
 
 export const useEdge = () => {
   const [edgeList, setEdgeList] = useRecoilState(edgeListAtom);
-  const [nodeIdToEdgeIdMap, setNodeIdToEdgeIdMap] = useRecoilState(nodeIdToEdgeIdAtom);
+  const setNodeIdToEdgeIdMap = useSetRecoilState(nodeIdToEdgeIdAtom);
 
   const setEdge = useCallback(
-    (node1: NodeId, node2: NodeId) => {
-      const edgeId = getRandomId() as EdgeId;
-      setEdgeList(edgeList.set(edgeId, { id: edgeId, node1, node2 }));
+    (node1: NodeId, node2: NodeId, id?: EdgeId) => {
+      const edgeId = id || (getRandomId() as EdgeId);
 
       setNodeIdToEdgeIdMap((prev) =>
         prev
           .set(node1, (prev.get(node1) ?? (new Map() as Map<NodeId, EdgeId>)).set(node2, edgeId))
           .set(node2, (prev.get(node2) ?? (new Map() as Map<NodeId, EdgeId>)).set(node1, edgeId))
       );
+      setEdgeList((prev) => new Map(prev.set(edgeId, { id: edgeId, node1, node2 })));
 
       return edgeId;
     },
-    [edgeList, setEdgeList, setNodeIdToEdgeIdMap]
+    [setEdgeList, setNodeIdToEdgeIdMap]
   );
 
   const removeEdge = useCallback(
     (edgeId: EdgeId) => {
       const edge = edgeList.get(edgeId);
-      if (!edge) return null;
+      if (!edge) return [null, null];
 
-      const { node1, node2 } = edge;
+      setNodeIdToEdgeIdMap((prev) => {
+        const node1List = prev.get(edge.node1);
+        const node2List = prev.get(edge.node2);
+        if (!node1List || !node2List) return prev;
 
-      const node1List = nodeIdToEdgeIdMap.get(node1);
-      const node2List = nodeIdToEdgeIdMap.get(node2);
-      if (!node1List || !node2List) return null;
+        node1List.delete(edge.node2);
+        node2List.delete(edge.node1);
+        return prev.set(edge.node1, node1List).set(edge.node2, node2List);
+      });
 
-      node1List.delete(node2);
-      node2List.delete(node1);
-      setNodeIdToEdgeIdMap(nodeIdToEdgeIdMap.set(node1, node1List).set(node2, node2List));
+      setEdgeList((prev) => {
+        prev.delete(edgeId);
+        return new Map(edgeList);
+      });
 
-      edgeList.delete(edgeId);
-      setEdgeList(new Map(edgeList));
-
-      return [node1, node2];
+      return [edge.node1, edge.node2];
     },
-    [edgeList, nodeIdToEdgeIdMap, setEdgeList, setNodeIdToEdgeIdMap]
+    [edgeList, setEdgeList, setNodeIdToEdgeIdMap]
   );
 
   const separateEdge = useCallback(
-    (id: NodeId, edge: WireEdge) => {
-      edgeList.set(edge.id, { id: edge.id, node1: edge.node1, node2: id });
-      const newEdgeId = setEdge(id, edge.node2);
-      const node1List = nodeIdToEdgeIdMap.get(edge.node1);
-      const node2List = nodeIdToEdgeIdMap.get(edge.node2);
-      if (!node1List || !node2List) return;
-
-      node1List.delete(edge.node2);
-      node2List.delete(edge.node1);
-
-      setNodeIdToEdgeIdMap((prev) =>
-        prev
-          .set(edge.node1, node1List.set(id, edge.id))
-          .set(edge.node2, node2List.set(id, newEdgeId))
-          .set(
-            id,
-            (nodeIdToEdgeIdMap.get(id) ?? (new Map() as Map<NodeId, EdgeId>))
-              .set(edge.node1, edge.id)
-              .set(edge.node2, newEdgeId)
-          )
-      );
+    (id: NodeId, edgeId: EdgeId) => {
+      const [node1, node2] = removeEdge(edgeId);
+      if (!node1 || !node2) return;
+      setEdge(node1, id, edgeId);
+      setEdge(id, node2);
     },
-    [edgeList, nodeIdToEdgeIdMap, setEdge, setNodeIdToEdgeIdMap]
+    [removeEdge, setEdge]
   );
 
   return { edgeList, setEdge, separateEdge, removeEdge };

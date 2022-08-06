@@ -10,7 +10,7 @@ import { useNode } from './useNode';
 export const useWire = () => {
   const [selectedNodeId, setSelectedNodeId] = useRecoilState(selectedNodeIdAtom);
   const [previewPoints, setPreviewPoints] = useRecoilState(previewPointsAtom);
-  const { edgeList, setEdge, removeEdge } = useEdge();
+  const { setEdge, removeEdge } = useEdge();
   const { setNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
 
@@ -31,7 +31,7 @@ export const useWire = () => {
   const cutWire = useCallback(
     (edgeId: EdgeId) => {
       const res = removeEdge(edgeId);
-      res?.map((nodeId) => isIsolatedNode(nodeId) && removeNode(nodeId));
+      res?.map((nodeId) => nodeId && isIsolatedNode(nodeId) && removeNode(nodeId));
     },
     [isIsolatedNode, removeEdge, removeNode]
   );
@@ -50,7 +50,7 @@ export const useWire = () => {
     [previewPoints, setEdge, setNode]
   );
 
-  return { setWire, cutWire, edgeList, setCopyWire };
+  return { setWire, cutWire, setCopyWire };
 };
 
 export default useWire;

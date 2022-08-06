@@ -3,8 +3,16 @@ import Modal from '@mui/material/Modal';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Button, Select } from '@mui/material';
 import SVG from 'react-inlinesvg';
-import { modeAtom, symbolTypeAtom, componentListAtom, selectSymbolModalAtom, componentStateFamily } from '../atoms';
+import {
+  modeAtom,
+  componentNameAtom,
+  componentListAtom,
+  selectSymbolModalAtom,
+  componentStateFamily,
+  previewSymbolAtom,
+} from '../atoms';
 import { Mode } from '../helpers/modehelper';
+import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
 
 const style = {
   display: 'flex',
@@ -24,13 +32,26 @@ const style = {
 
 const SelectSymbolModal = () => {
   const [open, setOpen] = useRecoilState(selectSymbolModalAtom);
-  const [symbolType, setSymbolType] = useRecoilState(symbolTypeAtom);
+  const [componentName, setComponentName] = useRecoilState(componentNameAtom);
   const componentList = useRecoilValue(componentListAtom);
   const setMode = useSetRecoilState(modeAtom);
-  const componentState = useRecoilValue(componentStateFamily(symbolType));
+  const componentState = useRecoilValue(componentStateFamily(componentName));
+  const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const handleClose = (ok?: boolean) => {
     setOpen(false);
-    if (!ok || symbolType === '') setMode(Mode.NONE);
+    if (!ok || componentName === '') setMode(Mode.NONE);
+    else {
+      setPreviewSymbol(() => ({
+        componentName,
+        componentType: componentState?.type ?? ComponentTypes.ERROR,
+        point: { vx: 0, vy: 0 },
+        key: `symbol_preview`,
+        value: componentState?.defaultValue ?? '',
+        modelName: componentState?.defaultModelName ?? '',
+        config: componentState?.defaultConfig ?? [],
+        nodeIds: [],
+      }));
+    }
   };
 
   return (
@@ -43,7 +64,7 @@ const SelectSymbolModal = () => {
       >
         <Box sx={style}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Select native value={symbolType} onChange={(e) => setSymbolType(e.target.value)}>
+            <Select native value={componentName} onChange={(e) => setComponentName(e.target.value as ComponentName)}>
               <option key="null" value="">
                 {null}
               </option>

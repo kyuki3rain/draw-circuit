@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
-  componentStateFamily,
   copyObjectTypeAtom,
   previewLabelNameAtom,
   previewLabelPositionAtom,
@@ -10,23 +9,21 @@ import {
   previewTextAtom,
   previewTextPositionAtom,
   selectedNodeIdAtom,
-  symbolTypeAtom,
+  componentNameAtom,
 } from '../atoms';
-import { ComponentTypes } from '../helpers/componentHelper';
+import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
 import { add, sub, VirtualPoint } from '../helpers/gridhelper';
 import { Mode, ModeType } from '../helpers/modehelper';
 
 export const usePreview = () => {
   const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
   const setPreviewPoints = useSetRecoilState(previewPointsAtom);
-  const [symbolType, setSymbolType] = useRecoilState(symbolTypeAtom);
+  const setComponentName = useSetRecoilState(componentNameAtom);
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const setPreviewLabelPosition = useSetRecoilState(previewLabelPositionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const setPreviewText = useSetRecoilState(previewTextAtom);
   const setPreviewTextPosition = useSetRecoilState(previewTextPositionAtom);
-  const componentState = useRecoilValue(componentStateFamily(symbolType));
-  // const mode = useRecoilValue(modeAtom);
   const [copyObjectType, setCopyObjectType] = useRecoilState(copyObjectTypeAtom);
 
   const resetPreview = useCallback(
@@ -37,7 +34,7 @@ export const usePreview = () => {
           setPreviewPoints([null, null]);
           break;
         case Mode.SYMBOL:
-          setSymbolType('');
+          setComponentName('' as ComponentName);
           setPreviewSymbol(null);
           break;
         case Mode.LABEL:
@@ -52,7 +49,7 @@ export const usePreview = () => {
         case Mode.COPY:
           setSelectedNodeId(null);
           setPreviewPoints([null, null, null]);
-          setSymbolType('');
+          setComponentName('' as ComponentName);
           setPreviewSymbol(null);
           setPreviewLabelPosition(null);
           setPreviewLabelName('');
@@ -72,7 +69,7 @@ export const usePreview = () => {
       setPreviewText,
       setPreviewTextPosition,
       setSelectedNodeId,
-      setSymbolType,
+      setComponentName,
     ]
   );
 
@@ -83,14 +80,14 @@ export const usePreview = () => {
           setPreviewPoints((prev) => [prev[0], point, null]);
           break;
         case Mode.SYMBOL:
-          setPreviewSymbol(() => ({
-            type: symbolType,
-            componentType: componentState?.componentType ?? ComponentTypes.ERROR,
+          setPreviewSymbol((prev) => ({
+            componentName: prev?.componentName ?? ('' as ComponentName),
+            componentType: prev?.componentType ?? ComponentTypes.ERROR,
             point,
             key: `symbol_preview`,
-            value: componentState?.value ?? '',
-            modelName: componentState?.modelName ?? '',
-            config: componentState?.defaultConfig ?? [],
+            value: prev?.value ?? '',
+            modelName: prev?.modelName ?? '',
+            config: prev?.config ?? [],
             nodeIds: [],
           }));
           break;
@@ -112,13 +109,13 @@ export const usePreview = () => {
               break;
             case Mode.SYMBOL:
               setPreviewSymbol((prev) => ({
-                type: symbolType,
-                componentType: componentState?.componentType ?? ComponentTypes.ERROR,
+                componentName: prev?.componentName ?? ('' as ComponentName),
+                componentType: prev?.componentType ?? ComponentTypes.ERROR,
                 point,
                 key: `symbol_preview`,
-                value: prev?.value ?? componentState?.value ?? '',
-                modelName: prev?.modelName ?? componentState?.modelName ?? '',
-                config: prev?.config ?? componentState?.defaultConfig ?? [],
+                value: prev?.value ?? '',
+                modelName: prev?.modelName ?? '',
+                config: prev?.config ?? [],
                 nodeIds: [],
               }));
               break;
@@ -134,18 +131,7 @@ export const usePreview = () => {
         default:
       }
     },
-    [
-      componentState?.componentType,
-      componentState?.defaultConfig,
-      componentState?.modelName,
-      componentState?.value,
-      copyObjectType,
-      setPreviewLabelPosition,
-      setPreviewPoints,
-      setPreviewSymbol,
-      setPreviewTextPosition,
-      symbolType,
-    ]
+    [copyObjectType, setPreviewLabelPosition, setPreviewPoints, setPreviewSymbol, setPreviewTextPosition]
   );
 
   return { setPreview, resetPreview };

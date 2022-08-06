@@ -1,4 +1,5 @@
 import { atom, selector } from 'recoil';
+import { ComponentName } from '../helpers/componentHelper';
 import { Mode, ModeType } from '../helpers/modehelper';
 import { SymbolState } from '../helpers/symbolHelper';
 
@@ -12,9 +13,9 @@ export const copyObjectTypeAtom = atom({
   default: Mode.NONE as ModeType,
 });
 
-export const symbolTypeAtom = atom({
-  key: 'symbolType',
-  default: '',
+export const componentNameAtom = atom({
+  key: 'componentName',
+  default: '' as ComponentName,
 });
 
 export const labelModalAtom = atom({
