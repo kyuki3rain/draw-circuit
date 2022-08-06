@@ -46,7 +46,7 @@ export const previewPositionSelector = selector({
   key: 'previewPosition',
   get: ({ get }) => {
     const symbol = get(previewSymbolAtom);
-    const componentState = get(componentStateFamily(symbol?.type));
+    const componentState = get(componentStateFamily(symbol?.componentName));
 
     switch (get(modeAtom)) {
       case Mode.SYMBOL:

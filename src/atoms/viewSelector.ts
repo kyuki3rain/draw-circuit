@@ -1,5 +1,6 @@
 import { atom, DefaultValue, selector } from 'recoil';
 import { clone } from '../helpers/cloneHelper';
+import { ComponentType } from '../helpers/componentHelper';
 import { SymbolState } from '../helpers/symbolHelper';
 import { EdgeList, NodeId, NodeList, NodeIdToEdgeIdMap, PointToNodeIdMap } from '../helpers/wireHelper';
 import { nodeIdToLabelAtom } from './labelAtom';
@@ -9,7 +10,7 @@ import { edgeListAtom, nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } fro
 
 export type ViewState = {
   nodeIdToLabelAtom: Map<NodeId, string>;
-  symbolsAtom: Map<string, SymbolState[]>;
+  symbolsAtom: Map<ComponentType, SymbolState[]>;
   nodeListAtom: NodeList;
   pointToNodeIdAtom: PointToNodeIdMap;
   edgeListAtom: EdgeList;
