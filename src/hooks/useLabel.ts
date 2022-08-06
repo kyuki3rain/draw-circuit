@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { nodeIdToLabelAtom, previewLabelNameAtom } from '../atoms';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { NodeId } from '../helpers/wireHelper';
@@ -7,7 +7,7 @@ import { useIsolatedNode } from './useIsoratedNode';
 import { useNode } from './useNode';
 
 export const useLabel = () => {
-  const [labelList, setLabelList] = useRecoilState(nodeIdToLabelAtom);
+  const setLabelList = useSetRecoilState(nodeIdToLabelAtom);
   const labelName = useRecoilValue(previewLabelNameAtom);
   const { setNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
@@ -15,9 +15,9 @@ export const useLabel = () => {
   const setLabel = useCallback(
     (point: VirtualPoint) => {
       const id = setNode(point);
-      setLabelList(labelList.set(id, labelName));
+      setLabelList((prev) => new Map(prev.set(id, labelName)));
     },
-    [setNode, setLabelList, labelList, labelName]
+    [setNode, setLabelList, labelName]
   );
 
   const removeLabel = useCallback(

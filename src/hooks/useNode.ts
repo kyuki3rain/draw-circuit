@@ -21,8 +21,19 @@ const isOnEdge = (a: VirtualPoint, b: VirtualPoint, c: VirtualPoint) => {
 
 export const useNode = () => {
   const [nodeList, setNodeList] = useRecoilState(nodeListAtom);
-  const { edgeList, separateEdge } = useEdge();
   const [pointToNodeIdMap, setPointToNodeIdMap] = useRecoilState(pointToNodeIdAtom);
+  const { edgeList, separateEdge } = useEdge();
+
+  const getThroughNodeEdge = useCallback(
+    (point: VirtualPoint) =>
+      Array.from(edgeList.values()).find((e) => {
+        const point1 = nodeList.get(e.node1)?.point;
+        const point2 = nodeList.get(e.node2)?.point;
+        if (!point1 || !point2) return false;
+        return isOnEdge(point1, point2, point);
+      }),
+    [edgeList, nodeList]
+  );
 
   const setNode = useCallback(
     (point: VirtualPoint) => {
@@ -31,22 +42,17 @@ export const useNode = () => {
       if (id) return id;
 
       const newId = getRandomId() as NodeId;
-      setNodeList(nodeList.set(newId, { id: newId, point }));
-      setPointToNodeIdMap(new Map(pointToNodeIdMap.set(pString, newId)));
+      setNodeList((prev) => new Map(prev.set(newId, { id: newId, point })));
+      setPointToNodeIdMap((prev) => new Map(prev.set(pString, newId)));
 
-      const edge = Array.from(edgeList.values()).find((e) => {
-        const point1 = nodeList.get(e.node1)?.point;
-        const point2 = nodeList.get(e.node2)?.point;
-        if (point1 && point2) return isOnEdge(point1, point2, point);
-        return false;
-      });
+      const edge = getThroughNodeEdge(point);
       if (edge) {
-        separateEdge(newId, edge);
+        separateEdge(newId, edge.id);
       }
 
       return newId;
     },
-    [pointToNodeIdMap, setNodeList, nodeList, setPointToNodeIdMap, edgeList, separateEdge]
+    [pointToNodeIdMap, setNodeList, setPointToNodeIdMap, getThroughNodeEdge, separateEdge]
   );
 
   const removeNode = useCallback(

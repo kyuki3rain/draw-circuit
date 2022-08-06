@@ -15,7 +15,7 @@ type Props = {
 
 const Symbol: React.FC<Props> = ({ symbolState, upperLeft, point, pitch, onClick, onContextMenu }) => {
   const center = toRealGrid(point, pitch, upperLeft);
-  const componentState = useRecoilValue(componentStateFamily(symbolState.type));
+  const componentState = useRecoilValue(componentStateFamily(symbolState.componentName));
   if (!componentState) return null;
   return (
     <svg>

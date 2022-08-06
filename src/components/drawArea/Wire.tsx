@@ -1,6 +1,7 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
+  edgeListAtom,
   logSelector,
   modeAtom,
   nodeListAtom,
@@ -18,7 +19,8 @@ const Wire: React.FC = () => {
   const upperLeft = useRecoilValue(upperLeftAtom);
   const nodeList = useRecoilValue(nodeListAtom);
   const [previewPoints, setPreviewPoints] = useRecoilState(previewPointsAtom);
-  const { cutWire, edgeList } = useWire();
+  const edgeList = useRecoilValue(edgeListAtom);
+  const { cutWire } = useWire();
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 

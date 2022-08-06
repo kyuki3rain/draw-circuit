@@ -1,5 +1,5 @@
 import { atom, atomFamily } from 'recoil';
-import { builtinComponentList, builtinComponents } from '../helpers/componentHelper';
+import { builtinComponentList, builtinComponents, ComponentName } from '../helpers/componentHelper';
 
 export const componentListAtom = atom({
   key: 'componentList',
@@ -8,9 +8,8 @@ export const componentListAtom = atom({
 
 export const componentStateFamily = atomFamily({
   key: 'componentState',
-  default: (params) => {
-    const cn = params?.toString();
-    if (cn) return builtinComponents(cn);
+  default: (componentName?: ComponentName) => {
+    if (componentName) return builtinComponents(componentName);
     return null;
   },
 });
