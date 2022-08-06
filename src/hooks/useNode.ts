@@ -24,7 +24,7 @@ export const useNode = () => {
   const [pointToNodeIdMap, setPointToNodeIdMap] = useRecoilState(pointToNodeIdAtom);
   const { edgeList, separateEdge } = useEdge();
 
-  const getThroughNodeEdge = useCallback(
+  const getNodeThroughEdge = useCallback(
     (point: VirtualPoint) =>
       Array.from(edgeList.values()).find((e) => {
         const point1 = nodeList.get(e.node1)?.point;
@@ -45,14 +45,14 @@ export const useNode = () => {
       setNodeList((prev) => new Map(prev.set(newId, { id: newId, point })));
       setPointToNodeIdMap((prev) => new Map(prev.set(pString, newId)));
 
-      const edge = getThroughNodeEdge(point);
+      const edge = getNodeThroughEdge(point);
       if (edge) {
         separateEdge(newId, edge.id);
       }
 
       return newId;
     },
-    [pointToNodeIdMap, setNodeList, setPointToNodeIdMap, getThroughNodeEdge, separateEdge]
+    [pointToNodeIdMap, setNodeList, setPointToNodeIdMap, getNodeThroughEdge, separateEdge]
   );
 
   const removeNode = useCallback(
