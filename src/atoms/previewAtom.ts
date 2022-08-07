@@ -1,12 +1,12 @@
 import { atom, selector } from 'recoil';
 import { Mode } from '../helpers/modehelper';
 import { add, VirtualPoint } from '../helpers/gridhelper';
-import { copyObjectTypeAtom, modeAtom } from './statusAtom';
+import { componentNameAtom, copyObjectTypeAtom, modeAtom } from './statusAtom';
 import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
 import { TextState } from './textAtom';
 import { NodeId } from '../helpers/wireHelper';
-import { positionAtom } from './positionAtom';
+import { cursorPositionAtom } from './positionAtom';
 
 export const previewLabelNameAtom = atom({
   key: 'previewLabelName',
@@ -16,11 +16,6 @@ export const previewLabelNameAtom = atom({
 export const previewTextAtom = atom({
   key: 'previewText',
   default: null as TextState | null,
-});
-
-export const previewTextPositionAtom = atom({
-  key: 'previewTextPosition',
-  default: {} as VirtualPoint | null,
 });
 
 export const previewSymbolAtom = atom({
@@ -33,31 +28,34 @@ export const selectedNodeIdAtom = atom({
   default: null as NodeId | null,
 });
 
-export const previewPointsAtom = atom({
-  key: 'previewPoints',
-  default: [null as VirtualPoint | null, null as VirtualPoint | null, null as VirtualPoint | null],
+export const previewWirePointsAtom = atom({
+  key: 'previewWirePoints',
+  default: {
+    point1Relative: null as VirtualPoint | null,
+    point2Relative: null as VirtualPoint | null,
+  },
 });
 
 export const previewPositionSelector = selector({
   key: 'previewPosition',
   get: ({ get }) => {
-    const symbol = get(previewSymbolAtom);
-    const componentState = get(componentStateFamily(symbol?.componentName));
+    const componentName = get(componentNameAtom);
+    const componentState = get(componentStateFamily(componentName));
+    const cursorPosition = get(cursorPositionAtom);
+    if (!cursorPosition) return null;
 
     switch (get(modeAtom)) {
       case Mode.SYMBOL:
-        if (symbol === null) return null;
-        return componentState?.nodePoints.map((p) => add(p, symbol.point));
+        return componentState?.nodePoints.map((p) => add(p, cursorPosition));
       case Mode.LABEL:
-        return [get(positionAtom)];
+        return [cursorPosition];
       case Mode.MOVE:
       case Mode.COPY:
         switch (get(copyObjectTypeAtom)) {
           case Mode.SYMBOL:
-            if (symbol === null) return null;
-            return componentState?.nodePoints.map((p) => add(p, symbol.point));
+            return componentState?.nodePoints.map((p) => add(p, cursorPosition));
           case Mode.LABEL:
-            return [get(positionAtom)];
+            return [cursorPosition];
           default:
             return null;
         }

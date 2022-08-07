@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
-import { previewPointsAtom, selectedNodeIdAtom } from '../atoms';
-import { add, sub, VirtualPoint } from '../helpers/gridhelper';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { previewWirePointsAtom, selectedNodeIdAtom } from '../atoms';
+import { add, VirtualPoint } from '../helpers/gridhelper';
 import { EdgeId } from '../helpers/wireHelper';
 import { useEdge } from './useEdge';
 import { useIsolatedNode } from './useIsoratedNode';
@@ -9,7 +9,7 @@ import { useNode } from './useNode';
 
 export const useWire = () => {
   const [selectedNodeId, setSelectedNodeId] = useRecoilState(selectedNodeIdAtom);
-  const [previewPoints, setPreviewPoints] = useRecoilState(previewPointsAtom);
+  const previewWirePoints = useRecoilValue(previewWirePointsAtom);
   const { setEdge, removeEdge } = useEdge();
   const { setNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
@@ -23,9 +23,8 @@ export const useWire = () => {
       }
 
       setSelectedNodeId(id);
-      setPreviewPoints((prev) => [point, prev[1], null]);
     },
-    [selectedNodeId, setEdge, setNode, setPreviewPoints, setSelectedNodeId]
+    [selectedNodeId, setEdge, setNode, setSelectedNodeId]
   );
 
   const cutWire = useCallback(
@@ -38,8 +37,9 @@ export const useWire = () => {
 
   const setCopyWire = useCallback(
     (point: VirtualPoint) => {
-      const point1 = previewPoints[0] && previewPoints[2] && add(previewPoints[0], sub(point, previewPoints[2]));
-      const point2 = previewPoints[1] && previewPoints[2] && add(previewPoints[1], sub(point, previewPoints[2]));
+      const point1 = previewWirePoints.point1Relative && add(previewWirePoints.point1Relative, point);
+      const point2 = previewWirePoints.point2Relative && add(previewWirePoints.point2Relative, point);
+
       if (!point1 || !point2) return;
 
       const id1 = setNode(point1);
@@ -47,7 +47,7 @@ export const useWire = () => {
 
       setEdge(id1, id2);
     },
-    [previewPoints, setEdge, setNode]
+    [previewWirePoints, setEdge, setNode]
   );
 
   return { setWire, cutWire, setCopyWire };

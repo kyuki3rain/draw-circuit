@@ -5,7 +5,7 @@ import { NodeId } from './wireHelper';
 export type SymbolState = {
   componentName: ComponentName;
   componentType: ComponentType;
-  point: VirtualPoint;
+  point?: VirtualPoint;
   value: string;
   modelName: string;
   config: { key: string; value: string; name: string }[];

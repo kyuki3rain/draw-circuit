@@ -4,8 +4,8 @@ import {
   logSelector,
   modeAtom,
   pitchAtom,
+  cursorPositionAtom,
   previewTextAtom,
-  previewTextPositionAtom,
   upperLeftAtom,
 } from '../../atoms';
 import { textsAtom } from '../../atoms/textAtom';
@@ -15,7 +15,7 @@ import { useText } from '../../hooks/useText';
 
 const Text: React.FC = () => {
   const [previewText, setPreviewText] = useRecoilState(previewTextAtom);
-  const [previewTextPoint, setPreviewTextPosition] = useRecoilState(previewTextPositionAtom);
+  const [cursorPosition, setCursorPosition] = useRecoilState(cursorPositionAtom);
   const textStates = useRecoilValue(textsAtom);
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
@@ -24,7 +24,7 @@ const Text: React.FC = () => {
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
-  const prp = previewTextPoint && toRealGrid(previewTextPoint, pitch, upperLeft);
+  const prp = cursorPosition && toRealGrid(cursorPosition, pitch, upperLeft);
 
   return (
     <svg>
@@ -51,12 +51,12 @@ const Text: React.FC = () => {
                   setLogs();
                   setCopyObjectType(Mode.TEXT);
                   setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
-                  setPreviewTextPosition(null);
+                  setCursorPosition((prev) => textState.point ?? prev);
                   break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.TEXT);
                   setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
-                  setPreviewTextPosition(null);
+                  setCursorPosition((prev) => textState.point ?? prev);
                   break;
                 default:
               }

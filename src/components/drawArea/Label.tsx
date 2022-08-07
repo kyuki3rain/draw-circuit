@@ -7,7 +7,7 @@ import {
   nodeListAtom,
   pitchAtom,
   previewLabelNameAtom,
-  positionAtom,
+  cursorPositionAtom,
   upperLeftAtom,
 } from '../../atoms';
 import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
@@ -38,7 +38,7 @@ const createLabel = (rp: RealPoint, label: string, pitch: number) => {
 const Label: React.FC = () => {
   const nodeIdToLabel = useRecoilValue(nodeIdToLabelAtom);
   const [previewLabelName, setLabelName] = useRecoilState(previewLabelNameAtom);
-  const [position, setPoision] = useRecoilState(positionAtom);
+  const [cursorPosition, setCursorPoision] = useRecoilState(cursorPositionAtom);
   const nodeList = useRecoilValue(nodeListAtom);
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
@@ -47,7 +47,7 @@ const Label: React.FC = () => {
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
-  const prp = position && toRealGrid(position, pitch, upperLeft);
+  const prp = cursorPosition && toRealGrid(cursorPosition, pitch, upperLeft);
 
   return (
     <svg>
@@ -69,12 +69,12 @@ const Label: React.FC = () => {
                   setLogs();
                   setCopyObjectType(Mode.LABEL);
                   setLabelName(label);
-                  setPoision(node.point);
+                  setCursorPoision(node.point);
                   break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.LABEL);
                   setLabelName(label);
-                  setPoision(node.point);
+                  setCursorPoision(node.point);
                   break;
                 default:
               }

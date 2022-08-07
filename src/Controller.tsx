@@ -7,7 +7,6 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
 import { copyObjectTypeAtom, modalSelector, modeAtom, pitchAtom, upperLeftAtom } from './atoms';
-import { usePrevious } from './hooks/usePrevious';
 import { usePreview } from './hooks/usePreview';
 import { useLog } from './hooks/useLog';
 
@@ -20,7 +19,6 @@ const Controller: React.FC<Props> = ({ children }) => {
   const [upperLeft, setUpperLeft] = useRecoilState(upperLeftAtom);
   const [mode, setMode] = useRecoilState(modeAtom);
   const { setPreview, resetPreview } = usePreview();
-  const prevMode = usePrevious(mode);
   const { undo, canUndo, redo, canRedo } = useLog();
   const open = useRecoilValue(modalSelector);
   const copyObjectType = useRecoilValue(copyObjectTypeAtom);
@@ -57,8 +55,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   });
 
   useEffect(() => {
-    resetPreview(prevMode);
-    setPreview(mode, { vx: 0, vy: 0 });
+    resetPreview();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
@@ -101,7 +98,7 @@ const Controller: React.FC<Props> = ({ children }) => {
 
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
         const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
-        setPreview(mode, vpos);
+        setPreview(vpos);
       }}
       style={{ cursor: modeToCursorStyle(mode) }}
     >

@@ -1,15 +1,17 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
+  cursorPositionAtom,
   edgeListAtom,
   logSelector,
   modeAtom,
   nodeListAtom,
   pitchAtom,
-  previewPointsAtom,
+  previewWirePointsAtom,
+  selectedNodeIdAtom,
   upperLeftAtom,
 } from '../../atoms';
-import { RealPoint, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
+import { add, RealPoint, sub, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useWire } from '../../hooks/useWire';
 
@@ -18,14 +20,25 @@ const Wire: React.FC = () => {
   const mode = useRecoilValue(modeAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const nodeList = useRecoilValue(nodeListAtom);
-  const [previewPoints, setPreviewPoints] = useRecoilState(previewPointsAtom);
+  const [previewWirePoints, setPreviewWirePoints] = useRecoilState(previewWirePointsAtom);
   const edgeList = useRecoilValue(edgeListAtom);
   const { cutWire } = useWire();
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
+  const cursorPosition = useRecoilValue(cursorPositionAtom);
+  const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
 
-  const pa = previewPoints[0] && toRealGrid(previewPoints[0], pitch, upperLeft);
-  const pb = previewPoints[1] && toRealGrid(previewPoints[1], pitch, upperLeft);
+  const vp1 =
+    mode === Mode.WIRE
+      ? selectedNodeId && nodeList.get(selectedNodeId)?.point
+      : cursorPosition && previewWirePoints.point1Relative && add(previewWirePoints.point1Relative, cursorPosition);
+  const vp2 =
+    mode === Mode.WIRE
+      ? cursorPosition
+      : cursorPosition && previewWirePoints.point2Relative && add(previewWirePoints.point2Relative, cursorPosition);
+
+  const point1 = vp1 && toRealGrid(vp1, pitch, upperLeft);
+  const point2 = vp2 && toRealGrid(vp2, pitch, upperLeft);
 
   return (
     <svg>
@@ -60,11 +73,17 @@ const Wire: React.FC = () => {
                     cutWire(id);
                     setLogs();
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewPoints([node1.point, node2.point, vpos]);
+                    setPreviewWirePoints({
+                      point1Relative: sub(node1.point, vpos),
+                      point2Relative: sub(node2.point, vpos),
+                    });
                     break;
                   case Mode.COPY:
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewPoints([node1.point, node2.point, vpos]);
+                    setPreviewWirePoints({
+                      point1Relative: sub(node1.point, vpos),
+                      point2Relative: sub(node2.point, vpos),
+                    });
                     break;
                   default:
                 }
@@ -73,8 +92,8 @@ const Wire: React.FC = () => {
           </svg>
         );
       })}
-      {pa && pb ? (
-        <line key="prev_wire" x1={pa.x} x2={pb.x} y1={pa.y} y2={pb.y} stroke="black" strokeWidth={2} />
+      {point1 && point2 ? (
+        <line key="prev_wire" x1={point1.x} x2={point2.x} y1={point1.y} y2={point2.y} stroke="black" strokeWidth={2} />
       ) : null}
     </svg>
   );

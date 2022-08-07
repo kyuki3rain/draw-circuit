@@ -61,6 +61,7 @@ export const netListSelector = selector({
       sarr.every((s) => {
         const points = get(componentStateFamily(s.componentName))?.nodePoints;
         const labels = points?.map((p) => {
+          if (!s.point) return '';
           const nodeId = pointToNodeIdMap.get(JSON.stringify(add(p, s.point)));
           const dl = nodeId && allMap.get(nodeId);
           const label = dl && (labelDict.get(dl) || dl);
