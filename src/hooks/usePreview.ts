@@ -11,7 +11,7 @@ import {
 } from '../atoms';
 import { cursorPositionAtom } from '../atoms/positionAtom';
 import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
-import { add, sub, VirtualPoint } from '../helpers/gridhelper';
+import { VirtualPoint } from '../helpers/gridhelper';
 import { Mode, ModeType } from '../helpers/modehelper';
 
 export const usePreview = () => {
@@ -29,7 +29,7 @@ export const usePreview = () => {
       switch (mode) {
         case Mode.WIRE:
           setSelectedNodeId(null);
-          setPreviewWirePoints({ point1: null, point2: null, prevCursorPoint: null });
+          setPreviewWirePoints({ point1Relative: null, point2Relative: null });
           break;
         case Mode.SYMBOL:
           setComponentName('' as ComponentName);
@@ -46,7 +46,7 @@ export const usePreview = () => {
         case Mode.MOVE:
         case Mode.COPY:
           setSelectedNodeId(null);
-          setPreviewWirePoints({ point1: null, point2: null, prevCursorPoint: null });
+          setPreviewWirePoints({ point1Relative: null, point2Relative: null });
           setComponentName('' as ComponentName);
           setPreviewSymbol(null);
           setCursorPosition(null);
@@ -74,7 +74,7 @@ export const usePreview = () => {
     (mode: ModeType, point: VirtualPoint) => {
       switch (mode) {
         case Mode.WIRE:
-          setPreviewWirePoints((prev) => ({ point1: prev.point1, point2: point, prevCursorPoint: null }));
+          setCursorPosition(point);
           break;
         case Mode.SYMBOL:
           setPreviewSymbol((prev) => ({
@@ -98,11 +98,7 @@ export const usePreview = () => {
         case Mode.COPY:
           switch (copyObjectType) {
             case Mode.WIRE:
-              setPreviewWirePoints((prev) => ({
-                point1: prev.point1 && prev.prevCursorPoint && add(prev.point1, sub(point, prev.prevCursorPoint)),
-                point2: prev.point2 && prev.prevCursorPoint && add(prev.point2, sub(point, prev.prevCursorPoint)),
-                prevCursorPoint: point,
-              }));
+              setCursorPosition(point);
               break;
             case Mode.SYMBOL:
               setPreviewSymbol((prev) => ({
@@ -128,7 +124,7 @@ export const usePreview = () => {
         default:
       }
     },
-    [copyObjectType, setCursorPosition, setPreviewSymbol, setPreviewWirePoints]
+    [copyObjectType, setCursorPosition, setPreviewSymbol]
   );
 
   return { setPreview, resetPreview };

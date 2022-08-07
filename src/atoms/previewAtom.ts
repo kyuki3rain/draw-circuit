@@ -31,9 +31,8 @@ export const selectedNodeIdAtom = atom({
 export const previewWirePointsAtom = atom({
   key: 'previewWirePoints',
   default: {
-    point1: null as VirtualPoint | null,
-    point2: null as VirtualPoint | null,
-    prevCursorPoint: null as VirtualPoint | null,
+    point1Relative: null as VirtualPoint | null,
+    point2Relative: null as VirtualPoint | null,
   },
 });
 

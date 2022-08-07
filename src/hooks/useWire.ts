@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { previewWirePointsAtom, selectedNodeIdAtom } from '../atoms';
-import { add, sub, VirtualPoint } from '../helpers/gridhelper';
+import { add, VirtualPoint } from '../helpers/gridhelper';
 import { EdgeId } from '../helpers/wireHelper';
 import { useEdge } from './useEdge';
 import { useIsolatedNode } from './useIsoratedNode';
@@ -9,7 +9,7 @@ import { useNode } from './useNode';
 
 export const useWire = () => {
   const [selectedNodeId, setSelectedNodeId] = useRecoilState(selectedNodeIdAtom);
-  const [previewWirePoints, setPreviewWirePoints] = useRecoilState(previewWirePointsAtom);
+  const previewWirePoints = useRecoilValue(previewWirePointsAtom);
   const { setEdge, removeEdge } = useEdge();
   const { setNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
@@ -23,9 +23,8 @@ export const useWire = () => {
       }
 
       setSelectedNodeId(id);
-      setPreviewWirePoints((prev) => ({ point1: point, point2: prev.point2, prevCursorPoint: null }));
     },
-    [selectedNodeId, setEdge, setNode, setPreviewWirePoints, setSelectedNodeId]
+    [selectedNodeId, setEdge, setNode, setSelectedNodeId]
   );
 
   const cutWire = useCallback(
@@ -38,14 +37,9 @@ export const useWire = () => {
 
   const setCopyWire = useCallback(
     (point: VirtualPoint) => {
-      const point1 =
-        previewWirePoints.point1 &&
-        previewWirePoints.prevCursorPoint &&
-        add(previewWirePoints.point1, sub(point, previewWirePoints.prevCursorPoint));
-      const point2 =
-        previewWirePoints.point2 &&
-        previewWirePoints.prevCursorPoint &&
-        add(previewWirePoints.point2, sub(point, previewWirePoints.prevCursorPoint));
+      const point1 = previewWirePoints.point1Relative && add(previewWirePoints.point1Relative, point);
+      const point2 = previewWirePoints.point2Relative && add(previewWirePoints.point2Relative, point);
+
       if (!point1 || !point2) return;
 
       const id1 = setNode(point1);

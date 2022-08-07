@@ -1,15 +1,17 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
+  cursorPositionAtom,
   edgeListAtom,
   logSelector,
   modeAtom,
   nodeListAtom,
   pitchAtom,
   previewWirePointsAtom,
+  selectedNodeIdAtom,
   upperLeftAtom,
 } from '../../atoms';
-import { RealPoint, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
+import { add, RealPoint, sub, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useWire } from '../../hooks/useWire';
 
@@ -23,9 +25,20 @@ const Wire: React.FC = () => {
   const { cutWire } = useWire();
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
+  const cursorPosition = useRecoilValue(cursorPositionAtom);
+  const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
 
-  const point1 = previewWirePoints.point1 && toRealGrid(previewWirePoints.point1, pitch, upperLeft);
-  const point2 = previewWirePoints.point2 && toRealGrid(previewWirePoints.point2, pitch, upperLeft);
+  const vp1 =
+    mode === Mode.WIRE
+      ? selectedNodeId && nodeList.get(selectedNodeId)?.point
+      : cursorPosition && previewWirePoints.point1Relative && add(previewWirePoints.point1Relative, cursorPosition);
+  const vp2 =
+    mode === Mode.WIRE
+      ? cursorPosition
+      : cursorPosition && previewWirePoints.point2Relative && add(previewWirePoints.point2Relative, cursorPosition);
+
+  const point1 = vp1 && toRealGrid(vp1, pitch, upperLeft);
+  const point2 = vp2 && toRealGrid(vp2, pitch, upperLeft);
 
   return (
     <svg>
@@ -60,11 +73,17 @@ const Wire: React.FC = () => {
                     cutWire(id);
                     setLogs();
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewWirePoints({ point1: node1.point, point2: node2.point, prevCursorPoint: vpos });
+                    setPreviewWirePoints({
+                      point1Relative: sub(node1.point, vpos),
+                      point2Relative: sub(node2.point, vpos),
+                    });
                     break;
                   case Mode.COPY:
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewWirePoints({ point1: node1.point, point2: node2.point, prevCursorPoint: vpos });
+                    setPreviewWirePoints({
+                      point1Relative: sub(node1.point, vpos),
+                      point2Relative: sub(node2.point, vpos),
+                    });
                     break;
                   default:
                 }
