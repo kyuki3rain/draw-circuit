@@ -8,7 +8,6 @@ import {
   symbolConfigAtom,
   symbolConfigModalAtom,
   symbolsAtom,
-  componentNameAtom,
   upperLeftAtom,
   cursorPositionAtom,
 } from '../../atoms';
@@ -26,7 +25,6 @@ export const Symbols: React.FC = () => {
   const { removeSymbol } = useSymbol();
   const setLogs = useSetRecoilState(logSelector);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-  const setComponentName = useSetRecoilState(componentNameAtom);
   const setConfigSymbolModal = useSetRecoilState(symbolConfigModalAtom);
   const setConfigSymbol = useSetRecoilState(symbolConfigAtom);
 
@@ -57,12 +55,10 @@ export const Symbols: React.FC = () => {
                       removeSymbol(c);
                       setLogs();
                       setCopyObjectType(Mode.SYMBOL);
-                      setComponentName(c.componentName);
                       setPreviewSymbol({ ...c, key: '' });
                       break;
                     case Mode.COPY:
                       setCopyObjectType(Mode.SYMBOL);
-                      setComponentName(c.componentName);
                       setPreviewSymbol({ ...c, key: '' });
                       break;
                     default:

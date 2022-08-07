@@ -7,17 +7,14 @@ import {
   previewSymbolAtom,
   previewTextAtom,
   selectedNodeIdAtom,
-  componentNameAtom,
 } from '../atoms';
 import { cursorPositionAtom } from '../atoms/positionAtom';
-import { ComponentName } from '../helpers/componentHelper';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
 
 export const usePreview = () => {
   const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
   const setPreviewWirePoints = useSetRecoilState(previewWirePointsAtom);
-  const setComponentName = useSetRecoilState(componentNameAtom);
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const setCursorPosition = useSetRecoilState(cursorPositionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
@@ -27,7 +24,6 @@ export const usePreview = () => {
   const resetPreview = useCallback(() => {
     setSelectedNodeId(null);
     setPreviewWirePoints({ point1Relative: null, point2Relative: null });
-    setComponentName('' as ComponentName);
     setPreviewSymbol(null);
     setPreviewLabelName('');
     setPreviewText(null);
@@ -35,7 +31,6 @@ export const usePreview = () => {
   }, [
     setSelectedNodeId,
     setPreviewWirePoints,
-    setComponentName,
     setPreviewSymbol,
     setPreviewLabelName,
     setPreviewText,

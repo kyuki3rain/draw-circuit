@@ -1,7 +1,7 @@
 import { atom, selector } from 'recoil';
 import { Mode } from '../helpers/modehelper';
 import { add, VirtualPoint } from '../helpers/gridhelper';
-import { componentNameAtom, copyObjectTypeAtom, modeAtom } from './statusAtom';
+import { copyObjectTypeAtom, modeAtom } from './statusAtom';
 import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
 import { TextState } from './textAtom';
@@ -39,8 +39,8 @@ export const previewWirePointsAtom = atom({
 export const previewPositionSelector = selector({
   key: 'previewPosition',
   get: ({ get }) => {
-    const componentName = get(componentNameAtom);
-    const componentState = get(componentStateFamily(componentName));
+    const symbol = get(previewSymbolAtom);
+    const componentState = get(componentStateFamily(symbol?.componentName));
     const cursorPosition = get(cursorPositionAtom);
     if (!cursorPosition) return null;
 

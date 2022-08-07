@@ -3,14 +3,8 @@ import Modal from '@mui/material/Modal';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Button, Select } from '@mui/material';
 import SVG from 'react-inlinesvg';
-import {
-  modeAtom,
-  componentNameAtom,
-  componentListAtom,
-  selectSymbolModalAtom,
-  componentStateFamily,
-  previewSymbolAtom,
-} from '../atoms';
+import { useState } from 'react';
+import { modeAtom, componentListAtom, selectSymbolModalAtom, componentStateFamily, previewSymbolAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
 
@@ -32,7 +26,7 @@ const style = {
 
 const SelectSymbolModal = () => {
   const [open, setOpen] = useRecoilState(selectSymbolModalAtom);
-  const [componentName, setComponentName] = useRecoilState(componentNameAtom);
+  const [componentName, setComponentName] = useState('' as ComponentName);
   const componentList = useRecoilValue(componentListAtom);
   const setMode = useSetRecoilState(modeAtom);
   const componentState = useRecoilValue(componentStateFamily(componentName));
