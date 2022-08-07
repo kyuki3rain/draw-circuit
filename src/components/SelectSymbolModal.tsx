@@ -44,8 +44,7 @@ const SelectSymbolModal = () => {
       setPreviewSymbol(() => ({
         componentName,
         componentType: componentState?.type ?? ComponentTypes.ERROR,
-        point: { vx: 0, vy: 0 },
-        key: `symbol_preview`,
+        key: '',
         value: componentState?.defaultValue ?? '',
         modelName: componentState?.defaultModelName ?? '',
         config: componentState?.defaultConfig ?? [],

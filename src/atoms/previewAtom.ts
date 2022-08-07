@@ -1,7 +1,7 @@
 import { atom, selector } from 'recoil';
 import { Mode } from '../helpers/modehelper';
 import { add, VirtualPoint } from '../helpers/gridhelper';
-import { copyObjectTypeAtom, modeAtom } from './statusAtom';
+import { componentNameAtom, copyObjectTypeAtom, modeAtom } from './statusAtom';
 import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
 import { TextState } from './textAtom';
@@ -39,23 +39,23 @@ export const previewWirePointsAtom = atom({
 export const previewPositionSelector = selector({
   key: 'previewPosition',
   get: ({ get }) => {
-    const symbol = get(previewSymbolAtom);
-    const componentState = get(componentStateFamily(symbol?.componentName));
+    const componentName = get(componentNameAtom);
+    const componentState = get(componentStateFamily(componentName));
+    const cursorPosition = get(cursorPositionAtom);
+    if (!cursorPosition) return null;
 
     switch (get(modeAtom)) {
       case Mode.SYMBOL:
-        if (symbol === null) return null;
-        return componentState?.nodePoints.map((p) => add(p, symbol.point));
+        return componentState?.nodePoints.map((p) => add(p, cursorPosition));
       case Mode.LABEL:
-        return [get(cursorPositionAtom)];
+        return [cursorPosition];
       case Mode.MOVE:
       case Mode.COPY:
         switch (get(copyObjectTypeAtom)) {
           case Mode.SYMBOL:
-            if (symbol === null) return null;
-            return componentState?.nodePoints.map((p) => add(p, symbol.point));
+            return componentState?.nodePoints.map((p) => add(p, cursorPosition));
           case Mode.LABEL:
-            return [get(cursorPositionAtom)];
+            return [cursorPosition];
           default:
             return null;
         }

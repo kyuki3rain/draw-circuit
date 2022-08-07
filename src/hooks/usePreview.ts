@@ -10,7 +10,7 @@ import {
   componentNameAtom,
 } from '../atoms';
 import { cursorPositionAtom } from '../atoms/positionAtom';
-import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
+import { ComponentName } from '../helpers/componentHelper';
 import { VirtualPoint } from '../helpers/gridhelper';
 import { Mode, ModeType } from '../helpers/modehelper';
 
@@ -77,16 +77,7 @@ export const usePreview = () => {
           setCursorPosition(point);
           break;
         case Mode.SYMBOL:
-          setPreviewSymbol((prev) => ({
-            componentName: prev?.componentName ?? ('' as ComponentName),
-            componentType: prev?.componentType ?? ComponentTypes.ERROR,
-            point,
-            key: `symbol_preview`,
-            value: prev?.value ?? '',
-            modelName: prev?.modelName ?? '',
-            config: prev?.config ?? [],
-            nodeIds: [],
-          }));
+          setCursorPosition(point);
           break;
         case Mode.LABEL:
           setCursorPosition(point);
@@ -101,16 +92,7 @@ export const usePreview = () => {
               setCursorPosition(point);
               break;
             case Mode.SYMBOL:
-              setPreviewSymbol((prev) => ({
-                componentName: prev?.componentName ?? ('' as ComponentName),
-                componentType: prev?.componentType ?? ComponentTypes.ERROR,
-                point,
-                key: `symbol_preview`,
-                value: prev?.value ?? '',
-                modelName: prev?.modelName ?? '',
-                config: prev?.config ?? [],
-                nodeIds: [],
-              }));
+              setCursorPosition(point);
               break;
             case Mode.LABEL:
               setCursorPosition(point);
@@ -124,7 +106,7 @@ export const usePreview = () => {
         default:
       }
     },
-    [copyObjectType, setCursorPosition, setPreviewSymbol]
+    [copyObjectType, setCursorPosition]
   );
 
   return { setPreview, resetPreview };
