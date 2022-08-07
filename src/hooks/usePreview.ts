@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
   previewLabelNameAtom,
@@ -12,7 +12,7 @@ import {
 import { cursorPositionAtom } from '../atoms/positionAtom';
 import { ComponentName } from '../helpers/componentHelper';
 import { VirtualPoint } from '../helpers/gridhelper';
-import { Mode, ModeType } from '../helpers/modehelper';
+import { Mode } from '../helpers/modehelper';
 
 export const usePreview = () => {
   const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
@@ -22,91 +22,31 @@ export const usePreview = () => {
   const setCursorPosition = useSetRecoilState(cursorPositionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const setPreviewText = useSetRecoilState(previewTextAtom);
-  const [copyObjectType, setCopyObjectType] = useRecoilState(copyObjectTypeAtom);
+  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
-  const resetPreview = useCallback(
-    (mode: ModeType) => {
-      switch (mode) {
-        case Mode.WIRE:
-          setSelectedNodeId(null);
-          setPreviewWirePoints({ point1Relative: null, point2Relative: null });
-          break;
-        case Mode.SYMBOL:
-          setComponentName('' as ComponentName);
-          setPreviewSymbol(null);
-          break;
-        case Mode.LABEL:
-          setCursorPosition(null);
-          setPreviewLabelName('');
-          break;
-        case Mode.TEXT:
-          setPreviewText(null);
-          setCursorPosition(null);
-          break;
-        case Mode.MOVE:
-        case Mode.COPY:
-          setSelectedNodeId(null);
-          setPreviewWirePoints({ point1Relative: null, point2Relative: null });
-          setComponentName('' as ComponentName);
-          setPreviewSymbol(null);
-          setCursorPosition(null);
-          setPreviewLabelName('');
-          setPreviewText(null);
-          setCursorPosition(null);
-          setCopyObjectType(Mode.NONE);
-          break;
-        default:
-      }
-    },
-    [
-      setSelectedNodeId,
-      setPreviewWirePoints,
-      setComponentName,
-      setPreviewSymbol,
-      setCursorPosition,
-      setPreviewLabelName,
-      setPreviewText,
-      setCopyObjectType,
-    ]
-  );
+  const resetPreview = useCallback(() => {
+    setSelectedNodeId(null);
+    setPreviewWirePoints({ point1Relative: null, point2Relative: null });
+    setComponentName('' as ComponentName);
+    setPreviewSymbol(null);
+    setPreviewLabelName('');
+    setPreviewText(null);
+    setCopyObjectType(Mode.NONE);
+  }, [
+    setSelectedNodeId,
+    setPreviewWirePoints,
+    setComponentName,
+    setPreviewSymbol,
+    setPreviewLabelName,
+    setPreviewText,
+    setCopyObjectType,
+  ]);
 
   const setPreview = useCallback(
-    (mode: ModeType, point: VirtualPoint) => {
-      switch (mode) {
-        case Mode.WIRE:
-          setCursorPosition(point);
-          break;
-        case Mode.SYMBOL:
-          setCursorPosition(point);
-          break;
-        case Mode.LABEL:
-          setCursorPosition(point);
-          break;
-        case Mode.TEXT:
-          setCursorPosition(point);
-          break;
-        case Mode.MOVE:
-        case Mode.COPY:
-          switch (copyObjectType) {
-            case Mode.WIRE:
-              setCursorPosition(point);
-              break;
-            case Mode.SYMBOL:
-              setCursorPosition(point);
-              break;
-            case Mode.LABEL:
-              setCursorPosition(point);
-              break;
-            case Mode.TEXT:
-              setCursorPosition(point);
-              break;
-            default:
-          }
-          break;
-        default:
-      }
+    (point: VirtualPoint) => {
+      setCursorPosition(point);
     },
-    [copyObjectType, setCursorPosition]
+    [setCursorPosition]
   );
 
   return { setPreview, resetPreview };

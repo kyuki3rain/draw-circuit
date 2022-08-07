@@ -67,26 +67,23 @@ const DrawArea: React.FC = () => {
             switch (copyObjectType) {
               case Mode.WIRE:
                 setCopyWire(vpos);
-                resetPreview(Mode.MOVE);
                 setLogs();
                 break;
               case Mode.SYMBOL:
                 setSymbol(vpos);
-                resetPreview(Mode.MOVE);
                 setLogs();
                 break;
               case Mode.LABEL:
                 setLabel(vpos);
-                resetPreview(Mode.MOVE);
                 setLogs();
                 break;
               case Mode.TEXT:
                 setText(vpos);
-                resetPreview(Mode.MOVE);
                 setLogs();
                 break;
               default:
             }
+            resetPreview();
             break;
           case Mode.COPY:
             switch (copyObjectType) {
@@ -116,7 +113,7 @@ const DrawArea: React.FC = () => {
         switch (mode) {
           case Mode.WIRE:
             e.preventDefault();
-            resetPreview(Mode.WIRE);
+            resetPreview();
             return false;
           default:
             return true;
