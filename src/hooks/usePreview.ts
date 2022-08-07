@@ -9,7 +9,7 @@ import {
   selectedNodeIdAtom,
   componentNameAtom,
 } from '../atoms';
-import { positionAtom } from '../atoms/positionAtom';
+import { cursorPositionAtom } from '../atoms/positionAtom';
 import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
 import { add, sub, VirtualPoint } from '../helpers/gridhelper';
 import { Mode, ModeType } from '../helpers/modehelper';
@@ -19,7 +19,7 @@ export const usePreview = () => {
   const setPreviewWirePoints = useSetRecoilState(previewWirePointsAtom);
   const setComponentName = useSetRecoilState(componentNameAtom);
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
-  const setPosition = useSetRecoilState(positionAtom);
+  const setCursorPosition = useSetRecoilState(cursorPositionAtom);
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const setPreviewText = useSetRecoilState(previewTextAtom);
   const [copyObjectType, setCopyObjectType] = useRecoilState(copyObjectTypeAtom);
@@ -36,12 +36,12 @@ export const usePreview = () => {
           setPreviewSymbol(null);
           break;
         case Mode.LABEL:
-          setPosition(null);
+          setCursorPosition(null);
           setPreviewLabelName('');
           break;
         case Mode.TEXT:
           setPreviewText(null);
-          setPosition(null);
+          setCursorPosition(null);
           break;
         case Mode.MOVE:
         case Mode.COPY:
@@ -49,10 +49,10 @@ export const usePreview = () => {
           setPreviewWirePoints({ point1: null, point2: null, prevCursorPoint: null });
           setComponentName('' as ComponentName);
           setPreviewSymbol(null);
-          setPosition(null);
+          setCursorPosition(null);
           setPreviewLabelName('');
           setPreviewText(null);
-          setPosition(null);
+          setCursorPosition(null);
           setCopyObjectType(Mode.NONE);
           break;
         default:
@@ -63,7 +63,7 @@ export const usePreview = () => {
       setPreviewWirePoints,
       setComponentName,
       setPreviewSymbol,
-      setPosition,
+      setCursorPosition,
       setPreviewLabelName,
       setPreviewText,
       setCopyObjectType,
@@ -89,10 +89,10 @@ export const usePreview = () => {
           }));
           break;
         case Mode.LABEL:
-          setPosition(point);
+          setCursorPosition(point);
           break;
         case Mode.TEXT:
-          setPosition(point);
+          setCursorPosition(point);
           break;
         case Mode.MOVE:
         case Mode.COPY:
@@ -117,10 +117,10 @@ export const usePreview = () => {
               }));
               break;
             case Mode.LABEL:
-              setPosition(point);
+              setCursorPosition(point);
               break;
             case Mode.TEXT:
-              setPosition(point);
+              setCursorPosition(point);
               break;
             default:
           }
@@ -128,7 +128,7 @@ export const usePreview = () => {
         default:
       }
     },
-    [copyObjectType, setPosition, setPreviewSymbol, setPreviewWirePoints]
+    [copyObjectType, setCursorPosition, setPreviewSymbol, setPreviewWirePoints]
   );
 
   return { setPreview, resetPreview };

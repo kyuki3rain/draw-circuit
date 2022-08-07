@@ -6,7 +6,7 @@ import { componentStateFamily } from './componentAtom';
 import { SymbolState } from '../helpers/symbolHelper';
 import { TextState } from './textAtom';
 import { NodeId } from '../helpers/wireHelper';
-import { positionAtom } from './positionAtom';
+import { cursorPositionAtom } from './positionAtom';
 
 export const previewLabelNameAtom = atom({
   key: 'previewLabelName',
@@ -48,7 +48,7 @@ export const previewPositionSelector = selector({
         if (symbol === null) return null;
         return componentState?.nodePoints.map((p) => add(p, symbol.point));
       case Mode.LABEL:
-        return [get(positionAtom)];
+        return [get(cursorPositionAtom)];
       case Mode.MOVE:
       case Mode.COPY:
         switch (get(copyObjectTypeAtom)) {
@@ -56,7 +56,7 @@ export const previewPositionSelector = selector({
             if (symbol === null) return null;
             return componentState?.nodePoints.map((p) => add(p, symbol.point));
           case Mode.LABEL:
-            return [get(positionAtom)];
+            return [get(cursorPositionAtom)];
           default:
             return null;
         }
