@@ -2,7 +2,7 @@ import { atom, useRecoilState } from 'recoil';
 import { useCallback } from 'react';
 import { getRandomId } from '../helpers/createIdHelper';
 import { VirtualPoint } from '../helpers/gridhelper';
-import { NodeList, PointToNodeIdMap, NodeId, isOnEdge } from '../helpers/wireHelper';
+import { NodeList, PointToNodeIdMap, NodeId, isOnEdge, WireEdge } from '../helpers/wireHelper';
 import { useEdge } from './edgeState';
 
 const nodeListAtom = atom({
@@ -20,12 +20,8 @@ export const useNode = () => {
   const [pointToNodeIdMap, setPointToNodeIdMap] = useRecoilState(pointToNodeIdAtom);
   const { edgeList, removeEdge, setEdge } = useEdge();
 
-  const setNode = useCallback(
-    (point: VirtualPoint, id?: NodeId) => {
-      const nodeId = id || (getRandomId() as NodeId);
-      setNodeList((prev) => new Map(prev.set(nodeId, { id: nodeId, point })));
-      setPointToNodeIdMap((prev) => new Map(prev.set(JSON.stringify(point), nodeId)));
-
+  const getEdgeThrouphPoint = useCallback(
+    (point: VirtualPoint) => {
       const edge = Array.from(edgeList.values()).find((e) => {
         const point1 = nodeList.get(e.node1)?.point;
         const point2 = nodeList.get(e.node2)?.point;
@@ -33,15 +29,32 @@ export const useNode = () => {
         return isOnEdge(point1, point2, point);
       });
 
-      if (edge) {
-        removeEdge(edge.id);
-        setEdge(edge.node1, nodeId, edge.id);
-        setEdge(nodeId, edge.node2);
-      }
+      return edge;
+    },
+    [edgeList, nodeList]
+  );
+
+  const separateEdge = useCallback(
+    (edge: WireEdge, nodeId: NodeId) => {
+      removeEdge(edge.id);
+      setEdge(edge.node1, nodeId, edge.id);
+      setEdge(nodeId, edge.node2);
+    },
+    [removeEdge, setEdge]
+  );
+
+  const setNode = useCallback(
+    (point: VirtualPoint, id?: NodeId) => {
+      const nodeId = id || (getRandomId() as NodeId);
+      setNodeList((prev) => new Map(prev.set(nodeId, { id: nodeId, point })));
+      setPointToNodeIdMap((prev) => new Map(prev.set(JSON.stringify(point), nodeId)));
+
+      const edge = getEdgeThrouphPoint(point);
+      if (edge) separateEdge(edge, nodeId);
 
       return nodeId;
     },
-    [edgeList, nodeList, removeEdge, setEdge, setNodeList, setPointToNodeIdMap]
+    [getEdgeThrouphPoint, separateEdge, setNodeList, setPointToNodeIdMap]
   );
 
   const removeNode = useCallback(

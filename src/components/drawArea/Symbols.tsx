@@ -8,18 +8,18 @@ import {
   symbolConfigModalAtom,
   symbolsAtom,
   upperLeftAtom,
-  cursorPositionAtom,
 } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import { useSymbol } from '../../hooks/useSymbol';
 import Symbol from './Symbol';
+import { useCursorPosition } from '../../states/cursorPositionState';
 
 export const Symbols: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const symbols = useRecoilValue(symbolsAtom);
-  const cursorPosition = useRecoilValue(cursorPositionAtom);
+  const { cursorPosition, setCursorPosition } = useCursorPosition();
   const [previewSymbol, setPreviewSymbol] = useRecoilState(previewSymbolAtom);
   const mode = useRecoilValue(modeAtom);
   const { removeSymbol } = useSymbol();
@@ -56,10 +56,12 @@ export const Symbols: React.FC = () => {
                       setLog();
                       setCopyObjectType(Mode.SYMBOL);
                       setPreviewSymbol({ ...c, key: '' });
+                      if (c.point) setCursorPosition(c.point);
                       break;
                     case Mode.COPY:
                       setCopyObjectType(Mode.SYMBOL);
                       setPreviewSymbol({ ...c, key: '' });
+                      if (c.point) setCursorPosition(c.point);
                       break;
                     default:
                   }

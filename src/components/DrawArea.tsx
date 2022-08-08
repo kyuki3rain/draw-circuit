@@ -4,7 +4,6 @@ import Grid from './drawArea/Grid';
 import { Symbols } from './drawArea/Symbols';
 import { RealPoint, toFixedVirtualGrid } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { useWire } from '../hooks/useWire';
 import { Mode } from '../helpers/modehelper';
 import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
 import Wire from './drawArea/Wire';
@@ -16,11 +15,12 @@ import Text from './drawArea/Text';
 import { usePreview } from '../hooks/usePreview';
 import { useText } from '../hooks/useText';
 import { useLog } from '../states/logState';
+import { useWire } from '../states/wireState';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
 
-  const { setWire, setCopyWire } = useWire();
+  const { setWire } = useWire();
   const { setSymbol } = useSymbol();
   const { setLabel } = useLabel();
   const { setText } = useText();
@@ -48,7 +48,7 @@ const DrawArea: React.FC = () => {
 
         switch (mode) {
           case Mode.WIRE:
-            setWire(vpos);
+            setWire(vpos, true);
             setLog();
             break;
           case Mode.SYMBOL:
@@ -67,7 +67,7 @@ const DrawArea: React.FC = () => {
           case Mode.MOVE:
             switch (copyObjectType) {
               case Mode.WIRE:
-                setCopyWire(vpos);
+                setWire(vpos, false);
                 setLog();
                 break;
               case Mode.SYMBOL:
@@ -89,7 +89,7 @@ const DrawArea: React.FC = () => {
           case Mode.COPY:
             switch (copyObjectType) {
               case Mode.WIRE:
-                setCopyWire(vpos);
+                setWire(vpos, false);
                 setLog();
                 break;
               case Mode.SYMBOL:

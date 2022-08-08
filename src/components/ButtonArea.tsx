@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { Fab, Tooltip } from '@mui/material';
 import React, { useCallback } from 'react';
-import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   Add,
   Description,
@@ -53,17 +53,12 @@ const ButtonArea: React.FC = () => {
       .catch(() => {});
   }, [getNetList]);
 
-  const showInfo = useRecoilCallback(
-    ({ snapshot }) =>
-      () => {
-        const modeInfo = snapshot.getLoadable(modeAtom).getValue();
-        console.log('mode: ', modeInfo);
-        console.log('view: ', getView());
-        console.log('log: ', getLog());
-        console.log(getNetList());
-      },
-    []
-  );
+  const showInfo = useCallback(() => {
+    console.log('mode: ', mode);
+    console.log('view: ', getView());
+    console.log('log: ', getLog());
+    console.log(getNetList());
+  }, [getLog, getNetList, getView, mode]);
 
   return (
     <div style={{ float: 'left', marginTop: 5 }}>

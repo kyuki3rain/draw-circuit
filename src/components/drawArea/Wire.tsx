@@ -1,42 +1,25 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  cursorPositionAtom,
-  modeAtom,
-  pitchAtom,
-  previewWirePointsAtom,
-  selectedNodeIdAtom,
-  upperLeftAtom,
-} from '../../atoms';
-import { add, RealPoint, sub, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
+import { RealPoint, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
-import { useWire } from '../../hooks/useWire';
 import { useEdge } from '../../states/edgeState';
 import { useNode } from '../../states/nodeState';
+import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
 
 const Wire: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
   const mode = useRecoilValue(modeAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const { nodeList } = useNode();
-  const [previewWirePoints, setPreviewWirePoints] = useRecoilState(previewWirePointsAtom);
   const { edgeList } = useEdge();
   const { cutWire } = useWire();
   const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-  const cursorPosition = useRecoilValue(cursorPositionAtom);
-  const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
 
-  const vp1 =
-    mode === Mode.WIRE
-      ? selectedNodeId && nodeList.get(selectedNodeId)?.point
-      : cursorPosition && previewWirePoints.point1Relative && add(previewWirePoints.point1Relative, cursorPosition);
-  const vp2 =
-    mode === Mode.WIRE
-      ? cursorPosition
-      : cursorPosition && previewWirePoints.point2Relative && add(previewWirePoints.point2Relative, cursorPosition);
-
+  const { getWirePreviewWithNode } = useWirePreviewWithNode();
+  const { getWirePreviewWithoutNode, initializeWirePreviewWithoutNode } = useWirePreviewWithoutNode();
+  const [vp1, vp2] = mode === Mode.WIRE ? getWirePreviewWithNode() : getWirePreviewWithoutNode();
   const point1 = vp1 && toRealGrid(vp1, pitch, upperLeft);
   const point2 = vp2 && toRealGrid(vp2, pitch, upperLeft);
 
@@ -73,17 +56,11 @@ const Wire: React.FC = () => {
                     cutWire(id);
                     setLog();
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewWirePoints({
-                      point1Relative: sub(node1.point, vpos),
-                      point2Relative: sub(node2.point, vpos),
-                    });
+                    initializeWirePreviewWithoutNode(node1.point, node2.point, vpos);
                     break;
                   case Mode.COPY:
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewWirePoints({
-                      point1Relative: sub(node1.point, vpos),
-                      point2Relative: sub(node2.point, vpos),
-                    });
+                    initializeWirePreviewWithoutNode(node1.point, node2.point, vpos);
                     break;
                   default:
                 }

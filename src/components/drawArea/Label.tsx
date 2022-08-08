@@ -5,12 +5,12 @@ import {
   nodeIdToLabelAtom,
   pitchAtom,
   previewLabelNameAtom,
-  cursorPositionAtom,
   upperLeftAtom,
 } from '../../atoms';
 import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLabel } from '../../hooks/useLabel';
+import { useCursorPosition } from '../../states/cursorPositionState';
 import { useLog } from '../../states/logState';
 import { useNode } from '../../states/nodeState';
 
@@ -38,7 +38,7 @@ const createLabel = (rp: RealPoint, label: string, pitch: number) => {
 const Label: React.FC = () => {
   const nodeIdToLabel = useRecoilValue(nodeIdToLabelAtom);
   const [previewLabelName, setLabelName] = useRecoilState(previewLabelNameAtom);
-  const [cursorPosition, setCursorPoision] = useRecoilState(cursorPositionAtom);
+  const { cursorPosition, setCursorPosition } = useCursorPosition();
   const { nodeList } = useNode();
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
@@ -69,12 +69,12 @@ const Label: React.FC = () => {
                   setLog();
                   setCopyObjectType(Mode.LABEL);
                   setLabelName(label);
-                  setCursorPoision(node.point);
+                  setCursorPosition(node.point);
                   break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.LABEL);
                   setLabelName(label);
-                  setCursorPoision(node.point);
+                  setCursorPosition(node.point);
                   break;
                 default:
               }

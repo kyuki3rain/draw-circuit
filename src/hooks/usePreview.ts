@@ -1,36 +1,38 @@
-import { useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useCallback, useMemo } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
   previewLabelNameAtom,
-  previewWirePointsAtom,
   previewSymbolAtom,
   previewTextAtom,
-  selectedNodeIdAtom,
+  componentStateFamily,
+  modeAtom,
 } from '../atoms';
-import { cursorPositionAtom } from '../atoms/positionAtom';
-import { VirtualPoint } from '../helpers/gridhelper';
+
+import { add, VirtualPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
+import { useCursorPosition } from '../states/cursorPositionState';
+import { useWirePreviewWithNode, useWirePreviewWithoutNode } from '../states/wireState';
 
 export const usePreview = () => {
-  const setSelectedNodeId = useSetRecoilState(selectedNodeIdAtom);
-  const setPreviewWirePoints = useSetRecoilState(previewWirePointsAtom);
+  const { resetWirePreviewWithNode } = useWirePreviewWithNode();
+  const { resetWirePreviewWithoutNode } = useWirePreviewWithoutNode();
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
-  const setCursorPosition = useSetRecoilState(cursorPositionAtom);
+  const { setCursorPosition } = useCursorPosition();
   const setPreviewLabelName = useSetRecoilState(previewLabelNameAtom);
   const setPreviewText = useSetRecoilState(previewTextAtom);
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const resetPreview = useCallback(() => {
-    setSelectedNodeId(null);
-    setPreviewWirePoints({ point1Relative: null, point2Relative: null });
+    resetWirePreviewWithNode();
+    resetWirePreviewWithoutNode();
     setPreviewSymbol(null);
     setPreviewLabelName('');
     setPreviewText(null);
     setCopyObjectType(Mode.NONE);
   }, [
-    setSelectedNodeId,
-    setPreviewWirePoints,
+    resetWirePreviewWithNode,
+    resetWirePreviewWithoutNode,
     setPreviewSymbol,
     setPreviewLabelName,
     setPreviewText,
@@ -47,4 +49,35 @@ export const usePreview = () => {
   return { setPreview, resetPreview };
 };
 
-export default usePreview;
+export const usePreviewNodePosition = () => {
+  const symbol = useRecoilValue(previewSymbolAtom);
+  const componentState = useRecoilValue(componentStateFamily(symbol?.componentName));
+  const mode = useRecoilValue(modeAtom);
+  const copyObjectType = useRecoilValue(copyObjectTypeAtom);
+  const { cursorPosition } = useCursorPosition();
+
+  const previewNodePosition = useMemo(() => {
+    if (!cursorPosition) return null;
+
+    switch (mode) {
+      case Mode.SYMBOL:
+        return componentState?.nodePoints.map((p) => add(p, cursorPosition));
+      case Mode.LABEL:
+        return [cursorPosition];
+      case Mode.MOVE:
+      case Mode.COPY:
+        switch (copyObjectType) {
+          case Mode.SYMBOL:
+            return componentState?.nodePoints.map((p) => add(p, cursorPosition));
+          case Mode.LABEL:
+            return [cursorPosition];
+          default:
+            return null;
+        }
+      default:
+        return null;
+    }
+  }, [componentState?.nodePoints, copyObjectType, cursorPosition, mode]);
+
+  return { previewNodePosition };
+};

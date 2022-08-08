@@ -6,4 +6,3 @@ export * from './labelAtom';
 export * from './componentAtom';
 export * from './previewAtom';
 export * from './textAtom';
-export * from './positionAtom';

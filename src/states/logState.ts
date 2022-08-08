@@ -47,7 +47,7 @@ export const useLog = () => {
     newLogs.push(clone(view));
     if (newLogs.length > 100) newLogs.shift();
     else setLogIndex((prev) => prev + 1);
-    setLogs(newLogs);
+    setLogs([...newLogs]);
   }, [getView, logIndex, logs, setLogIndex, setLogs]);
 
   const getLog = useCallback(
