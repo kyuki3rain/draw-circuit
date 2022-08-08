@@ -3,21 +3,21 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { componentStateFamily, previewSymbolAtom, symbolIdAtomFamily, symbolsAtom } from '../atoms';
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { SymbolState } from '../helpers/symbolHelper';
+import { useNode } from '../states/nodeState';
 import { useIsolatedNode } from './useIsoratedNode';
-import { useNode } from './useNode';
 
 export const useSymbol = () => {
   const previewSymbol = useRecoilValue(previewSymbolAtom);
   const setSymbols = useSetRecoilState(symbolsAtom);
   const componentState = useRecoilValue(componentStateFamily(previewSymbol?.componentName));
   const [symbolId, setSymbolId] = useRecoilState(symbolIdAtomFamily(componentState?.type));
-  const { setNode, removeNode } = useNode();
+  const { getOrCreateNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
 
   const setSymbol = useCallback(
     (point: VirtualPoint) => {
       if (!componentState || !previewSymbol) return;
-      const nodes = componentState.nodePoints.map((rp) => setNode(add(rp, point)));
+      const nodes = componentState.nodePoints.map((rp) => getOrCreateNode(add(rp, point)));
       setSymbols(
         (prev) =>
           new Map(
@@ -35,7 +35,7 @@ export const useSymbol = () => {
 
       setSymbolId((prev) => prev + 1);
     },
-    [componentState, previewSymbol, setSymbols, symbolId, setSymbolId, setNode]
+    [componentState, previewSymbol, setSymbols, symbolId, setSymbolId, getOrCreateNode]
   );
 
   const removeSymbol = useCallback(

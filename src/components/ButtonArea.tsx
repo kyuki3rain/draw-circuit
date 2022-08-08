@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { Fab, Tooltip } from '@mui/material';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil';
 import {
   Add,
@@ -15,18 +15,11 @@ import {
   ContentCopy,
   MoveUp,
 } from '@mui/icons-material';
-import {
-  labelModalAtom,
-  logIndexAtom,
-  logsAtom,
-  modeAtom,
-  selectSymbolModalAtom,
-  textModalAtom,
-  viewSelector,
-} from '../atoms';
+import { labelModalAtom, modeAtom, selectSymbolModalAtom, textModalAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
-import { netListSelector } from '../atoms/netListAtom';
 import { useLog } from '../hooks/useLog';
+import { useNetList } from '../hooks/useNetList';
+import { useView } from '../hooks/useView';
 
 const ButtonArea: React.FC = () => {
   const [mode, setMode] = useRecoilState(modeAtom);
@@ -34,45 +27,41 @@ const ButtonArea: React.FC = () => {
   const setTextModal = useSetRecoilState(textModalAtom);
   const setSelectSymbolModal = useSetRecoilState(selectSymbolModalAtom);
   const { undo, canUndo, redo, canRedo } = useLog();
-  const showNetList = useRecoilCallback(
-    ({ snapshot }) =>
-      () => {
-        const netlist = snapshot.getLoadable(netListSelector).getValue();
-        console.log(netlist);
+  const { getNetList } = useNetList();
+  const { getView } = useView();
+  const { logs, logIndex } = useLog();
+  const showNetList = useCallback(() => {
+    const netlist = getNetList();
+    console.log(netlist);
 
-        (async () => {
-          const opts = {
-            suggestedName: 'example',
-            types: [
-              {
-                description: 'Text file',
-                accept: { 'text/plain': ['.net'] },
-              },
-            ],
-          };
-          const handle = await window.showSaveFilePicker(opts);
-          const writable = await handle.createWritable();
-          await writable.write(netlist);
-          await writable.close();
-        })()
-          .then(() => {})
-          .catch(() => {});
-      },
-    []
-  );
+    (async () => {
+      const opts = {
+        suggestedName: 'example',
+        types: [
+          {
+            description: 'Text file',
+            accept: { 'text/plain': ['.net'] },
+          },
+        ],
+      };
+      const handle = await window.showSaveFilePicker(opts);
+      const writable = await handle.createWritable();
+      await writable.write(netlist);
+      await writable.close();
+    })()
+      .then(() => {})
+      .catch(() => {});
+  }, [getNetList]);
+
   const showInfo = useRecoilCallback(
     ({ snapshot }) =>
       () => {
-        const view = snapshot.getLoadable(viewSelector).getValue();
-        const logIndex = snapshot.getLoadable(logIndexAtom).getValue();
-        const logs = snapshot.getLoadable(logsAtom).getValue();
         const modeInfo = snapshot.getLoadable(modeAtom).getValue();
-        const netlist = snapshot.getLoadable(netListSelector).getValue();
         console.log('mode: ', modeInfo);
-        console.log('view: ', view);
+        console.log('view: ', getView());
         console.log('logIndex: ', logIndex);
         console.log('logs: ', logs);
-        console.log(netlist);
+        console.log(getNetList());
       },
     []
   );

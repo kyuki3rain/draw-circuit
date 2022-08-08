@@ -1,7 +1,6 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
-  logSelector,
   modeAtom,
   pitchAtom,
   cursorPositionAtom,
@@ -11,6 +10,7 @@ import {
 import { textsAtom } from '../../atoms/textAtom';
 import { toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
+import { useLog } from '../../hooks/useLog';
 import { useText } from '../../hooks/useText';
 
 const Text: React.FC = () => {
@@ -21,7 +21,7 @@ const Text: React.FC = () => {
   const upperLeft = useRecoilValue(upperLeftAtom);
   const { removeText } = useText();
   const mode = useRecoilValue(modeAtom);
-  const setLogs = useSetRecoilState(logSelector);
+  const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const prp = cursorPosition && toRealGrid(cursorPosition, pitch, upperLeft);
@@ -44,11 +44,11 @@ const Text: React.FC = () => {
               switch (mode) {
                 case Mode.CUT:
                   removeText(textState);
-                  setLogs();
+                  setLog();
                   break;
                 case Mode.MOVE:
                   removeText(textState);
-                  setLogs();
+                  setLog();
                   setCopyObjectType(Mode.TEXT);
                   setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
                   setCursorPosition((prev) => textState.point ?? prev);

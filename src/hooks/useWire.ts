@@ -3,20 +3,20 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { previewWirePointsAtom, selectedNodeIdAtom } from '../atoms';
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { EdgeId } from '../helpers/wireHelper';
-import { useEdge } from './useEdge';
+import { useEdge } from '../states/edgeState';
+import { useNode } from '../states/nodeState';
 import { useIsolatedNode } from './useIsoratedNode';
-import { useNode } from './useNode';
 
 export const useWire = () => {
   const [selectedNodeId, setSelectedNodeId] = useRecoilState(selectedNodeIdAtom);
   const previewWirePoints = useRecoilValue(previewWirePointsAtom);
   const { setEdge, removeEdge } = useEdge();
-  const { setNode, removeNode } = useNode();
+  const { getOrCreateNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();
 
   const setWire = useCallback(
     (point: VirtualPoint) => {
-      const id = setNode(point);
+      const id = getOrCreateNode(point);
 
       if (selectedNodeId !== null) {
         setEdge(id, selectedNodeId);
@@ -24,13 +24,13 @@ export const useWire = () => {
 
       setSelectedNodeId(id);
     },
-    [selectedNodeId, setEdge, setNode, setSelectedNodeId]
+    [selectedNodeId, setEdge, getOrCreateNode, setSelectedNodeId]
   );
 
   const cutWire = useCallback(
     (edgeId: EdgeId) => {
       const res = removeEdge(edgeId);
-      res?.map((nodeId) => nodeId && isIsolatedNode(nodeId) && removeNode(nodeId));
+      [res?.node1, res?.node2].map((nodeId) => nodeId && isIsolatedNode(nodeId) && removeNode(nodeId));
     },
     [isIsolatedNode, removeEdge, removeNode]
   );
@@ -42,12 +42,12 @@ export const useWire = () => {
 
       if (!point1 || !point2) return;
 
-      const id1 = setNode(point1);
-      const id2 = setNode(point2);
+      const id1 = getOrCreateNode(point1);
+      const id2 = getOrCreateNode(point2);
 
       setEdge(id1, id2);
     },
-    [previewWirePoints, setEdge, setNode]
+    [previewWirePoints, setEdge, getOrCreateNode]
   );
 
   return { setWire, cutWire, setCopyWire };

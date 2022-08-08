@@ -1,14 +1,9 @@
 import { useRecoilValue } from 'recoil';
-import {
-  labelModalAtom,
-  nodeIdToEdgeIdAtom,
-  nodeListAtom,
-  pitchAtom,
-  selectedNodeIdAtom,
-  upperLeftAtom,
-} from '../../atoms';
+import { labelModalAtom, pitchAtom, selectedNodeIdAtom, upperLeftAtom } from '../../atoms';
 import { previewPositionSelector } from '../../atoms/previewAtom';
 import { toRealGrid, VirtualPoint } from '../../helpers/gridhelper';
+import { useEdge } from '../../states/edgeState';
+import { useNode } from '../../states/nodeState';
 
 const createCircleNode = (point: VirtualPoint, pitch: number, upperLeft: VirtualPoint, key: string) => {
   const rp = toRealGrid(point, pitch, upperLeft);
@@ -23,8 +18,8 @@ const createRectNode = (point: VirtualPoint, pitch: number, upperLeft: VirtualPo
 const Node: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
-  const nodeList = useRecoilValue(nodeListAtom);
-  const edgeMap = useRecoilValue(nodeIdToEdgeIdAtom);
+  const { nodeList } = useNode();
+  const { getEdgeIdArray } = useEdge();
   const previewPosition = useRecoilValue(previewPositionSelector);
   const labelModal = useRecoilValue(labelModalAtom);
   const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
@@ -32,14 +27,14 @@ const Node: React.FC = () => {
   return (
     <svg>
       {Array.from(nodeList.values()).map((n) => {
-        const edgeList = edgeMap.get(n.id);
+        const edgeList = getEdgeIdArray(n.id);
         if (selectedNodeId === n.id) {
-          if (edgeList && edgeList.size >= 3) return createCircleNode(n.point, pitch, upperLeft, `node_${n.id}`);
+          if (edgeList && edgeList.length >= 3) return createCircleNode(n.point, pitch, upperLeft, `node_${n.id}`);
           return null;
         }
 
-        if ((edgeList?.size ?? 0) === 0) return createRectNode(n.point, pitch, upperLeft, `node_${n.id}`);
-        if (edgeList && edgeList.size >= 3) return createCircleNode(n.point, pitch, upperLeft, `node_${n.id}`);
+        if ((edgeList?.length ?? 0) === 0) return createRectNode(n.point, pitch, upperLeft, `node_${n.id}`);
+        if (edgeList && edgeList.length >= 3) return createCircleNode(n.point, pitch, upperLeft, `node_${n.id}`);
         return null;
       })}
       {!labelModal &&

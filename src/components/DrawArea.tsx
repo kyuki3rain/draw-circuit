@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import Grid from './drawArea/Grid';
 import { Symbols } from './drawArea/Symbols';
 import { RealPoint, toFixedVirtualGrid } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useWire } from '../hooks/useWire';
 import { Mode } from '../helpers/modehelper';
-import { copyObjectTypeAtom, logSelector, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
+import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
 import Wire from './drawArea/Wire';
 import { useSymbol } from '../hooks/useSymbol';
 import { useLabel } from '../hooks/useLabel';
@@ -15,6 +15,7 @@ import Node from './drawArea/Node';
 import Text from './drawArea/Text';
 import { usePreview } from '../hooks/usePreview';
 import { useText } from '../hooks/useText';
+import { useLog } from '../hooks/useLog';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -26,12 +27,12 @@ const DrawArea: React.FC = () => {
   const [pitch] = useRecoilState(pitchAtom);
   const [upperLeft] = useRecoilState(upperLeftAtom);
   const [mode, setMode] = useRecoilState(modeAtom);
-  const setLogs = useSetRecoilState(logSelector);
+  const { setLog } = useLog();
   const { resetPreview } = usePreview();
   const copyObjectType = useRecoilValue(copyObjectTypeAtom);
 
   useEffect(() => {
-    setLogs();
+    setLog();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -48,38 +49,38 @@ const DrawArea: React.FC = () => {
         switch (mode) {
           case Mode.WIRE:
             setWire(vpos);
-            setLogs();
+            setLog();
             break;
           case Mode.SYMBOL:
             setSymbol(vpos);
-            setLogs();
+            setLog();
             break;
           case Mode.LABEL:
             setLabel(vpos);
-            setLogs();
+            setLog();
             break;
           case Mode.TEXT:
             setText(vpos);
             setMode(Mode.NONE);
-            setLogs();
+            setLog();
             break;
           case Mode.MOVE:
             switch (copyObjectType) {
               case Mode.WIRE:
                 setCopyWire(vpos);
-                setLogs();
+                setLog();
                 break;
               case Mode.SYMBOL:
                 setSymbol(vpos);
-                setLogs();
+                setLog();
                 break;
               case Mode.LABEL:
                 setLabel(vpos);
-                setLogs();
+                setLog();
                 break;
               case Mode.TEXT:
                 setText(vpos);
-                setLogs();
+                setLog();
                 break;
               default:
             }
@@ -89,19 +90,19 @@ const DrawArea: React.FC = () => {
             switch (copyObjectType) {
               case Mode.WIRE:
                 setCopyWire(vpos);
-                setLogs();
+                setLog();
                 break;
               case Mode.SYMBOL:
                 setSymbol(vpos);
-                setLogs();
+                setLog();
                 break;
               case Mode.LABEL:
                 setLabel(vpos);
-                setLogs();
+                setLog();
                 break;
               case Mode.TEXT:
                 setText(vpos);
-                setLogs();
+                setLog();
                 break;
               default:
             }

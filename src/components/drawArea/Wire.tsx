@@ -2,10 +2,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
   cursorPositionAtom,
-  edgeListAtom,
-  logSelector,
   modeAtom,
-  nodeListAtom,
   pitchAtom,
   previewWirePointsAtom,
   selectedNodeIdAtom,
@@ -13,17 +10,20 @@ import {
 } from '../../atoms';
 import { add, RealPoint, sub, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
+import { useLog } from '../../hooks/useLog';
 import { useWire } from '../../hooks/useWire';
+import { useEdge } from '../../states/edgeState';
+import { useNode } from '../../states/nodeState';
 
 const Wire: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
   const mode = useRecoilValue(modeAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
-  const nodeList = useRecoilValue(nodeListAtom);
+  const { nodeList } = useNode();
   const [previewWirePoints, setPreviewWirePoints] = useRecoilState(previewWirePointsAtom);
-  const edgeList = useRecoilValue(edgeListAtom);
+  const { edgeList } = useEdge();
   const { cutWire } = useWire();
-  const setLogs = useSetRecoilState(logSelector);
+  const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
   const cursorPosition = useRecoilValue(cursorPositionAtom);
   const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
@@ -67,11 +67,11 @@ const Wire: React.FC = () => {
                 switch (mode) {
                   case Mode.CUT:
                     cutWire(id);
-                    setLogs();
+                    setLog();
                     break;
                   case Mode.MOVE:
                     cutWire(id);
-                    setLogs();
+                    setLog();
                     setCopyObjectType(Mode.WIRE);
                     setPreviewWirePoints({
                       point1Relative: sub(node1.point, vpos),

@@ -1,10 +1,8 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
-  logSelector,
   modeAtom,
   nodeIdToLabelAtom,
-  nodeListAtom,
   pitchAtom,
   previewLabelNameAtom,
   cursorPositionAtom,
@@ -13,6 +11,8 @@ import {
 import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLabel } from '../../hooks/useLabel';
+import { useLog } from '../../hooks/useLog';
+import { useNode } from '../../states/nodeState';
 
 const createLabel = (rp: RealPoint, label: string, pitch: number) => {
   if (label === 'gnd') {
@@ -39,12 +39,12 @@ const Label: React.FC = () => {
   const nodeIdToLabel = useRecoilValue(nodeIdToLabelAtom);
   const [previewLabelName, setLabelName] = useRecoilState(previewLabelNameAtom);
   const [cursorPosition, setCursorPoision] = useRecoilState(cursorPositionAtom);
-  const nodeList = useRecoilValue(nodeListAtom);
+  const { nodeList } = useNode();
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
   const { removeLabel } = useLabel();
   const mode = useRecoilValue(modeAtom);
-  const setLogs = useSetRecoilState(logSelector);
+  const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const prp = cursorPosition && toRealGrid(cursorPosition, pitch, upperLeft);
@@ -62,11 +62,11 @@ const Label: React.FC = () => {
               switch (mode) {
                 case Mode.CUT:
                   removeLabel(nodeId);
-                  setLogs();
+                  setLog();
                   break;
                 case Mode.MOVE:
                   removeLabel(nodeId);
-                  setLogs();
+                  setLog();
                   setCopyObjectType(Mode.LABEL);
                   setLabelName(label);
                   setCursorPoision(node.point);

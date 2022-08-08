@@ -1,12 +1,12 @@
-import { selector } from 'recoil';
+import { useCallback } from 'react';
+import { useRecoilValue } from 'recoil';
+import { componentNodePointSelector, nodeIdToLabelAtom, symbolsAtom, textsAtom } from '../atoms';
+
 import { add } from '../helpers/gridhelper';
 import { getConfig } from '../helpers/symbolHelper';
 import { NodeId } from '../helpers/wireHelper';
-import { componentStateFamily } from './componentAtom';
-import { nodeIdToLabelAtom } from './labelAtom';
-import { symbolsAtom } from './symbolAtom';
-import { textsAtom } from './textAtom';
-import { nodeIdToEdgeIdAtom, nodeListAtom, pointToNodeIdAtom } from './wireAtom';
+import { useEdge } from '../states/edgeState';
+import { useNode } from '../states/nodeState';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
 function formatDate(dt: Date) {
@@ -16,16 +16,15 @@ function formatDate(dt: Date) {
   return `${y}-${m}-${d}`;
 }
 
-export const netListSelector = selector({
-  key: 'netList',
-  get: ({ get }) => {
-    const symbols = get(symbolsAtom);
-    const pointToNodeIdMap = get(pointToNodeIdAtom);
-    const nodeIdToEdgeIdMap = get(nodeIdToEdgeIdAtom);
-    const nodeIdToLabelMap = get(nodeIdToLabelAtom);
-    const nodeList = get(nodeListAtom);
-    const texts = get(textsAtom).filter((ts) => ts.isSpiceDirective);
+export const useNetList = () => {
+  const { getEdgeIdArray } = useEdge();
+  const { nodeList, getNode } = useNode();
+  const symbols = useRecoilValue(symbolsAtom);
+  const texts = useRecoilValue(textsAtom);
+  const nodeIdToLabelMap = useRecoilValue(nodeIdToLabelAtom);
+  const getSymbolNodePoints = useRecoilValue(componentNodePointSelector);
 
+  const getNetList = useCallback(() => {
     const allMap = new Map() as Map<NodeId, string>;
     const labelDict = new Map() as Map<string, string>;
     let defaultLabelId = 1;
@@ -33,7 +32,7 @@ export const netListSelector = selector({
     const checkNodeLabel = (checkId: NodeId, defaultLabel: string) => {
       allMap.set(checkId, defaultLabel);
 
-      const idArray = Array.from(nodeIdToEdgeIdMap.get(checkId)?.keys() ?? []);
+      const idArray = getEdgeIdArray(checkId);
       const needCheck = idArray.filter((id) => !allMap.has(id));
 
       let label = defaultLabel;
@@ -59,10 +58,10 @@ export const netListSelector = selector({
 
     symbols.forEach((sarr) => {
       sarr.every((s) => {
-        const points = get(componentStateFamily(s.componentName))?.nodePoints;
+        const points = getSymbolNodePoints(s);
         const labels = points?.map((p) => {
           if (!s.point) return '';
-          const nodeId = pointToNodeIdMap.get(JSON.stringify(add(p, s.point)));
+          const nodeId = getNode(add(p, s.point));
           const dl = nodeId && allMap.get(nodeId);
           const label = dl && (labelDict.get(dl) || dl);
           return label === 'gnd' ? '0' : label;
@@ -78,6 +77,10 @@ export const netListSelector = selector({
       });
     });
 
-    return netList.concat(texts.map((t) => t.body)).join('\n');
-  },
-});
+    return netList.concat(texts.filter((ts) => ts.isSpiceDirective).map((t) => t.body)).join('\n');
+  }, [getEdgeIdArray, getNode, getSymbolNodePoints, nodeIdToLabelMap, nodeList, symbols, texts]);
+
+  return { getNetList };
+};
+
+export default useNetList;
