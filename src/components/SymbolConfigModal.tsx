@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { symbolConfigModalAtom, symbolConfigAtom } from '../atoms';
-import { useLog } from '../hooks/useLog';
+import { useLog } from '../states/logState';
 import { useSymbol } from '../hooks/useSymbol';
 
 const style = {

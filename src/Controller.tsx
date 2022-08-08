@@ -8,7 +8,7 @@ import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helper
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
 import { copyObjectTypeAtom, modalSelector, modeAtom, pitchAtom, upperLeftAtom } from './atoms';
 import { usePreview } from './hooks/usePreview';
-import { useLog } from './hooks/useLog';
+import { useRoll } from './states/logState';
 
 type Props = {
   children: React.ReactNode;
@@ -19,7 +19,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   const [upperLeft, setUpperLeft] = useRecoilState(upperLeftAtom);
   const [mode, setMode] = useRecoilState(modeAtom);
   const { setPreview, resetPreview } = usePreview();
-  const { undo, canUndo, redo, canRedo } = useLog();
+  const { undo, canUndo, redo, canRedo } = useRoll();
   const open = useRecoilValue(modalSelector);
   const copyObjectType = useRecoilValue(copyObjectTypeAtom);
 

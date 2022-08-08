@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material';
 import { labelModalAtom, modeAtom, selectSymbolModalAtom, textModalAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
-import { useLog } from '../hooks/useLog';
+import { useLog, useRoll } from '../states/logState';
 import { useNetList } from '../hooks/useNetList';
 import { useView } from '../hooks/useView';
 
@@ -26,10 +26,10 @@ const ButtonArea: React.FC = () => {
   const setLabelModal = useSetRecoilState(labelModalAtom);
   const setTextModal = useSetRecoilState(textModalAtom);
   const setSelectSymbolModal = useSetRecoilState(selectSymbolModalAtom);
-  const { undo, canUndo, redo, canRedo } = useLog();
+  const { undo, canUndo, redo, canRedo } = useRoll();
   const { getNetList } = useNetList();
   const { getView } = useView();
-  const { logs, logIndex } = useLog();
+  const { getLog } = useLog();
   const showNetList = useCallback(() => {
     const netlist = getNetList();
     console.log(netlist);
@@ -59,8 +59,7 @@ const ButtonArea: React.FC = () => {
         const modeInfo = snapshot.getLoadable(modeAtom).getValue();
         console.log('mode: ', modeInfo);
         console.log('view: ', getView());
-        console.log('logIndex: ', logIndex);
-        console.log('logs: ', logs);
+        console.log('log: ', getLog());
         console.log(getNetList());
       },
     []

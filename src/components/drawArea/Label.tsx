@@ -11,7 +11,7 @@ import {
 import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLabel } from '../../hooks/useLabel';
-import { useLog } from '../../hooks/useLog';
+import { useLog } from '../../states/logState';
 import { useNode } from '../../states/nodeState';
 
 const createLabel = (rp: RealPoint, label: string, pitch: number) => {

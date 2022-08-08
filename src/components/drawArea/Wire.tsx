@@ -10,7 +10,7 @@ import {
 } from '../../atoms';
 import { add, RealPoint, sub, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
-import { useLog } from '../../hooks/useLog';
+import { useLog } from '../../states/logState';
 import { useWire } from '../../hooks/useWire';
 import { useEdge } from '../../states/edgeState';
 import { useNode } from '../../states/nodeState';

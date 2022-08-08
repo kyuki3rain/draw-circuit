@@ -11,7 +11,7 @@ import {
   cursorPositionAtom,
 } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
-import { useLog } from '../../hooks/useLog';
+import { useLog } from '../../states/logState';
 import { useSymbol } from '../../hooks/useSymbol';
 import Symbol from './Symbol';
 

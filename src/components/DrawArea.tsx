@@ -15,7 +15,7 @@ import Node from './drawArea/Node';
 import Text from './drawArea/Text';
 import { usePreview } from '../hooks/usePreview';
 import { useText } from '../hooks/useText';
-import { useLog } from '../hooks/useLog';
+import { useLog } from '../states/logState';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();

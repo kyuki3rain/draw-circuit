@@ -10,7 +10,7 @@ import {
 import { textsAtom } from '../../atoms/textAtom';
 import { toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
-import { useLog } from '../../hooks/useLog';
+import { useLog } from '../../states/logState';
 import { useText } from '../../hooks/useText';
 
 const Text: React.FC = () => {
