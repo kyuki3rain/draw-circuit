@@ -1,11 +1,5 @@
 import { atom } from 'recoil';
 import { SymbolState } from '../helpers/symbolHelper';
-import { TextState } from './textAtom';
-
-export const previewTextAtom = atom({
-  key: 'previewText',
-  default: null as TextState | null,
-});
 
 export const previewSymbolAtom = atom({
   key: 'previewSymbol',

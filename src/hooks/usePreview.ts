@@ -1,12 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, previewSymbolAtom, previewTextAtom, modeAtom } from '../atoms';
+import { copyObjectTypeAtom, previewSymbolAtom, modeAtom } from '../atoms';
 
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
 import { useComponent } from '../states/componentState';
 import { useCursorPosition } from '../states/cursorPositionState';
 import { useLabelPreview } from '../states/labelState';
+import { useTextPreview } from '../states/textState';
 import { useWirePreviewWithNode, useWirePreviewWithoutNode } from '../states/wireState';
 
 export const usePreview = () => {
@@ -15,22 +16,22 @@ export const usePreview = () => {
   const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
   const { setCursorPosition } = useCursorPosition();
   const { resetLabelPreview } = useLabelPreview();
-  const setPreviewText = useSetRecoilState(previewTextAtom);
+  const { resetTextPreview } = useTextPreview();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const resetPreview = useCallback(() => {
     resetWirePreviewWithNode();
     resetWirePreviewWithoutNode();
+    resetTextPreview();
     setPreviewSymbol(null);
     resetLabelPreview();
-    setPreviewText(null);
     setCopyObjectType(Mode.NONE);
   }, [
     resetWirePreviewWithNode,
     resetWirePreviewWithoutNode,
+    resetTextPreview,
     setPreviewSymbol,
     resetLabelPreview,
-    setPreviewText,
     setCopyObjectType,
   ]);
 

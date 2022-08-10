@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { symbolsAtom, textsAtom, TextState } from '../atoms';
+import { symbolsAtom } from '../atoms';
 import { ComponentType } from '../helpers/componentHelper';
 import { SymbolState } from '../helpers/symbolHelper';
 import { EdgeList, NodeId, NodeIdToEdgeIdMap, PointToNodeIdMap, NodeList } from '../helpers/wireHelper';
 import { useLabelView } from '../states/labelState';
+import { TextState, useTextView } from '../states/textState';
 import { useWireView } from '../states/wireState';
 
 export type ViewState = {
@@ -22,33 +23,35 @@ export type ViewState = {
     labelList: Map<NodeId, string>;
   };
   symbolsAtom: Map<ComponentType, SymbolState[]>;
-  textsAtom: TextState[];
+  texts: {
+    textStates: TextState[];
+  };
 };
 
 export const useView = () => {
   const { getWireView, setWireView } = useWireView();
   const { getLabelView, setLabelView } = useLabelView();
+  const { getTextView, setTextView } = useTextView();
   const [symbols, setSymbols] = useRecoilState(symbolsAtom);
-  const [texts, setTexts] = useRecoilState(textsAtom);
 
   const getView = useCallback(
     () => ({
       wires: getWireView(),
       labels: getLabelView(),
       symbolsAtom: symbols,
-      textsAtom: texts,
+      texts: getTextView(),
     }),
-    [getLabelView, getWireView, symbols, texts]
+    [getLabelView, getTextView, getWireView, symbols]
   );
 
   const setView = useCallback(
     (view: ViewState) => {
       setWireView(view.wires);
       setLabelView(view.labels);
+      setTextView(view.texts);
       setSymbols(view.symbolsAtom);
-      setTexts(view.textsAtom);
     },
-    [setLabelView, setSymbols, setTexts, setWireView]
+    [setLabelView, setSymbols, setTextView, setWireView]
   );
 
   return { getView, setView };

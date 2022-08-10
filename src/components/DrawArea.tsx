@@ -12,10 +12,10 @@ import Label from './drawArea/Label';
 import Node from './drawArea/Node';
 import Text from './drawArea/Text';
 import { usePreview } from '../hooks/usePreview';
-import { useText } from '../hooks/useText';
 import { useLog } from '../states/logState';
 import { useWire } from '../states/wireState';
 import { useLabel } from '../states/labelState';
+import { useText } from '../states/textState';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();

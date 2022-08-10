@@ -1,14 +1,13 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, previewTextAtom, upperLeftAtom } from '../../atoms';
-import { textsAtom } from '../../atoms/textAtom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
+import { textsAtom, useText, useTextPreview } from '../../states/textState';
 import { toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
-import { useText } from '../../hooks/useText';
 import { useCursorPosition } from '../../states/cursorPositionState';
 
 const Text: React.FC = () => {
-  const [previewText, setPreviewText] = useRecoilState(previewTextAtom);
+  const { previewTextState, setTextPreview } = useTextPreview();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const textStates = useRecoilValue(textsAtom);
   const pitch = useRecoilValue(pitchAtom);
@@ -43,12 +42,12 @@ const Text: React.FC = () => {
                   removeText(textState);
                   setLog();
                   setCopyObjectType(Mode.TEXT);
-                  setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
+                  setTextPreview(textState.body, textState.isSpiceDirective);
                   setCursorPosition((prev) => textState.point ?? prev);
                   break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.TEXT);
-                  setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
+                  setTextPreview(textState.body, textState.isSpiceDirective);
                   setCursorPosition((prev) => textState.point ?? prev);
                   break;
                 default:
@@ -59,7 +58,7 @@ const Text: React.FC = () => {
           </text>
         );
       })}
-      {previewText && prp && (
+      {previewTextState && prp && (
         <text
           x={prp.x}
           y={prp.y}
@@ -68,9 +67,9 @@ const Text: React.FC = () => {
           fontSize="20"
           fontStyle="italic"
           key="label_preview"
-          fill={previewText.isSpiceDirective ? 'black' : 'blue'}
+          fill={previewTextState.isSpiceDirective ? 'black' : 'blue'}
         >
-          {previewText.body}
+          {previewTextState.body}
         </text>
       )}
     </svg>

@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Button, TextField } from '@mui/material';
+import { useState } from 'react';
 import { labelModalAtom, modeAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { useLabelPreview } from '../states/labelState';
@@ -20,18 +21,20 @@ const style = {
 
 const LabelModal = () => {
   const [open, setOpen] = useRecoilState(labelModalAtom);
-  const { getLabelPreview, setLabelPreview } = useLabelPreview();
+  const [label, setLabel] = useState('');
+  const { setLabelPreview } = useLabelPreview();
   const setMode = useSetRecoilState(modeAtom);
-  const handleClose = () => {
+  const handleClose = (ok?: boolean) => {
     setOpen(false);
-    if (getLabelPreview() === '') setMode(Mode.NONE);
+    if (!ok) setMode(Mode.NONE);
+    else setLabelPreview(label);
   };
 
   return (
     <div>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -40,10 +43,10 @@ const LabelModal = () => {
             placeholder="gnd"
             label="LABEL"
             variant="standard"
-            value={getLabelPreview() ?? ''}
-            onChange={(e) => setLabelPreview(e.target.value)}
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
           />
-          <Button onClick={handleClose}>OK</Button>
+          <Button onClick={() => handleClose(true)}>OK</Button>
         </Box>
       </Modal>
     </div>
