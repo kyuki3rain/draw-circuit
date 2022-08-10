@@ -4,20 +4,20 @@
 import React, { useEffect, useRef } from 'react';
 import './App.css';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helpers/gridhelper';
+import { RealPoint } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from './atoms';
+import { copyObjectTypeAtom, modeAtom } from './atoms';
 import { usePreview } from './hooks/usePreview';
 import { useRoll } from './states/logState';
 import { useModal } from './states/modalState';
+import { useGrid } from './states/gridState';
 
 type Props = {
   children: React.ReactNode;
 };
 
 const Controller: React.FC<Props> = ({ children }) => {
-  const [pitch, setPitch] = useRecoilState(pitchAtom);
-  const [upperLeft, setUpperLeft] = useRecoilState(upperLeftAtom);
+  const { zoom, move, toFixedVirtualGrid } = useGrid();
   const [mode, setMode] = useRecoilState(modeAtom);
   const { setPreview, resetPreview } = usePreview();
   const { undo, canUndo, redo, canRedo } = useRoll();
@@ -30,20 +30,9 @@ const Controller: React.FC<Props> = ({ children }) => {
     e.preventDefault();
 
     if (e.ctrlKey) {
-      const pos: RealPoint = { x: e.clientX, y: e.clientY };
-      const rawVPos = toVirtualGrid(pos, pitch, upperLeft);
-
-      let newPitch = pitch;
-      if (e.deltaY < 0) newPitch += 1; // Zoom in
-      else newPitch -= 1; // Zoom out
-
-      newPitch = Math.min(Math.max(5, newPitch), 50);
-      const newRawVPos = toVirtualGrid(pos, newPitch, upperLeft);
-
-      setPitch(newPitch);
-      setUpperLeft(add(upperLeft, sub(rawVPos, newRawVPos)));
+      zoom(e.deltaY < 0, { x: e.clientX, y: e.clientY });
     } else {
-      setUpperLeft(add(upperLeft, toVirtualGrid({ x: e.deltaX, y: e.deltaY }, pitch, { vx: 0, vy: 0 })));
+      move({ x: e.deltaX, y: e.deltaY });
     }
   };
 
@@ -79,10 +68,10 @@ const Controller: React.FC<Props> = ({ children }) => {
             setMode(Mode.SYMBOL);
             break;
           case 'KeyE':
-            setPitch(pitch + 1);
+            zoom(true);
             break;
           case 'KeyR':
-            setPitch(pitch - 1);
+            zoom(false);
             break;
           case 'KeyZ':
             if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -98,7 +87,7 @@ const Controller: React.FC<Props> = ({ children }) => {
         if (open) return;
 
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
-        const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
+        const vpos = toFixedVirtualGrid(pos);
         setPreview(vpos);
       }}
       style={{ cursor: modeToCursorStyle(mode) }}

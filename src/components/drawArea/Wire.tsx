@@ -1,16 +1,16 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
-import { RealPoint, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
+import { copyObjectTypeAtom, modeAtom } from '../../atoms';
+import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import { useEdge } from '../../states/edgeState';
 import { useNode } from '../../states/nodeState';
 import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
+import { useGrid } from '../../states/gridState';
 
 const Wire: React.FC = () => {
-  const pitch = useRecoilValue(pitchAtom);
+  const { toRealGrid, toFixedVirtualGrid } = useGrid();
   const mode = useRecoilValue(modeAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
   const { nodeList } = useNode();
   const { edgeList } = useEdge();
   const { cutWire } = useWire();
@@ -20,8 +20,8 @@ const Wire: React.FC = () => {
   const { getWirePreviewWithNode } = useWirePreviewWithNode();
   const { getWirePreviewWithoutNode, initializeWirePreviewWithoutNode } = useWirePreviewWithoutNode();
   const [vp1, vp2] = mode === Mode.WIRE ? getWirePreviewWithNode() : getWirePreviewWithoutNode();
-  const point1 = vp1 && toRealGrid(vp1, pitch, upperLeft);
-  const point2 = vp2 && toRealGrid(vp2, pitch, upperLeft);
+  const point1 = vp1 && toRealGrid(vp1);
+  const point2 = vp2 && toRealGrid(vp2);
 
   return (
     <svg>
@@ -30,8 +30,8 @@ const Wire: React.FC = () => {
         const node2 = nodeList.get(edge.node2);
         if (!node1 || !node2) return null;
 
-        const a = toRealGrid(node1.point, pitch, upperLeft);
-        const b = toRealGrid(node2.point, pitch, upperLeft);
+        const a = toRealGrid(node1.point);
+        const b = toRealGrid(node2.point);
         return (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
           <svg key={`wire_${id}`}>
@@ -46,7 +46,7 @@ const Wire: React.FC = () => {
               strokeWidth={10}
               onClick={(e) => {
                 const pos: RealPoint = { x: e.clientX, y: e.clientY };
-                const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
+                const vpos = toFixedVirtualGrid(pos);
                 switch (mode) {
                   case Mode.CUT:
                     cutWire(id);

@@ -1,35 +1,30 @@
-import { useRecoilValue } from 'recoil';
-import { pitchAtom, upperLeftAtom } from '../../atoms';
 import { useWindowSize } from '../../hooks/useWindowSize';
+import { useGrid } from '../../states/gridState';
 
 const Grid: React.FC = () => {
   const { height, width } = useWindowSize();
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
-
-  const verticalCorrection = Math.ceil(upperLeft.vx) - upperLeft.vx;
-  const horizontalCorrection = Math.ceil(upperLeft.vy) - upperLeft.vy;
+  const { getGridArray, toRealLength, verticalCorrection, horizontalCorrection } = useGrid();
 
   return (
     <svg>
-      {[...(Array(Math.ceil(width / pitch)) as number[])].map((_, i) => (
+      {getGridArray(width).map((_, i) => (
         <line
-          key={`vertical_grid_${(i + verticalCorrection) * pitch}`}
-          x1={(i + verticalCorrection) * pitch}
-          x2={(i + verticalCorrection) * pitch}
+          key={`vertical_grid_${toRealLength(i + verticalCorrection)}`}
+          x1={toRealLength(i + verticalCorrection)}
+          x2={toRealLength(i + verticalCorrection)}
           y1={0}
           y2={height}
           stroke="lightgray"
           strokeWidth={1}
         />
       ))}
-      {[...(Array(Math.floor(height / pitch)) as number[])].map((_, i) => (
+      {getGridArray(height).map((_, i) => (
         <line
-          key={`vertical_grid_${(i + horizontalCorrection) * pitch}`}
+          key={`vertical_grid_${toRealLength(i + horizontalCorrection)}`}
           x1={0}
           x2={width}
-          y1={(i + horizontalCorrection) * pitch}
-          y2={(i + horizontalCorrection) * pitch}
+          y1={toRealLength(i + horizontalCorrection)}
+          y2={toRealLength(i + horizontalCorrection)}
           stroke="lightgray"
           strokeWidth={1}
         />

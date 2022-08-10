@@ -1,5 +1,5 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
+import { copyObjectTypeAtom, modeAtom } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import Symbol from './Symbol';
@@ -10,8 +10,6 @@ import { useNode } from '../../states/nodeState';
 import { ModalTypes, useSingleModal } from '../../states/modalState';
 
 export const Symbols: React.FC = () => {
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
   const { symbols } = useSymbol();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const { getSymbolPreview, setSymbolPreview } = useSymbolPreview();
@@ -32,9 +30,7 @@ export const Symbols: React.FC = () => {
             s.point && (
               <Symbol
                 symbolState={s}
-                upperLeft={upperLeft}
                 point={s.point}
-                pitch={pitch}
                 key={`symbol_${s.key}`}
                 onContextMenu={() => {
                   setOpen(s);
@@ -65,15 +61,7 @@ export const Symbols: React.FC = () => {
               />
             )
         )}
-      {cursorPosition && (
-        <Symbol
-          symbolState={getSymbolPreview()}
-          upperLeft={upperLeft}
-          point={cursorPosition}
-          pitch={pitch}
-          key="symbol_preview"
-        />
-      )}
+      {cursorPosition && <Symbol symbolState={getSymbolPreview()} point={cursorPosition} key="symbol_preview" />}
     </>
   );
 };

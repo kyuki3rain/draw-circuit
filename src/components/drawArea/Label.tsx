@@ -1,20 +1,21 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
-import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
+import { copyObjectTypeAtom, modeAtom } from '../../atoms';
+import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useIsolatedNode } from '../../hooks/useIsoratedNode';
 import { useCursorPosition } from '../../states/cursorPositionState';
+import { useGrid } from '../../states/gridState';
 import { useLabel, useLabelPreview } from '../../states/labelState';
 import { useLog } from '../../states/logState';
 import { useNode } from '../../states/nodeState';
 
-const createLabel = (rp: RealPoint, label: string, pitch: number) => {
+const createLabel = (rp: RealPoint, label: string, toRealLength: (realLength: number) => number) => {
   if (label === 'gnd') {
     return (
       <polyline
-        points={`${rp.x + 1 * pitch}, ${rp.y} ${rp.x - 1 * pitch}, ${rp.y} ${rp.x}, ${rp.y + 1 * pitch} ${
-          rp.x + 1 * pitch
-        }, ${rp.y}`}
+        points={`${rp.x + toRealLength(1)}, ${rp.y} ${rp.x - toRealLength(1)}, ${rp.y} ${rp.x}, ${
+          rp.y + toRealLength(1)
+        } ${rp.x + toRealLength(1)}, ${rp.y}`}
         stroke="black"
         strokeWidth={2}
         fill="none"
@@ -32,8 +33,7 @@ const createLabel = (rp: RealPoint, label: string, pitch: number) => {
 const Label: React.FC = () => {
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const { nodeList } = useNode();
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
+  const { toRealGrid, toRealLength } = useGrid();
   const { labelList, deleteLabel } = useLabel();
   const { getLabelPreview, setLabelPreview } = useLabelPreview();
   const { isIsolatedNode } = useIsolatedNode();
@@ -42,7 +42,7 @@ const Label: React.FC = () => {
   const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
-  const prp = cursorPosition && toRealGrid(cursorPosition, pitch, upperLeft);
+  const prp = cursorPosition && toRealGrid(cursorPosition);
 
   return (
     <svg>
@@ -50,7 +50,7 @@ const Label: React.FC = () => {
         const node = nodeList.get(nodeId);
         if (!node) return null;
 
-        const rp = toRealGrid(node.point, pitch, upperLeft);
+        const rp = toRealGrid(node.point);
         return (
           <svg
             onClick={() => {
@@ -80,11 +80,11 @@ const Label: React.FC = () => {
             }}
             key={`label_${nodeId}`}
           >
-            {createLabel(rp, label, pitch)}
+            {createLabel(rp, label, toRealLength)}
           </svg>
         );
       })}
-      {prp && createLabel(prp, getLabelPreview() ?? '', pitch)}
+      {prp && createLabel(prp, getLabelPreview() ?? '', toRealLength)}
     </svg>
   );
 };

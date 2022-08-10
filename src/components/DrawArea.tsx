@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Grid from './drawArea/Grid';
 import { Symbols } from './drawArea/Symbols';
-import { RealPoint, toFixedVirtualGrid } from '../helpers/gridhelper';
+import { RealPoint } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { Mode } from '../helpers/modehelper';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
+import { copyObjectTypeAtom, modeAtom } from '../atoms';
 import Wire from './drawArea/Wire';
 import Label from './drawArea/Label';
 import Node from './drawArea/Node';
@@ -16,6 +16,7 @@ import { useWire } from '../states/wireState';
 import { useLabel } from '../states/labelState';
 import { useText } from '../states/textState';
 import { useSymbol } from '../states/symbolState';
+import { useGrid } from '../states/gridState';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -24,8 +25,7 @@ const DrawArea: React.FC = () => {
   const { setSymbol } = useSymbol();
   const { setLabel } = useLabel();
   const { setText } = useText();
-  const [pitch] = useRecoilState(pitchAtom);
-  const [upperLeft] = useRecoilState(upperLeftAtom);
+  const { toFixedVirtualGrid } = useGrid();
   const [mode, setMode] = useRecoilState(modeAtom);
   const { setLog } = useLog();
   const { resetPreview } = usePreview();
@@ -44,7 +44,7 @@ const DrawArea: React.FC = () => {
       viewBox={`0, 0, ${width}, ${height}`}
       onClick={(e) => {
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
-        const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
+        const vpos = toFixedVirtualGrid(pos);
 
         switch (mode) {
           case Mode.WIRE:

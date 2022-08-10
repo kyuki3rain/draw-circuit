@@ -1,40 +1,38 @@
 import SVG from 'react-inlinesvg';
-import { toRealGrid, VirtualPoint } from '../../helpers/gridhelper';
+import { sub, VirtualPoint } from '../../helpers/gridhelper';
 import { getConfig, SymbolState } from '../../helpers/symbolHelper';
 import { useComponent } from '../../states/componentState';
+import { useGrid } from '../../states/gridState';
 
 type Props = {
   symbolState: SymbolState | null;
-  upperLeft: VirtualPoint;
   point: VirtualPoint;
-  pitch: number;
   onClick?: () => void;
   onContextMenu?: () => void;
 };
 
-const Symbol: React.FC<Props> = ({ symbolState, upperLeft, point, pitch, onClick, onContextMenu }) => {
-  const center = toRealGrid(point, pitch, upperLeft);
+const Symbol: React.FC<Props> = ({ symbolState, point, onClick, onContextMenu }) => {
+  const { toRealGrid, toRealLength } = useGrid();
   const { componentState } = useComponent(symbolState?.componentName);
   if (!symbolState) return null;
   if (!componentState) return null;
 
+  const center = toRealGrid(sub(point, componentState.center));
+  const width = toRealLength(componentState.width);
+  const height = toRealLength(componentState.height);
+
   return (
     <svg>
-      <svg
-        x={center.x - componentState.center.vx * pitch}
-        y={center.y - componentState.center.vy * pitch}
-        width={componentState.width * pitch}
-        height={componentState.height * pitch}
-      >
+      <svg x={center.x} y={center.y} width={width} height={height}>
         <SVG src={componentState.svg} />
       </svg>
       <rect
-        x={center.x - componentState.center.vx * pitch}
-        y={center.y - componentState.center.vy * pitch}
+        x={center.x}
+        y={center.y}
         fill="black"
         fillOpacity="0"
-        width={componentState.width * pitch}
-        height={componentState.height * pitch}
+        width={width}
+        height={height}
         onClick={onClick}
         onContextMenu={(e) => {
           e.preventDefault();
@@ -47,8 +45,8 @@ const Symbol: React.FC<Props> = ({ symbolState, upperLeft, point, pitch, onClick
         <>
           {' '}
           <text
-            x={center.x - componentState.center.vx * pitch + componentState.width * pitch + 20}
-            y={center.y - componentState.center.vy * pitch + 20}
+            x={center.x + width + 20}
+            y={center.y + 20}
             fontFamily="monospace, monospace"
             fontWeight="bold"
             fontSize="20"
@@ -57,8 +55,8 @@ const Symbol: React.FC<Props> = ({ symbolState, upperLeft, point, pitch, onClick
             {symbolState.key}
           </text>
           <text
-            x={center.x - componentState.center.vx * pitch + componentState.width * pitch + 20}
-            y={center.y - componentState.center.vy * pitch + componentState.height * pitch}
+            x={center.x + width + 20}
+            y={center.y + height}
             fontFamily="monospace, monospace"
             fontWeight="bold"
             fontSize="20"

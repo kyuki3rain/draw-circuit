@@ -1,27 +1,26 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
+import { copyObjectTypeAtom, modeAtom } from '../../atoms';
 import { textsAtom, useText, useTextPreview } from '../../states/textState';
-import { toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import { useCursorPosition } from '../../states/cursorPositionState';
+import { useGrid } from '../../states/gridState';
 
 const Text: React.FC = () => {
   const { previewTextState, setTextPreview } = useTextPreview();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const textStates = useRecoilValue(textsAtom);
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
+  const { toRealGrid } = useGrid();
   const { removeText } = useText();
   const mode = useRecoilValue(modeAtom);
   const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-  const prp = cursorPosition && toRealGrid(cursorPosition, pitch, upperLeft);
+  const prp = cursorPosition && toRealGrid(cursorPosition);
 
   return (
     <svg>
       {textStates.map((textState) => {
-        const rp = textState.point && toRealGrid(textState.point, pitch, upperLeft);
+        const rp = textState.point && toRealGrid(textState.point);
         return (
           <text
             x={rp?.x}
