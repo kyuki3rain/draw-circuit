@@ -1,15 +1,16 @@
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { componentStateFamily, previewSymbolAtom, symbolIdAtomFamily, symbolsAtom } from '../atoms';
+import { previewSymbolAtom, symbolIdAtomFamily, symbolsAtom } from '../atoms';
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { SymbolState } from '../helpers/symbolHelper';
+import { useComponent } from '../states/componentState';
 import { useNode } from '../states/nodeState';
 import { useIsolatedNode } from './useIsoratedNode';
 
 export const useSymbol = () => {
   const previewSymbol = useRecoilValue(previewSymbolAtom);
   const setSymbols = useSetRecoilState(symbolsAtom);
-  const componentState = useRecoilValue(componentStateFamily(previewSymbol?.componentName));
+  const { componentState } = useComponent(previewSymbol?.componentName);
   const [symbolId, setSymbolId] = useRecoilState(symbolIdAtomFamily(componentState?.type));
   const { getOrCreateNode, removeNode } = useNode();
   const { isIsolatedNode } = useIsolatedNode();

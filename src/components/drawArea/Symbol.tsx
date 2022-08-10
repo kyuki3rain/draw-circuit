@@ -1,8 +1,7 @@
-import { useRecoilValue } from 'recoil';
 import SVG from 'react-inlinesvg';
 import { toRealGrid, VirtualPoint } from '../../helpers/gridhelper';
-import { componentStateFamily } from '../../atoms';
 import { getConfig, SymbolState } from '../../helpers/symbolHelper';
+import { useComponent } from '../../states/componentState';
 
 type Props = {
   symbolState: SymbolState;
@@ -15,7 +14,7 @@ type Props = {
 
 const Symbol: React.FC<Props> = ({ symbolState, upperLeft, point, pitch, onClick, onContextMenu }) => {
   const center = toRealGrid(point, pitch, upperLeft);
-  const componentState = useRecoilValue(componentStateFamily(symbolState.componentName));
+  const { componentState } = useComponent(symbolState.componentName);
   if (!componentState) return null;
   return (
     <svg>

@@ -55,12 +55,12 @@ export const Symbols: React.FC = () => {
                       removeSymbol(c);
                       setLog();
                       setCopyObjectType(Mode.SYMBOL);
-                      setPreviewSymbol({ ...c, key: '' });
+                      setPreviewSymbol({ ...c, key: '', nodeIds: [] });
                       if (c.point) setCursorPosition(c.point);
                       break;
                     case Mode.COPY:
                       setCopyObjectType(Mode.SYMBOL);
-                      setPreviewSymbol({ ...c, key: '' });
+                      setPreviewSymbol({ ...c, key: '', nodeIds: [] });
                       if (c.point) setCursorPosition(c.point);
                       break;
                     default:

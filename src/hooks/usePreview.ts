@@ -1,16 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  previewLabelNameAtom,
-  previewSymbolAtom,
-  previewTextAtom,
-  componentStateFamily,
-  modeAtom,
-} from '../atoms';
+import { copyObjectTypeAtom, previewLabelNameAtom, previewSymbolAtom, previewTextAtom, modeAtom } from '../atoms';
 
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
+import { useComponent } from '../states/componentState';
 import { useCursorPosition } from '../states/cursorPositionState';
 import { useWirePreviewWithNode, useWirePreviewWithoutNode } from '../states/wireState';
 
@@ -51,7 +45,7 @@ export const usePreview = () => {
 
 export const usePreviewNodePosition = () => {
   const symbol = useRecoilValue(previewSymbolAtom);
-  const componentState = useRecoilValue(componentStateFamily(symbol?.componentName));
+  const { componentState } = useComponent(symbol?.componentName);
   const mode = useRecoilValue(modeAtom);
   const copyObjectType = useRecoilValue(copyObjectTypeAtom);
   const { cursorPosition } = useCursorPosition();

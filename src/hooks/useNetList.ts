@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
-import { componentNodePointSelector, nodeIdToLabelAtom, symbolsAtom, textsAtom } from '../atoms';
+import { nodeIdToLabelAtom, symbolsAtom, textsAtom } from '../atoms';
 
-import { add } from '../helpers/gridhelper';
 import { getConfig } from '../helpers/symbolHelper';
 import { NodeId } from '../helpers/wireHelper';
+import { useComponentStateFamily } from '../states/componentState';
 import { useEdge } from '../states/edgeState';
 import { useNode } from '../states/nodeState';
 
@@ -22,7 +22,7 @@ export const useNetList = () => {
   const symbols = useRecoilValue(symbolsAtom);
   const texts = useRecoilValue(textsAtom);
   const nodeIdToLabelMap = useRecoilValue(nodeIdToLabelAtom);
-  const getSymbolNodePoints = useRecoilValue(componentNodePointSelector);
+  const { getComponentNodePointsFamily } = useComponentStateFamily();
 
   const getNetList = useCallback(() => {
     const allMap = new Map() as Map<NodeId, string>;
@@ -58,10 +58,11 @@ export const useNetList = () => {
 
     symbols.forEach((sarr) => {
       sarr.every((s) => {
-        const points = getSymbolNodePoints(s);
+        if (!s.point) return false;
+
+        const points = getComponentNodePointsFamily(s.componentName, s.point);
         const labels = points?.map((p) => {
-          if (!s.point) return '';
-          const nodeId = getNode(add(p, s.point));
+          const nodeId = getNode(p);
           const dl = nodeId && allMap.get(nodeId);
           const label = dl && (labelDict.get(dl) || dl);
           return label === 'gnd' ? '0' : label;
@@ -78,7 +79,7 @@ export const useNetList = () => {
     });
 
     return netList.concat(texts.filter((ts) => ts.isSpiceDirective).map((t) => t.body)).join('\n');
-  }, [getEdgeIdArray, getNode, getSymbolNodePoints, nodeIdToLabelMap, nodeList, symbols, texts]);
+  }, [getComponentNodePointsFamily, getEdgeIdArray, getNode, nodeIdToLabelMap, nodeList, symbols, texts]);
 
   return { getNetList };
 };

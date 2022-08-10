@@ -27,7 +27,7 @@ export const ComponentTypes = {
 
 export type ComponentType = typeof ComponentTypes[keyof typeof ComponentTypes];
 
-export const builtinComponentList = ['cell', 'signal', 'nmos4', 'pmos4'];
+export const builtinComponentList = ['cell', 'signal', 'nmos4', 'pmos4'] as ComponentName[];
 
 export const builtinComponents = (cn: string): ComponentState | null => {
   switch (cn) {
