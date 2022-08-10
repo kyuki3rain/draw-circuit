@@ -1,14 +1,15 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { Button, Select } from '@mui/material';
 import SVG from 'react-inlinesvg';
 import { useState } from 'react';
-import { modeAtom, selectSymbolModalAtom } from '../atoms';
+import { modeAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { ComponentName } from '../helpers/componentHelper';
 import { useComponent, useComponentStateFamily } from '../states/componentState';
 import { useSymbolPreview } from '../states/symbolState';
+import { ModalTypes, useSingleModal } from '../states/modalState';
 
 const style = {
   display: 'flex',
@@ -28,13 +29,13 @@ const style = {
 
 const SelectSymbolModal = () => {
   const [componentName, setComponentName] = useState('' as ComponentName);
-  const [open, setOpen] = useRecoilState(selectSymbolModalAtom);
+  const { open, setClosed } = useSingleModal(ModalTypes.SYMBOL_SELECT);
   const setMode = useSetRecoilState(modeAtom);
   const { componentList } = useComponentStateFamily();
   const { componentState } = useComponent(componentName);
   const { initializeSymbolPreview } = useSymbolPreview();
   const handleClose = (ok?: boolean) => {
-    setOpen(false);
+    setClosed();
     if (!ok || componentName === '') setMode(Mode.NONE);
     else {
       initializeSymbolPreview(componentName);

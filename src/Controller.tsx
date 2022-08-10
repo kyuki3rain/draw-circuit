@@ -6,9 +6,10 @@ import './App.css';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { add, RealPoint, sub, toFixedVirtualGrid, toVirtualGrid } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
-import { copyObjectTypeAtom, modalSelector, modeAtom, pitchAtom, upperLeftAtom } from './atoms';
+import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from './atoms';
 import { usePreview } from './hooks/usePreview';
 import { useRoll } from './states/logState';
+import { useModal } from './states/modalState';
 
 type Props = {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ const Controller: React.FC<Props> = ({ children }) => {
   const [mode, setMode] = useRecoilState(modeAtom);
   const { setPreview, resetPreview } = usePreview();
   const { undo, canUndo, redo, canRedo } = useRoll();
-  const open = useRecoilValue(modalSelector);
+  const { open } = useModal();
   const copyObjectType = useRecoilValue(copyObjectTypeAtom);
 
   const divref = useRef<HTMLDivElement>(null);

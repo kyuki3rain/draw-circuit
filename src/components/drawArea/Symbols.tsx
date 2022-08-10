@@ -1,12 +1,5 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  modeAtom,
-  pitchAtom,
-  symbolConfigAtom,
-  symbolConfigModalAtom,
-  upperLeftAtom,
-} from '../../atoms';
+import { copyObjectTypeAtom, modeAtom, pitchAtom, symbolConfigAtom, upperLeftAtom } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import Symbol from './Symbol';
@@ -14,6 +7,7 @@ import { useCursorPosition } from '../../states/cursorPositionState';
 import { useSymbol, useSymbolPreview } from '../../states/symbolState';
 import { useIsolatedNode } from '../../hooks/useIsoratedNode';
 import { useNode } from '../../states/nodeState';
+import { ModalTypes, useModal } from '../../states/modalState';
 
 export const Symbols: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
@@ -27,8 +21,8 @@ export const Symbols: React.FC = () => {
   const { removeNode } = useNode();
   const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-  const setConfigSymbolModal = useSetRecoilState(symbolConfigModalAtom);
-  const setConfigSymbol = useSetRecoilState(symbolConfigAtom);
+  const { setOpen } = useModal();
+  const setSymbolConfig = useSetRecoilState(symbolConfigAtom);
 
   return (
     <>
@@ -44,8 +38,8 @@ export const Symbols: React.FC = () => {
                 pitch={pitch}
                 key={`symbol_${c.key}`}
                 onContextMenu={() => {
-                  setConfigSymbolModal(true);
-                  setConfigSymbol(c);
+                  setOpen(ModalTypes.SYMBOL_CONFIG);
+                  setSymbolConfig(c);
                 }}
                 onClick={() => {
                   switch (mode) {

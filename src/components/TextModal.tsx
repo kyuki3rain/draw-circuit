@@ -1,11 +1,12 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import { useState } from 'react';
-import { textModalAtom, modeAtom } from '../atoms';
+import { modeAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { useTextPreview } from '../states/textState';
+import { ModalTypes, useSingleModal } from '../states/modalState';
 
 const style = {
   display: 'flex',
@@ -23,13 +24,13 @@ const style = {
 };
 
 const TextModal = () => {
-  const [open, setOpen] = useRecoilState(textModalAtom);
+  const { open, setClosed } = useSingleModal(ModalTypes.TEXT);
   const [text, setText] = useState('');
   const [isSpiceDirective, setIsSpiceDirective] = useState(false);
   const { initializeTextPreview } = useTextPreview();
   const setMode = useSetRecoilState(modeAtom);
   const handleClose = (ok?: boolean) => {
-    setOpen(false);
+    setClosed();
     if (!ok) setMode(Mode.NONE);
     else initializeTextPreview(text, isSpiceDirective);
   };

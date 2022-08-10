@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { Fab, Tooltip } from '@mui/material';
 import React, { useCallback } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import {
   Add,
   Description,
@@ -15,17 +15,16 @@ import {
   ContentCopy,
   MoveUp,
 } from '@mui/icons-material';
-import { labelModalAtom, modeAtom, selectSymbolModalAtom, textModalAtom } from '../atoms';
+import { modeAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { useLog, useRoll } from '../states/logState';
 import { useNetList } from '../hooks/useNetList';
 import { useView } from '../hooks/useView';
+import { ModalTypes, useModal } from '../states/modalState';
 
 const ButtonArea: React.FC = () => {
   const [mode, setMode] = useRecoilState(modeAtom);
-  const setLabelModal = useSetRecoilState(labelModalAtom);
-  const setTextModal = useSetRecoilState(textModalAtom);
-  const setSelectSymbolModal = useSetRecoilState(selectSymbolModalAtom);
+  const { setOpen } = useModal();
   const { undo, canUndo, redo, canRedo } = useRoll();
   const { getNetList } = useNetList();
   const { getView } = useView();
@@ -77,7 +76,7 @@ const ButtonArea: React.FC = () => {
             } else {
               console.log(mode);
               setMode(Mode.SYMBOL);
-              setSelectSymbolModal(true);
+              setOpen(ModalTypes.SYMBOL_SELECT);
             }
           }}
         >
@@ -93,7 +92,7 @@ const ButtonArea: React.FC = () => {
               setMode(Mode.NONE);
             } else {
               setMode(Mode.LABEL);
-              setLabelModal(true);
+              setOpen(ModalTypes.LABEL);
             }
           }}
         >
@@ -109,7 +108,7 @@ const ButtonArea: React.FC = () => {
               setMode(Mode.NONE);
             } else {
               setMode(Mode.TEXT);
-              setTextModal(true);
+              setOpen(ModalTypes.TEXT);
             }
           }}
         >

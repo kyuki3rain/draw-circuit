@@ -3,8 +3,9 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { symbolConfigModalAtom, symbolConfigAtom } from '../atoms';
+import { symbolConfigAtom } from '../atoms';
 import { useLog } from '../states/logState';
+import { ModalTypes, useSingleModal } from '../states/modalState';
 import { useSymbol } from '../states/symbolState';
 
 const style = {
@@ -24,14 +25,14 @@ const style = {
 };
 
 const SymbolConfigModal = () => {
-  const [open, setOpen] = useRecoilState(symbolConfigModalAtom);
+  const { open, setClosed } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
   const [configSymbol] = useRecoilState(symbolConfigAtom);
   const { updateSymbol } = useSymbol();
   const [state, setState] = useState(new Map() as Map<string, string>);
   const { setLog } = useLog();
 
   const handleClose = () => {
-    setOpen(false);
+    setClosed();
     setState(new Map());
   };
 

@@ -1,8 +1,9 @@
 import { useRecoilValue } from 'recoil';
-import { labelModalAtom, pitchAtom, upperLeftAtom } from '../../atoms';
+import { pitchAtom, upperLeftAtom } from '../../atoms';
 import { toRealGrid, VirtualPoint } from '../../helpers/gridhelper';
 import { usePreviewNodePosition } from '../../hooks/usePreview';
 import { useEdge } from '../../states/edgeState';
+import { useModal } from '../../states/modalState';
 import { useNode } from '../../states/nodeState';
 
 const createCircleNode = (point: VirtualPoint, pitch: number, upperLeft: VirtualPoint, key: string) => {
@@ -21,7 +22,7 @@ const Node: React.FC = () => {
   const { nodeList } = useNode();
   const { getEdgeIdArray } = useEdge();
   const { previewNodePosition } = usePreviewNodePosition();
-  const labelModal = useRecoilValue(labelModalAtom);
+  const { open } = useModal();
 
   return (
     <svg>
@@ -31,7 +32,7 @@ const Node: React.FC = () => {
         if (edgeList && edgeList.length >= 3) return createCircleNode(n.point, pitch, upperLeft, `node_${n.id}`);
         return null;
       })}
-      {!labelModal &&
+      {!open &&
         previewNodePosition &&
         previewNodePosition.map((p) => p && createRectNode(p, pitch, upperLeft, `node_preview_${JSON.stringify(p)}`))}
     </svg>
