@@ -1,5 +1,5 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom, pitchAtom, symbolConfigAtom, upperLeftAtom } from '../../atoms';
+import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import Symbol from './Symbol';
@@ -7,7 +7,7 @@ import { useCursorPosition } from '../../states/cursorPositionState';
 import { useSymbol, useSymbolPreview } from '../../states/symbolState';
 import { useIsolatedNode } from '../../hooks/useIsoratedNode';
 import { useNode } from '../../states/nodeState';
-import { ModalTypes, useModal } from '../../states/modalState';
+import { ModalTypes, useSingleModal } from '../../states/modalState';
 
 export const Symbols: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
@@ -21,45 +21,43 @@ export const Symbols: React.FC = () => {
   const { removeNode } = useNode();
   const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-  const { setOpen } = useModal();
-  const setSymbolConfig = useSetRecoilState(symbolConfigAtom);
+  const { setOpen } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
 
   return (
     <>
       {Array.from(symbols.values())
         .flat()
         .map(
-          (c) =>
-            c.point && (
+          (s) =>
+            s.point && (
               <Symbol
-                symbolState={c}
+                symbolState={s}
                 upperLeft={upperLeft}
-                point={c.point}
+                point={s.point}
                 pitch={pitch}
-                key={`symbol_${c.key}`}
+                key={`symbol_${s.key}`}
                 onContextMenu={() => {
-                  setOpen(ModalTypes.SYMBOL_CONFIG);
-                  setSymbolConfig(c);
+                  setOpen(s);
                 }}
                 onClick={() => {
                   switch (mode) {
                     case Mode.CUT:
-                      removeSymbol(c);
-                      c.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
+                      removeSymbol(s);
+                      s.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
                       setLog();
                       break;
                     case Mode.MOVE:
-                      removeSymbol(c);
-                      c.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
+                      removeSymbol(s);
+                      s.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
                       setLog();
                       setCopyObjectType(Mode.SYMBOL);
-                      setSymbolPreview({ ...c, key: '', nodeIds: [] });
-                      if (c.point) setCursorPosition(c.point);
+                      setSymbolPreview({ ...s, key: '', nodeIds: [] });
+                      if (s.point) setCursorPosition(s.point);
                       break;
                     case Mode.COPY:
                       setCopyObjectType(Mode.SYMBOL);
-                      setSymbolPreview({ ...c, key: '', nodeIds: [] });
-                      if (c.point) setCursorPosition(c.point);
+                      setSymbolPreview({ ...s, key: '', nodeIds: [] });
+                      if (s.point) setCursorPosition(s.point);
                       break;
                     default:
                   }

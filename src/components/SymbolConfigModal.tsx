@@ -2,8 +2,6 @@ import { Button, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { symbolConfigAtom } from '../atoms';
 import { useLog } from '../states/logState';
 import { ModalTypes, useSingleModal } from '../states/modalState';
 import { useSymbol } from '../states/symbolState';
@@ -25,8 +23,7 @@ const style = {
 };
 
 const SymbolConfigModal = () => {
-  const { open, setClosed } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
-  const [configSymbol] = useRecoilState(symbolConfigAtom);
+  const { open, params: configSymbol, setClosed } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
   const { updateSymbol } = useSymbol();
   const [state, setState] = useState(new Map() as Map<string, string>);
   const { setLog } = useLog();

@@ -1,4 +1,5 @@
 import { atom, selector, useRecoilState } from 'recoil';
+import { SymbolState } from '../helpers/symbolHelper';
 
 export const ModalTypes = {
   LABEL: 'label',
@@ -26,6 +27,11 @@ const symbolSelectModalAtom = atom({
 const symbolConfigModalAtom = atom({
   key: 'SymbolConfigModal',
   default: false,
+});
+
+const symbolConfigParamsAtom = atom({
+  key: 'SymbolConfig',
+  default: null as SymbolState | null,
 });
 
 export const modalSelector = selector({
@@ -83,6 +89,7 @@ export const useSingleModal = (modalType: ModalType) => {
   const [openText, setOpenText] = useRecoilState(textModalAtom);
   const [openSymbolSelect, setOpenSymbolSelect] = useRecoilState(symbolSelectModalAtom);
   const [openSymbolConfig, setOpenSymbolConfig] = useRecoilState(symbolConfigModalAtom);
+  const [symbolConfigParams, setSymbolConfigParams] = useRecoilState(symbolConfigParamsAtom);
 
   switch (modalType) {
     case ModalTypes.LABEL:
@@ -98,7 +105,11 @@ export const useSingleModal = (modalType: ModalType) => {
     case ModalTypes.SYMBOL_CONFIG:
       return {
         open: openSymbolConfig,
-        setOpen: () => setOpenSymbolConfig(true),
+        params: symbolConfigParams,
+        setOpen: (s?: SymbolState) => {
+          setOpenSymbolConfig(true);
+          if (s) setSymbolConfigParams(s);
+        },
         setClosed: () => setOpenSymbolConfig(false),
       };
     default:
