@@ -2,9 +2,9 @@ import { Button, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { symbolConfigModalAtom, symbolConfigAtom, logSelector } from '../atoms';
-import { useSymbol } from '../hooks/useSymbol';
+import { useLog } from '../states/logState';
+import { ModalTypes, useSingleModal } from '../states/modalState';
+import { useSymbol } from '../states/symbolState';
 
 const style = {
   display: 'flex',
@@ -23,14 +23,13 @@ const style = {
 };
 
 const SymbolConfigModal = () => {
-  const [open, setOpen] = useRecoilState(symbolConfigModalAtom);
-  const [configSymbol] = useRecoilState(symbolConfigAtom);
+  const { open, params: configSymbol, setClosed } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
   const { updateSymbol } = useSymbol();
   const [state, setState] = useState(new Map() as Map<string, string>);
-  const setLogs = useSetRecoilState(logSelector);
+  const { setLog } = useLog();
 
   const handleClose = () => {
-    setOpen(false);
+    setClosed();
     setState(new Map());
   };
 
@@ -85,7 +84,7 @@ const SymbolConfigModal = () => {
                     key: config.key,
                   })) ?? [],
               });
-              setLogs();
+              setLog();
               handleClose();
             }}
             style={{ marginTop: 10 }}

@@ -1,18 +1,14 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Button, Select } from '@mui/material';
 import SVG from 'react-inlinesvg';
-import {
-  modeAtom,
-  componentNameAtom,
-  componentListAtom,
-  selectSymbolModalAtom,
-  componentStateFamily,
-  previewSymbolAtom,
-} from '../atoms';
+import { useState } from 'react';
 import { Mode } from '../helpers/modehelper';
-import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
+import { ComponentName } from '../helpers/componentHelper';
+import { useComponent, useComponentStateFamily } from '../states/componentState';
+import { useSymbolPreview } from '../states/symbolState';
+import { ModalTypes, useSingleModal } from '../states/modalState';
+import { useMode } from '../states/modeState';
 
 const style = {
   display: 'flex',
@@ -31,25 +27,17 @@ const style = {
 };
 
 const SelectSymbolModal = () => {
-  const [open, setOpen] = useRecoilState(selectSymbolModalAtom);
-  const [componentName, setComponentName] = useRecoilState(componentNameAtom);
-  const componentList = useRecoilValue(componentListAtom);
-  const setMode = useSetRecoilState(modeAtom);
-  const componentState = useRecoilValue(componentStateFamily(componentName));
-  const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
+  const [componentName, setComponentName] = useState('' as ComponentName);
+  const { open, setClosed } = useSingleModal(ModalTypes.SYMBOL_SELECT);
+  const { setMode } = useMode();
+  const { componentList } = useComponentStateFamily();
+  const { componentState } = useComponent(componentName);
+  const { initializeSymbolPreview } = useSymbolPreview();
   const handleClose = (ok?: boolean) => {
-    setOpen(false);
+    setClosed();
     if (!ok || componentName === '') setMode(Mode.NONE);
     else {
-      setPreviewSymbol(() => ({
-        componentName,
-        componentType: componentState?.type ?? ComponentTypes.ERROR,
-        key: '',
-        value: componentState?.defaultValue ?? '',
-        modelName: componentState?.defaultModelName ?? '',
-        config: componentState?.defaultConfig ?? [],
-        nodeIds: [],
-      }));
+      initializeSymbolPreview(componentName);
     }
   };
 

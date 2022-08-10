@@ -1,44 +1,25 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  cursorPositionAtom,
-  edgeListAtom,
-  logSelector,
-  modeAtom,
-  nodeListAtom,
-  pitchAtom,
-  previewWirePointsAtom,
-  selectedNodeIdAtom,
-  upperLeftAtom,
-} from '../../atoms';
-import { add, RealPoint, sub, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
+import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
-import { useWire } from '../../hooks/useWire';
+import { useLog } from '../../states/logState';
+import { useEdge } from '../../states/edgeState';
+import { useNode } from '../../states/nodeState';
+import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
+import { useGrid } from '../../states/gridState';
+import { useMode } from '../../states/modeState';
 
 const Wire: React.FC = () => {
-  const pitch = useRecoilValue(pitchAtom);
-  const mode = useRecoilValue(modeAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
-  const nodeList = useRecoilValue(nodeListAtom);
-  const [previewWirePoints, setPreviewWirePoints] = useRecoilState(previewWirePointsAtom);
-  const edgeList = useRecoilValue(edgeListAtom);
+  const { toRealGrid, toFixedVirtualGrid } = useGrid();
+  const { mode, setCopyObjectType } = useMode();
+  const { nodeList } = useNode();
+  const { edgeList } = useEdge();
   const { cutWire } = useWire();
-  const setLogs = useSetRecoilState(logSelector);
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-  const cursorPosition = useRecoilValue(cursorPositionAtom);
-  const selectedNodeId = useRecoilValue(selectedNodeIdAtom);
+  const { setLog } = useLog();
 
-  const vp1 =
-    mode === Mode.WIRE
-      ? selectedNodeId && nodeList.get(selectedNodeId)?.point
-      : cursorPosition && previewWirePoints.point1Relative && add(previewWirePoints.point1Relative, cursorPosition);
-  const vp2 =
-    mode === Mode.WIRE
-      ? cursorPosition
-      : cursorPosition && previewWirePoints.point2Relative && add(previewWirePoints.point2Relative, cursorPosition);
-
-  const point1 = vp1 && toRealGrid(vp1, pitch, upperLeft);
-  const point2 = vp2 && toRealGrid(vp2, pitch, upperLeft);
+  const { getWirePreviewWithNode } = useWirePreviewWithNode();
+  const { getWirePreviewWithoutNode, initializeWirePreviewWithoutNode } = useWirePreviewWithoutNode();
+  const [vp1, vp2] = mode === Mode.WIRE ? getWirePreviewWithNode() : getWirePreviewWithoutNode();
+  const point1 = vp1 && toRealGrid(vp1);
+  const point2 = vp2 && toRealGrid(vp2);
 
   return (
     <svg>
@@ -47,8 +28,8 @@ const Wire: React.FC = () => {
         const node2 = nodeList.get(edge.node2);
         if (!node1 || !node2) return null;
 
-        const a = toRealGrid(node1.point, pitch, upperLeft);
-        const b = toRealGrid(node2.point, pitch, upperLeft);
+        const a = toRealGrid(node1.point);
+        const b = toRealGrid(node2.point);
         return (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
           <svg key={`wire_${id}`}>
@@ -63,27 +44,21 @@ const Wire: React.FC = () => {
               strokeWidth={10}
               onClick={(e) => {
                 const pos: RealPoint = { x: e.clientX, y: e.clientY };
-                const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
+                const vpos = toFixedVirtualGrid(pos);
                 switch (mode) {
                   case Mode.CUT:
                     cutWire(id);
-                    setLogs();
+                    setLog();
                     break;
                   case Mode.MOVE:
                     cutWire(id);
-                    setLogs();
+                    setLog();
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewWirePoints({
-                      point1Relative: sub(node1.point, vpos),
-                      point2Relative: sub(node2.point, vpos),
-                    });
+                    initializeWirePreviewWithoutNode(node1.point, node2.point, vpos);
                     break;
                   case Mode.COPY:
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewWirePoints({
-                      point1Relative: sub(node1.point, vpos),
-                      point2Relative: sub(node2.point, vpos),
-                    });
+                    initializeWirePreviewWithoutNode(node1.point, node2.point, vpos);
                     break;
                   default:
                 }

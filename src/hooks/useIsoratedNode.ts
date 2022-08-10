@@ -1,17 +1,18 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
-import { nodeIdToEdgeIdAtom, nodeIdToLabelAtom, symbolsAtom } from '../atoms';
 import { NodeId } from '../helpers/wireHelper';
+import { useEdge } from '../states/edgeState';
+import { useLabel } from '../states/labelState';
+import { useSymbol } from '../states/symbolState';
 
 export const useIsolatedNode = () => {
-  const [nodeIdToEdgeIdMap] = useRecoilState(nodeIdToEdgeIdAtom);
-  const [symbols] = useRecoilState(symbolsAtom);
-  const [labelList] = useRecoilState(nodeIdToLabelAtom);
+  const { symbols } = useSymbol();
+  const { getLabel } = useLabel();
+  const { isEdgeVertex } = useEdge();
 
   const isIsolatedNode = useCallback(
     (id: NodeId) => {
-      if (labelList.get(id)) return false;
-      if ((nodeIdToEdgeIdMap.get(id)?.size ?? 0) !== 0) return false;
+      if (getLabel(id)) return false;
+      if (isEdgeVertex(id)) return false;
       if (
         Array.from(symbols.values())
           .flat()
@@ -20,7 +21,7 @@ export const useIsolatedNode = () => {
         return false;
       return true;
     },
-    [labelList, nodeIdToEdgeIdMap, symbols]
+    [isEdgeVertex, getLabel, symbols]
   );
 
   return { isIsolatedNode };

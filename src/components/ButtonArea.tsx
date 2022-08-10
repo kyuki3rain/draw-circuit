@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import { Fab, Tooltip } from '@mui/material';
-import React from 'react';
-import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil';
+import React, { useCallback } from 'react';
 import {
   Add,
   Description,
@@ -15,67 +14,49 @@ import {
   ContentCopy,
   MoveUp,
 } from '@mui/icons-material';
-import {
-  labelModalAtom,
-  logIndexAtom,
-  logsAtom,
-  modeAtom,
-  selectSymbolModalAtom,
-  textModalAtom,
-  viewSelector,
-} from '../atoms';
 import { Mode } from '../helpers/modehelper';
-import { netListSelector } from '../atoms/netListAtom';
-import { useLog } from '../hooks/useLog';
+import { useLog, useRoll } from '../states/logState';
+import { useNetList } from '../hooks/useNetList';
+import { useView } from '../hooks/useView';
+import { ModalTypes, useModal } from '../states/modalState';
+import { useMode } from '../states/modeState';
 
 const ButtonArea: React.FC = () => {
-  const [mode, setMode] = useRecoilState(modeAtom);
-  const setLabelModal = useSetRecoilState(labelModalAtom);
-  const setTextModal = useSetRecoilState(textModalAtom);
-  const setSelectSymbolModal = useSetRecoilState(selectSymbolModalAtom);
-  const { undo, canUndo, redo, canRedo } = useLog();
-  const showNetList = useRecoilCallback(
-    ({ snapshot }) =>
-      () => {
-        const netlist = snapshot.getLoadable(netListSelector).getValue();
-        console.log(netlist);
+  const { mode, setMode } = useMode();
+  const { setOpen } = useModal();
+  const { undo, canUndo, redo, canRedo } = useRoll();
+  const { getNetList } = useNetList();
+  const { getView } = useView();
+  const { getLog } = useLog();
+  const showNetList = useCallback(() => {
+    const netlist = getNetList();
+    console.log(netlist);
 
-        (async () => {
-          const opts = {
-            suggestedName: 'example',
-            types: [
-              {
-                description: 'Text file',
-                accept: { 'text/plain': ['.net'] },
-              },
-            ],
-          };
-          const handle = await window.showSaveFilePicker(opts);
-          const writable = await handle.createWritable();
-          await writable.write(netlist);
-          await writable.close();
-        })()
-          .then(() => {})
-          .catch(() => {});
-      },
-    []
-  );
-  const showInfo = useRecoilCallback(
-    ({ snapshot }) =>
-      () => {
-        const view = snapshot.getLoadable(viewSelector).getValue();
-        const logIndex = snapshot.getLoadable(logIndexAtom).getValue();
-        const logs = snapshot.getLoadable(logsAtom).getValue();
-        const modeInfo = snapshot.getLoadable(modeAtom).getValue();
-        const netlist = snapshot.getLoadable(netListSelector).getValue();
-        console.log('mode: ', modeInfo);
-        console.log('view: ', view);
-        console.log('logIndex: ', logIndex);
-        console.log('logs: ', logs);
-        console.log(netlist);
-      },
-    []
-  );
+    (async () => {
+      const opts = {
+        suggestedName: 'example',
+        types: [
+          {
+            description: 'Text file',
+            accept: { 'text/plain': ['.net'] },
+          },
+        ],
+      };
+      const handle = await window.showSaveFilePicker(opts);
+      const writable = await handle.createWritable();
+      await writable.write(netlist);
+      await writable.close();
+    })()
+      .then(() => {})
+      .catch(() => {});
+  }, [getNetList]);
+
+  const showInfo = useCallback(() => {
+    console.log('mode: ', mode);
+    console.log('view: ', getView());
+    console.log('log: ', getLog());
+    console.log(getNetList());
+  }, [getLog, getNetList, getView, mode]);
 
   return (
     <div style={{ float: 'left', marginTop: 5 }}>
@@ -94,7 +75,7 @@ const ButtonArea: React.FC = () => {
             } else {
               console.log(mode);
               setMode(Mode.SYMBOL);
-              setSelectSymbolModal(true);
+              setOpen(ModalTypes.SYMBOL_SELECT);
             }
           }}
         >
@@ -110,7 +91,7 @@ const ButtonArea: React.FC = () => {
               setMode(Mode.NONE);
             } else {
               setMode(Mode.LABEL);
-              setLabelModal(true);
+              setOpen(ModalTypes.LABEL);
             }
           }}
         >
@@ -126,7 +107,7 @@ const ButtonArea: React.FC = () => {
               setMode(Mode.NONE);
             } else {
               setMode(Mode.TEXT);
-              setTextModal(true);
+              setOpen(ModalTypes.TEXT);
             }
           }}
         >

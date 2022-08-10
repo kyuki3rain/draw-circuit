@@ -1,35 +1,25 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  logSelector,
-  modeAtom,
-  pitchAtom,
-  cursorPositionAtom,
-  previewTextAtom,
-  upperLeftAtom,
-} from '../../atoms';
-import { textsAtom } from '../../atoms/textAtom';
-import { toRealGrid } from '../../helpers/gridhelper';
+import { useRecoilValue } from 'recoil';
+import { textsAtom, useText, useTextPreview } from '../../states/textState';
 import { Mode } from '../../helpers/modehelper';
-import { useText } from '../../hooks/useText';
+import { useLog } from '../../states/logState';
+import { useCursorPosition } from '../../states/cursorPositionState';
+import { useGrid } from '../../states/gridState';
+import { useMode } from '../../states/modeState';
 
 const Text: React.FC = () => {
-  const [previewText, setPreviewText] = useRecoilState(previewTextAtom);
-  const [cursorPosition, setCursorPosition] = useRecoilState(cursorPositionAtom);
+  const { previewTextState, setTextPreview } = useTextPreview();
+  const { cursorPosition, setCursorPosition } = useCursorPosition();
   const textStates = useRecoilValue(textsAtom);
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
+  const { toRealGrid } = useGrid();
   const { removeText } = useText();
-  const mode = useRecoilValue(modeAtom);
-  const setLogs = useSetRecoilState(logSelector);
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-
-  const prp = cursorPosition && toRealGrid(cursorPosition, pitch, upperLeft);
+  const { mode, setCopyObjectType } = useMode();
+  const { setLog } = useLog();
+  const prp = cursorPosition && toRealGrid(cursorPosition);
 
   return (
     <svg>
       {textStates.map((textState) => {
-        const rp = textState.point && toRealGrid(textState.point, pitch, upperLeft);
+        const rp = textState.point && toRealGrid(textState.point);
         return (
           <text
             x={rp?.x}
@@ -44,18 +34,18 @@ const Text: React.FC = () => {
               switch (mode) {
                 case Mode.CUT:
                   removeText(textState);
-                  setLogs();
+                  setLog();
                   break;
                 case Mode.MOVE:
                   removeText(textState);
-                  setLogs();
+                  setLog();
                   setCopyObjectType(Mode.TEXT);
-                  setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
+                  setTextPreview(textState.body, textState.isSpiceDirective);
                   setCursorPosition((prev) => textState.point ?? prev);
                   break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.TEXT);
-                  setPreviewText({ body: textState.body, isSpiceDirective: textState.isSpiceDirective });
+                  setTextPreview(textState.body, textState.isSpiceDirective);
                   setCursorPosition((prev) => textState.point ?? prev);
                   break;
                 default:
@@ -66,7 +56,7 @@ const Text: React.FC = () => {
           </text>
         );
       })}
-      {previewText && prp && (
+      {previewTextState && prp && (
         <text
           x={prp.x}
           y={prp.y}
@@ -75,9 +65,9 @@ const Text: React.FC = () => {
           fontSize="20"
           fontStyle="italic"
           key="label_preview"
-          fill={previewText.isSpiceDirective ? 'black' : 'blue'}
+          fill={previewTextState.isSpiceDirective ? 'black' : 'blue'}
         >
-          {previewText.body}
+          {previewTextState.body}
         </text>
       )}
     </svg>

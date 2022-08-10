@@ -1,9 +1,11 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
-import { textModalAtom, modeAtom, previewTextAtom } from '../atoms';
+import { useState } from 'react';
 import { Mode } from '../helpers/modehelper';
+import { useTextPreview } from '../states/textState';
+import { ModalTypes, useSingleModal } from '../states/modalState';
+import { useMode } from '../states/modeState';
 
 const style = {
   display: 'flex',
@@ -21,19 +23,22 @@ const style = {
 };
 
 const TextModal = () => {
-  const [open, setOpen] = useRecoilState(textModalAtom);
-  const [text, setText] = useRecoilState(previewTextAtom);
-  const setMode = useSetRecoilState(modeAtom);
-  const handleClose = () => {
-    setOpen(false);
-    if (!text || text.body === '') setMode(Mode.NONE);
+  const { open, setClosed } = useSingleModal(ModalTypes.TEXT);
+  const [text, setText] = useState('');
+  const [isSpiceDirective, setIsSpiceDirective] = useState(false);
+  const { initializeTextPreview } = useTextPreview();
+  const { setMode } = useMode();
+  const handleClose = (ok?: boolean) => {
+    setClosed();
+    if (!ok) setMode(Mode.NONE);
+    else initializeTextPreview(text, isSpiceDirective);
   };
 
   return (
     <div>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -42,24 +47,22 @@ const TextModal = () => {
             placeholder=".tran 0 1n 0 100f"
             label="SPICE DIRECTIVE or COMMENT"
             variant="standard"
-            value={text?.body ?? ''}
-            onChange={(e) =>
-              setText((prev) => ({ body: e.target.value, isSpiceDirective: prev?.isSpiceDirective ?? false }))
-            }
+            value={text}
+            onChange={(e) => setText(e.target.value)}
           />
           <FormControlLabel
             control={
               <Checkbox
                 aria-label="SPICE DIRECTIVE?"
-                checked={text?.isSpiceDirective ?? false}
-                onChange={(e) => setText((prev) => ({ body: prev?.body ?? '', isSpiceDirective: e.target.checked }))}
+                checked={isSpiceDirective}
+                onChange={(e) => setIsSpiceDirective(e.target.checked)}
               />
             }
             label="SPICE DIRECTIVE?"
             labelPlacement="start"
           />
 
-          <Button onClick={handleClose}>OK</Button>
+          <Button onClick={() => handleClose(true)}>OK</Button>
         </Box>
       </Modal>
     </div>
