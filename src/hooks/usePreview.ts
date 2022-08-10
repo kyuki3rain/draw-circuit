@@ -1,37 +1,40 @@
 import { useCallback, useMemo } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, previewSymbolAtom, modeAtom } from '../atoms';
+import { copyObjectTypeAtom, modeAtom } from '../atoms';
 
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
 import { useComponent } from '../states/componentState';
 import { useCursorPosition } from '../states/cursorPositionState';
 import { useLabelPreview } from '../states/labelState';
+import { useSymbolPreview } from '../states/symbolState';
 import { useTextPreview } from '../states/textState';
 import { useWirePreviewWithNode, useWirePreviewWithoutNode } from '../states/wireState';
 
 export const usePreview = () => {
   const { resetWirePreviewWithNode } = useWirePreviewWithNode();
   const { resetWirePreviewWithoutNode } = useWirePreviewWithoutNode();
-  const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
-  const { setCursorPosition } = useCursorPosition();
+  const { setCursorPosition, resetCursorPosition } = useCursorPosition();
   const { resetLabelPreview } = useLabelPreview();
   const { resetTextPreview } = useTextPreview();
+  const { resetSymbolPreview } = useSymbolPreview();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const resetPreview = useCallback(() => {
     resetWirePreviewWithNode();
     resetWirePreviewWithoutNode();
     resetTextPreview();
-    setPreviewSymbol(null);
+    resetSymbolPreview();
     resetLabelPreview();
+    resetCursorPosition();
     setCopyObjectType(Mode.NONE);
   }, [
     resetWirePreviewWithNode,
     resetWirePreviewWithoutNode,
     resetTextPreview,
-    setPreviewSymbol,
+    resetSymbolPreview,
     resetLabelPreview,
+    resetCursorPosition,
     setCopyObjectType,
   ]);
 
@@ -46,7 +49,7 @@ export const usePreview = () => {
 };
 
 export const usePreviewNodePosition = () => {
-  const symbol = useRecoilValue(previewSymbolAtom);
+  const { symbol } = useSymbolPreview();
   const { componentState } = useComponent(symbol?.componentName);
   const mode = useRecoilValue(modeAtom);
   const copyObjectType = useRecoilValue(copyObjectTypeAtom);

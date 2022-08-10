@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { symbolConfigModalAtom, symbolConfigAtom } from '../atoms';
 import { useLog } from '../states/logState';
-import { useSymbol } from '../hooks/useSymbol';
+import { useSymbol } from '../states/symbolState';
 
 const style = {
   display: 'flex',

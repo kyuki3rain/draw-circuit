@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
-import { symbolsAtom } from '../atoms';
 import { NodeId } from '../helpers/wireHelper';
 import { useEdge } from '../states/edgeState';
 import { useLabel } from '../states/labelState';
+import { useSymbol } from '../states/symbolState';
 
 export const useIsolatedNode = () => {
-  const [symbols] = useRecoilState(symbolsAtom);
+  const { symbols } = useSymbol();
   const { getLabel } = useLabel();
   const { isEdgeVertex } = useEdge();
 

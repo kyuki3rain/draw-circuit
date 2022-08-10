@@ -1,28 +1,30 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   copyObjectTypeAtom,
   modeAtom,
   pitchAtom,
-  previewSymbolAtom,
   symbolConfigAtom,
   symbolConfigModalAtom,
-  symbolsAtom,
   upperLeftAtom,
 } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
-import { useSymbol } from '../../hooks/useSymbol';
 import Symbol from './Symbol';
 import { useCursorPosition } from '../../states/cursorPositionState';
+import { useSymbol, useSymbolPreview } from '../../states/symbolState';
+import { useIsolatedNode } from '../../hooks/useIsoratedNode';
+import { useNode } from '../../states/nodeState';
 
 export const Symbols: React.FC = () => {
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
-  const symbols = useRecoilValue(symbolsAtom);
+  const { symbols } = useSymbol();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
-  const [previewSymbol, setPreviewSymbol] = useRecoilState(previewSymbolAtom);
+  const { getSymbolPreview, setSymbolPreview } = useSymbolPreview();
   const mode = useRecoilValue(modeAtom);
   const { removeSymbol } = useSymbol();
+  const { isIsolatedNode } = useIsolatedNode();
+  const { removeNode } = useNode();
   const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
   const setConfigSymbolModal = useSetRecoilState(symbolConfigModalAtom);
@@ -49,18 +51,20 @@ export const Symbols: React.FC = () => {
                   switch (mode) {
                     case Mode.CUT:
                       removeSymbol(c);
+                      c.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
                       setLog();
                       break;
                     case Mode.MOVE:
                       removeSymbol(c);
+                      c.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
                       setLog();
                       setCopyObjectType(Mode.SYMBOL);
-                      setPreviewSymbol({ ...c, key: '', nodeIds: [] });
+                      setSymbolPreview({ ...c, key: '', nodeIds: [] });
                       if (c.point) setCursorPosition(c.point);
                       break;
                     case Mode.COPY:
                       setCopyObjectType(Mode.SYMBOL);
-                      setPreviewSymbol({ ...c, key: '', nodeIds: [] });
+                      setSymbolPreview({ ...c, key: '', nodeIds: [] });
                       if (c.point) setCursorPosition(c.point);
                       break;
                     default:
@@ -69,9 +73,9 @@ export const Symbols: React.FC = () => {
               />
             )
         )}
-      {previewSymbol && cursorPosition && (
+      {cursorPosition && (
         <Symbol
-          symbolState={previewSymbol}
+          symbolState={getSymbolPreview()}
           upperLeft={upperLeft}
           point={cursorPosition}
           pitch={pitch}

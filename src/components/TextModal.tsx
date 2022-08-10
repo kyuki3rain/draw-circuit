@@ -26,12 +26,12 @@ const TextModal = () => {
   const [open, setOpen] = useRecoilState(textModalAtom);
   const [text, setText] = useState('');
   const [isSpiceDirective, setIsSpiceDirective] = useState(false);
-  const { setTextPreview } = useTextPreview();
+  const { initializeTextPreview } = useTextPreview();
   const setMode = useSetRecoilState(modeAtom);
   const handleClose = (ok?: boolean) => {
     setOpen(false);
     if (!ok) setMode(Mode.NONE);
-    else setTextPreview(text, isSpiceDirective);
+    else initializeTextPreview(text, isSpiceDirective);
   };
 
   return (

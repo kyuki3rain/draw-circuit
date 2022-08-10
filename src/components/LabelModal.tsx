@@ -22,12 +22,12 @@ const style = {
 const LabelModal = () => {
   const [open, setOpen] = useRecoilState(labelModalAtom);
   const [label, setLabel] = useState('');
-  const { setLabelPreview } = useLabelPreview();
+  const { initializeLabelPreview } = useLabelPreview();
   const setMode = useSetRecoilState(modeAtom);
   const handleClose = (ok?: boolean) => {
     setOpen(false);
     if (!ok) setMode(Mode.NONE);
-    else setLabelPreview(label);
+    else initializeLabelPreview(label);
   };
 
   return (

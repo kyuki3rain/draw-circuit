@@ -54,12 +54,15 @@ export const useTextPreview = () => {
 
   const getTextPreview = useCallback(() => textState, [textState]);
   const resetTextPreview = useCallback(() => setTextState(null), [setTextState]);
-  const initializeTextPreview = useCallback(() => resetTextPreview(), [resetTextPreview]);
   const setTextPreview = useCallback(
     (text: string, isSpiceDirective?: boolean) => {
       setTextState((prev) => ({ body: text, isSpiceDirective: isSpiceDirective ?? prev?.isSpiceDirective ?? false }));
     },
     [setTextState]
+  );
+  const initializeTextPreview = useCallback(
+    (initialText: string, initialIsSpiceDirective: boolean) => setTextPreview(initialText, initialIsSpiceDirective),
+    [setTextPreview]
   );
 
   return {

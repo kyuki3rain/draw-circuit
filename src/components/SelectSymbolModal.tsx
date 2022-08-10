@@ -4,10 +4,11 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Button, Select } from '@mui/material';
 import SVG from 'react-inlinesvg';
 import { useState } from 'react';
-import { modeAtom, selectSymbolModalAtom, previewSymbolAtom } from '../atoms';
+import { modeAtom, selectSymbolModalAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
-import { ComponentName, ComponentTypes } from '../helpers/componentHelper';
+import { ComponentName } from '../helpers/componentHelper';
 import { useComponent, useComponentStateFamily } from '../states/componentState';
+import { useSymbolPreview } from '../states/symbolState';
 
 const style = {
   display: 'flex',
@@ -31,20 +32,12 @@ const SelectSymbolModal = () => {
   const setMode = useSetRecoilState(modeAtom);
   const { componentList } = useComponentStateFamily();
   const { componentState } = useComponent(componentName);
-  const setPreviewSymbol = useSetRecoilState(previewSymbolAtom);
+  const { initializeSymbolPreview } = useSymbolPreview();
   const handleClose = (ok?: boolean) => {
     setOpen(false);
     if (!ok || componentName === '') setMode(Mode.NONE);
     else {
-      setPreviewSymbol(() => ({
-        componentName,
-        componentType: componentState?.type ?? ComponentTypes.ERROR,
-        key: '',
-        value: componentState?.defaultValue ?? '',
-        modelName: componentState?.defaultModelName ?? '',
-        config: componentState?.defaultConfig ?? [],
-        nodeIds: [],
-      }));
+      initializeSymbolPreview(componentName);
     }
   };
 

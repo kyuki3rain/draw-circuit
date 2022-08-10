@@ -7,7 +7,6 @@ import { useWindowSize } from '../hooks/useWindowSize';
 import { Mode } from '../helpers/modehelper';
 import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../atoms';
 import Wire from './drawArea/Wire';
-import { useSymbol } from '../hooks/useSymbol';
 import Label from './drawArea/Label';
 import Node from './drawArea/Node';
 import Text from './drawArea/Text';
@@ -16,6 +15,7 @@ import { useLog } from '../states/logState';
 import { useWire } from '../states/wireState';
 import { useLabel } from '../states/labelState';
 import { useText } from '../states/textState';
+import { useSymbol } from '../states/symbolState';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();

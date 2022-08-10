@@ -48,12 +48,15 @@ export const useLabelPreview = () => {
 
   const getLabelPreview = useCallback(() => labelName, [labelName]);
   const resetLabelPreview = useCallback(() => setLabelName(null), [setLabelName]);
-  const initializeLabelPreview = useCallback(() => resetLabelPreview(), [resetLabelPreview]);
   const setLabelPreview = useCallback(
     (newLabelName: string) => {
       setLabelName(newLabelName);
     },
     [setLabelName]
+  );
+  const initializeLabelPreview = useCallback(
+    (initialLabelName: string) => setLabelPreview(initialLabelName),
+    [setLabelPreview]
   );
 
   return {

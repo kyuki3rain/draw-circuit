@@ -4,7 +4,7 @@ import { getConfig, SymbolState } from '../../helpers/symbolHelper';
 import { useComponent } from '../../states/componentState';
 
 type Props = {
-  symbolState: SymbolState;
+  symbolState: SymbolState | null;
   upperLeft: VirtualPoint;
   point: VirtualPoint;
   pitch: number;
@@ -14,8 +14,10 @@ type Props = {
 
 const Symbol: React.FC<Props> = ({ symbolState, upperLeft, point, pitch, onClick, onContextMenu }) => {
   const center = toRealGrid(point, pitch, upperLeft);
-  const { componentState } = useComponent(symbolState.componentName);
+  const { componentState } = useComponent(symbolState?.componentName);
+  if (!symbolState) return null;
   if (!componentState) return null;
+
   return (
     <svg>
       <svg

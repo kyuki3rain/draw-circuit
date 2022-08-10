@@ -1,6 +1,4 @@
 import { useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
-import { symbolsAtom } from '../atoms';
 
 import { getConfig } from '../helpers/symbolHelper';
 import { NodeId } from '../helpers/wireHelper';
@@ -8,6 +6,7 @@ import { useComponentStateFamily } from '../states/componentState';
 import { useEdge } from '../states/edgeState';
 import { useLabel } from '../states/labelState';
 import { useNode } from '../states/nodeState';
+import { useSymbol } from '../states/symbolState';
 import { useText } from '../states/textState';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
@@ -21,7 +20,7 @@ function formatDate(dt: Date) {
 export const useNetList = () => {
   const { getEdgeIdArray } = useEdge();
   const { nodeList, getNode } = useNode();
-  const symbols = useRecoilValue(symbolsAtom);
+  const { symbols } = useSymbol();
   const { getSpiceDirectives } = useText();
   const { getLabel } = useLabel();
   const { getComponentNodePointsFamily } = useComponentStateFamily();

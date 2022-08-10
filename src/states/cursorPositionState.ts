@@ -9,5 +9,10 @@ const cursorPositionAtom = atom({
 
 export const useCursorPosition = () => {
   const [cursorPosition, setCursorPosition] = useRecoilState(cursorPositionAtom);
-  return { cursorPosition, getCursorPosition: useCallback(() => cursorPosition, [cursorPosition]), setCursorPosition };
+  return {
+    cursorPosition,
+    getCursorPosition: useCallback(() => cursorPosition, [cursorPosition]),
+    setCursorPosition,
+    resetCursorPosition: useCallback(() => setCursorPosition(null), [setCursorPosition]),
+  };
 };
