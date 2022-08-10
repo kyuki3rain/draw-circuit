@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
-import { nodeIdToLabelAtom, symbolsAtom, textsAtom } from '../atoms';
+import { symbolsAtom, textsAtom } from '../atoms';
 
 import { getConfig } from '../helpers/symbolHelper';
 import { NodeId } from '../helpers/wireHelper';
 import { useComponentStateFamily } from '../states/componentState';
 import { useEdge } from '../states/edgeState';
+import { useLabel } from '../states/labelState';
 import { useNode } from '../states/nodeState';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
@@ -21,7 +22,7 @@ export const useNetList = () => {
   const { nodeList, getNode } = useNode();
   const symbols = useRecoilValue(symbolsAtom);
   const texts = useRecoilValue(textsAtom);
-  const nodeIdToLabelMap = useRecoilValue(nodeIdToLabelAtom);
+  const { getLabel } = useLabel();
   const { getComponentNodePointsFamily } = useComponentStateFamily();
 
   const getNetList = useCallback(() => {
@@ -42,7 +43,7 @@ export const useNetList = () => {
         return label;
       });
 
-      return nodeIdToLabelMap.get(checkId) ?? label;
+      return getLabel(checkId) ?? label;
     };
 
     nodeList.forEach((_, id) => {
@@ -79,7 +80,7 @@ export const useNetList = () => {
     });
 
     return netList.concat(texts.filter((ts) => ts.isSpiceDirective).map((t) => t.body)).join('\n');
-  }, [getComponentNodePointsFamily, getEdgeIdArray, getNode, nodeIdToLabelMap, nodeList, symbols, texts]);
+  }, [getComponentNodePointsFamily, getEdgeIdArray, getLabel, getNode, nodeList, symbols, texts]);
 
   return { getNetList };
 };

@@ -1,54 +1,54 @@
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { nodeIdToLabelAtom, symbolsAtom, textsAtom, TextState } from '../atoms';
+import { symbolsAtom, textsAtom, TextState } from '../atoms';
 import { ComponentType } from '../helpers/componentHelper';
 import { SymbolState } from '../helpers/symbolHelper';
 import { EdgeList, NodeId, NodeIdToEdgeIdMap, PointToNodeIdMap, NodeList } from '../helpers/wireHelper';
-import { useEdgeView } from '../states/edgeState';
-
-import { useNodeView } from '../states/nodeState';
+import { useLabelView } from '../states/labelState';
+import { useWireView } from '../states/wireState';
 
 export type ViewState = {
-  nodes: {
-    nodeList: NodeList;
-    pointToNodeIdMap: PointToNodeIdMap;
+  wires: {
+    nodes: {
+      nodeList: NodeList;
+      pointToNodeIdMap: PointToNodeIdMap;
+    };
+    edges: {
+      edgeList: EdgeList;
+      nodeIdToEdgeIdMap: NodeIdToEdgeIdMap;
+    };
   };
-  edges: {
-    edgeList: EdgeList;
-    nodeIdToEdgeIdMap: NodeIdToEdgeIdMap;
+  labels: {
+    labelList: Map<NodeId, string>;
   };
-  nodeIdToLabelAtom: Map<NodeId, string>;
   symbolsAtom: Map<ComponentType, SymbolState[]>;
   textsAtom: TextState[];
 };
 
 export const useView = () => {
-  const { getNodeView, setNodeView } = useNodeView();
-  const { getEdgeView, setEdgeView } = useEdgeView();
-  const [nodeIdToLabelMap, setNodeIdToLabelMap] = useRecoilState(nodeIdToLabelAtom);
+  const { getWireView, setWireView } = useWireView();
+  const { getLabelView, setLabelView } = useLabelView();
   const [symbols, setSymbols] = useRecoilState(symbolsAtom);
   const [texts, setTexts] = useRecoilState(textsAtom);
 
   const getView = useCallback(
     () => ({
-      nodes: getNodeView(),
-      edges: getEdgeView(),
-      nodeIdToLabelAtom: nodeIdToLabelMap,
+      wires: getWireView(),
+      labels: getLabelView(),
       symbolsAtom: symbols,
       textsAtom: texts,
     }),
-    [getEdgeView, getNodeView, nodeIdToLabelMap, symbols, texts]
+    [getLabelView, getWireView, symbols, texts]
   );
 
   const setView = useCallback(
     (view: ViewState) => {
-      setNodeView(view.nodes);
-      setEdgeView(view.edges);
-      setNodeIdToLabelMap(view.nodeIdToLabelAtom);
+      setWireView(view.wires);
+      setLabelView(view.labels);
       setSymbols(view.symbolsAtom);
       setTexts(view.textsAtom);
     },
-    [setEdgeView, setNodeIdToLabelMap, setNodeView, setSymbols, setTexts]
+    [setLabelView, setSymbols, setTexts, setWireView]
   );
 
   return { getView, setView };

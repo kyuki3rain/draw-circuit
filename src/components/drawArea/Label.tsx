@@ -1,16 +1,10 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  modeAtom,
-  nodeIdToLabelAtom,
-  pitchAtom,
-  previewLabelNameAtom,
-  upperLeftAtom,
-} from '../../atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { copyObjectTypeAtom, modeAtom, pitchAtom, upperLeftAtom } from '../../atoms';
 import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
-import { useLabel } from '../../hooks/useLabel';
+import { useIsolatedNode } from '../../hooks/useIsoratedNode';
 import { useCursorPosition } from '../../states/cursorPositionState';
+import { useLabel, useLabelPreview } from '../../states/labelState';
 import { useLog } from '../../states/logState';
 import { useNode } from '../../states/nodeState';
 
@@ -36,13 +30,14 @@ const createLabel = (rp: RealPoint, label: string, pitch: number) => {
 };
 
 const Label: React.FC = () => {
-  const nodeIdToLabel = useRecoilValue(nodeIdToLabelAtom);
-  const [previewLabelName, setLabelName] = useRecoilState(previewLabelNameAtom);
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const { nodeList } = useNode();
   const pitch = useRecoilValue(pitchAtom);
   const upperLeft = useRecoilValue(upperLeftAtom);
-  const { removeLabel } = useLabel();
+  const { labelList, deleteLabel } = useLabel();
+  const { getLabelPreview, setLabelPreview } = useLabelPreview();
+  const { isIsolatedNode } = useIsolatedNode();
+  const { removeNode } = useNode();
   const mode = useRecoilValue(modeAtom);
   const { setLog } = useLog();
   const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
@@ -51,7 +46,7 @@ const Label: React.FC = () => {
 
   return (
     <svg>
-      {Array.from(nodeIdToLabel.entries()).map(([nodeId, label]) => {
+      {Array.from(labelList.entries()).map(([nodeId, label]) => {
         const node = nodeList.get(nodeId);
         if (!node) return null;
 
@@ -61,19 +56,23 @@ const Label: React.FC = () => {
             onClick={() => {
               switch (mode) {
                 case Mode.CUT:
-                  removeLabel(nodeId);
+                  deleteLabel(nodeId);
+                  if (isIsolatedNode(nodeId)) removeNode(nodeId);
+
                   setLog();
                   break;
                 case Mode.MOVE:
-                  removeLabel(nodeId);
+                  deleteLabel(nodeId);
+                  if (isIsolatedNode(nodeId)) removeNode(nodeId);
+
                   setLog();
                   setCopyObjectType(Mode.LABEL);
-                  setLabelName(label);
+                  setLabelPreview(label);
                   setCursorPosition(node.point);
                   break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.LABEL);
-                  setLabelName(label);
+                  setLabelPreview(label);
                   setCursorPosition(node.point);
                   break;
                 default:
@@ -85,7 +84,7 @@ const Label: React.FC = () => {
           </svg>
         );
       })}
-      {prp && createLabel(prp, previewLabelName, pitch)}
+      {prp && createLabel(prp, getLabelPreview() ?? '', pitch)}
     </svg>
   );
 };

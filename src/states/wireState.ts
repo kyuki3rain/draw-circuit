@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { atom, useRecoilState } from 'recoil';
 import { add, sub, VirtualPoint } from '../helpers/gridhelper';
-import { EdgeId, NodeId } from '../helpers/wireHelper';
+import { EdgeId, EdgeList, NodeId, NodeList, NodeIdToEdgeIdMap, PointToNodeIdMap } from '../helpers/wireHelper';
 import { useIsolatedNode } from '../hooks/useIsoratedNode';
 import { useCursorPosition } from './cursorPositionState';
-import { useEdge } from './edgeState';
-import { useNode } from './nodeState';
+import { useEdge, useEdgeView } from './edgeState';
+import { useNode, useNodeView } from './nodeState';
 
 const fixedNodeIdAtom = atom({
   key: 'fixedNodeId',
@@ -144,4 +144,32 @@ export const useWire = () => {
   );
 
   return { setWire, cutWire };
+};
+
+export const useWireView = () => {
+  const { getNodeView, setNodeView } = useNodeView();
+  const { getEdgeView, setEdgeView } = useEdgeView();
+
+  return {
+    getWireView: useCallback(() => ({ nodes: getNodeView(), edges: getEdgeView() }), [getNodeView, getEdgeView]),
+    setWireView: useCallback(
+      ({
+        nodes,
+        edges,
+      }: {
+        nodes: {
+          nodeList: NodeList;
+          pointToNodeIdMap: PointToNodeIdMap;
+        };
+        edges: {
+          edgeList: EdgeList;
+          nodeIdToEdgeIdMap: NodeIdToEdgeIdMap;
+        };
+      }) => {
+        setNodeView(nodes);
+        setEdgeView(edges);
+      },
+      [setEdgeView, setNodeView]
+    ),
+  };
 };
