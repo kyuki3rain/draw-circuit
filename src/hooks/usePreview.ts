@@ -1,12 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom } from '../atoms';
 
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
 import { useComponent } from '../states/componentState';
 import { useCursorPosition } from '../states/cursorPositionState';
 import { useLabelPreview } from '../states/labelState';
+import { useMode } from '../states/modeState';
 import { useSymbolPreview } from '../states/symbolState';
 import { useTextPreview } from '../states/textState';
 import { useWirePreviewWithNode, useWirePreviewWithoutNode } from '../states/wireState';
@@ -18,7 +17,7 @@ export const usePreview = () => {
   const { resetLabelPreview } = useLabelPreview();
   const { resetTextPreview } = useTextPreview();
   const { resetSymbolPreview } = useSymbolPreview();
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
+  const { resetCopyObjecttype } = useMode();
 
   const resetPreview = useCallback(() => {
     resetWirePreviewWithNode();
@@ -27,7 +26,7 @@ export const usePreview = () => {
     resetSymbolPreview();
     resetLabelPreview();
     resetCursorPosition();
-    setCopyObjectType(Mode.NONE);
+    resetCopyObjecttype();
   }, [
     resetWirePreviewWithNode,
     resetWirePreviewWithoutNode,
@@ -35,7 +34,7 @@ export const usePreview = () => {
     resetSymbolPreview,
     resetLabelPreview,
     resetCursorPosition,
-    setCopyObjectType,
+    resetCopyObjecttype,
   ]);
 
   const setPreview = useCallback(
@@ -51,8 +50,7 @@ export const usePreview = () => {
 export const usePreviewNodePosition = () => {
   const { symbol } = useSymbolPreview();
   const { componentState } = useComponent(symbol?.componentName);
-  const mode = useRecoilValue(modeAtom);
-  const copyObjectType = useRecoilValue(copyObjectTypeAtom);
+  const { mode, copyObjectType } = useMode();
   const { cursorPosition } = useCursorPosition();
 
   const previewNodePosition = useMemo(() => {

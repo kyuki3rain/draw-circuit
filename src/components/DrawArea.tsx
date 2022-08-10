@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import Grid from './drawArea/Grid';
 import { Symbols } from './drawArea/Symbols';
 import { RealPoint } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { Mode } from '../helpers/modehelper';
-import { copyObjectTypeAtom, modeAtom } from '../atoms';
 import Wire from './drawArea/Wire';
 import Label from './drawArea/Label';
 import Node from './drawArea/Node';
@@ -17,6 +15,7 @@ import { useLabel } from '../states/labelState';
 import { useText } from '../states/textState';
 import { useSymbol } from '../states/symbolState';
 import { useGrid } from '../states/gridState';
+import { useMode } from '../states/modeState';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -26,10 +25,9 @@ const DrawArea: React.FC = () => {
   const { setLabel } = useLabel();
   const { setText } = useText();
   const { toFixedVirtualGrid } = useGrid();
-  const [mode, setMode] = useRecoilState(modeAtom);
+  const { mode, setMode, copyObjectType } = useMode();
   const { setLog } = useLog();
   const { resetPreview } = usePreview();
-  const copyObjectType = useRecoilValue(copyObjectTypeAtom);
 
   useEffect(() => {
     setLog();

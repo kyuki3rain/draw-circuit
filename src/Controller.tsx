@@ -3,14 +3,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useRef } from 'react';
 import './App.css';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import { RealPoint } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
-import { copyObjectTypeAtom, modeAtom } from './atoms';
 import { usePreview } from './hooks/usePreview';
 import { useRoll } from './states/logState';
 import { useModal } from './states/modalState';
 import { useGrid } from './states/gridState';
+import { useMode } from './states/modeState';
 
 type Props = {
   children: React.ReactNode;
@@ -18,11 +17,10 @@ type Props = {
 
 const Controller: React.FC<Props> = ({ children }) => {
   const { zoom, move, toFixedVirtualGrid } = useGrid();
-  const [mode, setMode] = useRecoilState(modeAtom);
+  const { mode, setMode, copyObjectType } = useMode();
   const { setPreview, resetPreview } = usePreview();
   const { undo, canUndo, redo, canRedo } = useRoll();
   const { open } = useModal();
-  const copyObjectType = useRecoilValue(copyObjectTypeAtom);
 
   const divref = useRef<HTMLDivElement>(null);
 

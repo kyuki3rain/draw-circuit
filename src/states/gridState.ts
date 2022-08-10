@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 import { atom, useRecoilState } from 'recoil';
 import { add, clip, fix, RealPoint, sub, VirtualPoint } from '../helpers/gridhelper';
 
-export const pitchAtom = atom({
+const pitchAtom = atom({
   key: 'pitch',
   default: 20,
 });
 
-export const upperLeftAtom = atom({
+const upperLeftAtom = atom({
   key: 'upperLeft',
   default: { vx: 0, vy: 0 } as VirtualPoint,
 });

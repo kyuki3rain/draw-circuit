@@ -1,12 +1,11 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useSetRecoilState } from 'recoil';
 import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
-import { modeAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { useLabelPreview } from '../states/labelState';
 import { ModalTypes, useSingleModal } from '../states/modalState';
+import { useMode } from '../states/modeState';
 
 const style = {
   position: 'absolute' as const,
@@ -24,7 +23,7 @@ const LabelModal = () => {
   const { open, setClosed } = useSingleModal(ModalTypes.LABEL);
   const [label, setLabel] = useState('');
   const { initializeLabelPreview } = useLabelPreview();
-  const setMode = useSetRecoilState(modeAtom);
+  const { setMode } = useMode();
   const handleClose = (ok?: boolean) => {
     setClosed();
     if (!ok) setMode(Mode.NONE);

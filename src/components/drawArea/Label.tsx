@@ -1,5 +1,3 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom } from '../../atoms';
 import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useIsolatedNode } from '../../hooks/useIsoratedNode';
@@ -7,6 +5,7 @@ import { useCursorPosition } from '../../states/cursorPositionState';
 import { useGrid } from '../../states/gridState';
 import { useLabel, useLabelPreview } from '../../states/labelState';
 import { useLog } from '../../states/logState';
+import { useMode } from '../../states/modeState';
 import { useNode } from '../../states/nodeState';
 
 const createLabel = (rp: RealPoint, label: string, toRealLength: (realLength: number) => number) => {
@@ -38,9 +37,8 @@ const Label: React.FC = () => {
   const { getLabelPreview, setLabelPreview } = useLabelPreview();
   const { isIsolatedNode } = useIsolatedNode();
   const { removeNode } = useNode();
-  const mode = useRecoilValue(modeAtom);
   const { setLog } = useLog();
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
+  const { mode, setCopyObjectType } = useMode();
 
   const prp = cursorPosition && toRealGrid(cursorPosition);
 

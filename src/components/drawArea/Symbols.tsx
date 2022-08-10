@@ -1,5 +1,3 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom } from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import Symbol from './Symbol';
@@ -8,17 +6,17 @@ import { useSymbol, useSymbolPreview } from '../../states/symbolState';
 import { useIsolatedNode } from '../../hooks/useIsoratedNode';
 import { useNode } from '../../states/nodeState';
 import { ModalTypes, useSingleModal } from '../../states/modalState';
+import { useMode } from '../../states/modeState';
 
 export const Symbols: React.FC = () => {
   const { symbols } = useSymbol();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const { getSymbolPreview, setSymbolPreview } = useSymbolPreview();
-  const mode = useRecoilValue(modeAtom);
+  const { mode, setCopyObjectType } = useMode();
   const { removeSymbol } = useSymbol();
   const { isIsolatedNode } = useIsolatedNode();
   const { removeNode } = useNode();
   const { setLog } = useLog();
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
   const { setOpen } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
 
   return (

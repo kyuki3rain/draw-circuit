@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import { Fab, Tooltip } from '@mui/material';
 import React, { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
 import {
   Add,
   Description,
@@ -15,15 +14,15 @@ import {
   ContentCopy,
   MoveUp,
 } from '@mui/icons-material';
-import { modeAtom } from '../atoms';
 import { Mode } from '../helpers/modehelper';
 import { useLog, useRoll } from '../states/logState';
 import { useNetList } from '../hooks/useNetList';
 import { useView } from '../hooks/useView';
 import { ModalTypes, useModal } from '../states/modalState';
+import { useMode } from '../states/modeState';
 
 const ButtonArea: React.FC = () => {
-  const [mode, setMode] = useRecoilState(modeAtom);
+  const { mode, setMode } = useMode();
   const { setOpen } = useModal();
   const { undo, canUndo, redo, canRedo } = useRoll();
   const { getNetList } = useNetList();

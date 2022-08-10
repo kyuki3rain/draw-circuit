@@ -1,5 +1,3 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom } from '../../atoms';
 import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
@@ -7,15 +5,15 @@ import { useEdge } from '../../states/edgeState';
 import { useNode } from '../../states/nodeState';
 import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
 import { useGrid } from '../../states/gridState';
+import { useMode } from '../../states/modeState';
 
 const Wire: React.FC = () => {
   const { toRealGrid, toFixedVirtualGrid } = useGrid();
-  const mode = useRecoilValue(modeAtom);
+  const { mode, setCopyObjectType } = useMode();
   const { nodeList } = useNode();
   const { edgeList } = useEdge();
   const { cutWire } = useWire();
   const { setLog } = useLog();
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
 
   const { getWirePreviewWithNode } = useWirePreviewWithNode();
   const { getWirePreviewWithoutNode, initializeWirePreviewWithoutNode } = useWirePreviewWithoutNode();

@@ -1,10 +1,10 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { copyObjectTypeAtom, modeAtom } from '../../atoms';
+import { useRecoilValue } from 'recoil';
 import { textsAtom, useText, useTextPreview } from '../../states/textState';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import { useCursorPosition } from '../../states/cursorPositionState';
 import { useGrid } from '../../states/gridState';
+import { useMode } from '../../states/modeState';
 
 const Text: React.FC = () => {
   const { previewTextState, setTextPreview } = useTextPreview();
@@ -12,9 +12,8 @@ const Text: React.FC = () => {
   const textStates = useRecoilValue(textsAtom);
   const { toRealGrid } = useGrid();
   const { removeText } = useText();
-  const mode = useRecoilValue(modeAtom);
+  const { mode, setCopyObjectType } = useMode();
   const { setLog } = useLog();
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
   const prp = cursorPosition && toRealGrid(cursorPosition);
 
   return (
