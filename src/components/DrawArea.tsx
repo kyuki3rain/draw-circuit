@@ -14,8 +14,8 @@ import { useWire } from '../states/wireState';
 import { useLabelState } from '../states/labelState';
 import { useText } from '../states/textState';
 import { useSymbol } from '../states/symbolState';
-import { useGrid } from '../states/gridState';
 import { useMode } from '../states/modeState';
+import { useGridState } from '../states/gridState';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -24,7 +24,7 @@ const DrawArea: React.FC = () => {
   const { setSymbol } = useSymbol();
   const { setLabel } = useLabelState();
   const { setText } = useText();
-  const { toFixedVirtualGrid } = useGrid();
+  const { toFixedVirtualPoint } = useGridState();
   const { mode, setMode, copyObjectType } = useMode();
   const { setLog } = useLog();
   const { resetPreview } = usePreview();
@@ -42,7 +42,7 @@ const DrawArea: React.FC = () => {
       viewBox={`0, 0, ${width}, ${height}`}
       onClick={(e) => {
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
-        const vpos = toFixedVirtualGrid(pos);
+        const vpos = toFixedVirtualPoint(pos);
 
         switch (mode) {
           case Mode.WIRE:

@@ -1,9 +1,9 @@
 import { RealPoint } from '../../helpers/gridhelper';
 import { usePreviewNodePosition } from '../../hooks/usePreview';
 import { useEdge } from '../../states/edgeState';
-import { useGrid } from '../../states/gridState';
 import { useModal } from '../../states/modalState';
 import { useNode } from '../../states/nodeState';
+import { useGridState } from '../../states/gridState';
 
 const createCircleNode = (rp: RealPoint, key: string) => (
   <circle cx={rp.x} cy={rp.y} fill="black" stroke="black" r={4} key={key} />
@@ -14,7 +14,7 @@ const createRectNode = (rp: RealPoint, key: string) => (
 );
 
 const Node: React.FC = () => {
-  const { toRealGrid } = useGrid();
+  const { toRealPoint } = useGridState();
   const { nodeList } = useNode();
   const { getEdgeIdArray } = useEdge();
   const { previewNodePosition } = usePreviewNodePosition();
@@ -24,13 +24,13 @@ const Node: React.FC = () => {
     <svg>
       {Array.from(nodeList.values()).map((n) => {
         const edgeList = getEdgeIdArray(n.id);
-        if ((edgeList?.length ?? 0) === 0) return createRectNode(toRealGrid(n.point), `node_${n.id}`);
-        if (edgeList && edgeList.length >= 3) return createCircleNode(toRealGrid(n.point), `node_${n.id}`);
+        if ((edgeList?.length ?? 0) === 0) return createRectNode(toRealPoint(n.point), `node_${n.id}`);
+        if (edgeList && edgeList.length >= 3) return createCircleNode(toRealPoint(n.point), `node_${n.id}`);
         return null;
       })}
       {!open &&
         previewNodePosition &&
-        previewNodePosition.map((p) => p && createRectNode(toRealGrid(p), `node_preview_${JSON.stringify(p)}`))}
+        previewNodePosition.map((p) => p && createRectNode(toRealPoint(p), `node_preview_${JSON.stringify(p)}`))}
     </svg>
   );
 };

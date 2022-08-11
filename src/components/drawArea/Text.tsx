@@ -3,23 +3,23 @@ import { textsAtom, useText, useTextPreview } from '../../states/textState';
 import { Mode } from '../../helpers/modehelper';
 import { useLog } from '../../states/logState';
 import { useCursorPosition } from '../../states/cursorPositionState';
-import { useGrid } from '../../states/gridState';
 import { useMode } from '../../states/modeState';
+import { useGridState } from '../../states/gridState';
 
 const Text: React.FC = () => {
   const { previewTextState, setTextPreview } = useTextPreview();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const textStates = useRecoilValue(textsAtom);
-  const { toRealGrid } = useGrid();
+  const { toRealPoint } = useGridState();
   const { removeText } = useText();
   const { mode, setCopyObjectType } = useMode();
   const { setLog } = useLog();
-  const prp = cursorPosition && toRealGrid(cursorPosition);
+  const prp = cursorPosition && toRealPoint(cursorPosition);
 
   return (
     <svg>
       {textStates.map((textState) => {
-        const rp = textState.point && toRealGrid(textState.point);
+        const rp = textState.point && toRealPoint(textState.point);
         return (
           <text
             x={rp?.x}

@@ -6,9 +6,9 @@ import './App.css';
 import { RealPoint } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
 import { usePreview } from './hooks/usePreview';
+import { useGridState } from './states/gridState';
 import { useRoll } from './states/logState';
 import { useModal } from './states/modalState';
-import { useGrid } from './states/gridState';
 import { useMode } from './states/modeState';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const Controller: React.FC<Props> = ({ children }) => {
-  const { zoom, move, toFixedVirtualGrid } = useGrid();
+  const { zoom, move, toFixedVirtualPoint } = useGridState();
   const { mode, setMode, copyObjectType } = useMode();
   const { setPreview, resetPreview } = usePreview();
   const { undo, canUndo, redo, canRedo } = useRoll();
@@ -85,7 +85,7 @@ const Controller: React.FC<Props> = ({ children }) => {
         if (open) return;
 
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
-        const vpos = toFixedVirtualGrid(pos);
+        const vpos = toFixedVirtualPoint(pos);
         setPreview(vpos);
       }}
       style={{ cursor: modeToCursorStyle(mode) }}

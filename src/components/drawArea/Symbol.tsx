@@ -2,7 +2,7 @@ import SVG from 'react-inlinesvg';
 import { sub, VirtualPoint } from '../../helpers/gridhelper';
 import { getConfig, SymbolState } from '../../helpers/symbolHelper';
 import { useComponent } from '../../states/componentState';
-import { useGrid } from '../../states/gridState';
+import { useGridState } from '../../states/gridState';
 
 type Props = {
   symbolState: SymbolState | null;
@@ -12,14 +12,14 @@ type Props = {
 };
 
 const Symbol: React.FC<Props> = ({ symbolState, point, onClick, onContextMenu }) => {
-  const { toRealGrid, toRealLength } = useGrid();
+  const { toRealPoint, toRealGrid } = useGridState();
   const { componentState } = useComponent(symbolState?.componentName);
   if (!symbolState) return null;
   if (!componentState) return null;
 
-  const center = toRealGrid(sub(point, componentState.center));
-  const width = toRealLength(componentState.width);
-  const height = toRealLength(componentState.height);
+  const center = toRealPoint(sub(point, componentState.center));
+  const width = toRealGrid(componentState.width);
+  const height = toRealGrid(componentState.height);
 
   return (
     <svg>
