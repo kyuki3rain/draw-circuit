@@ -1,26 +1,20 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  logSelector,
-  modeAtom,
-  nodeIdToLabelAtom,
-  nodeListAtom,
-  pitchAtom,
-  previewLabelNameAtom,
-  previewLabelPositionAtom,
-  upperLeftAtom,
-} from '../../atoms';
-import { RealPoint, toRealGrid } from '../../helpers/gridhelper';
+import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
-import { useLabel } from '../../hooks/useLabel';
+import { useIsolatedNode } from '../../hooks/useIsoratedNode';
+import { useCursorPosition } from '../../states/cursorPositionState';
+import { useGrid } from '../../states/gridState';
+import { useLabel, useLabelPreview } from '../../states/labelState';
+import { useLog } from '../../states/logState';
+import { useMode } from '../../states/modeState';
+import { useNode } from '../../states/nodeState';
 
-const createLabel = (rp: RealPoint, label: string, pitch: number) => {
+const createLabel = (rp: RealPoint, label: string, toRealLength: (realLength: number) => number) => {
   if (label === 'gnd') {
     return (
       <polyline
-        points={`${rp.x + 1 * pitch}, ${rp.y} ${rp.x - 1 * pitch}, ${rp.y} ${rp.x}, ${rp.y + 1 * pitch} ${
-          rp.x + 1 * pitch
-        }, ${rp.y}`}
+        points={`${rp.x + toRealLength(1)}, ${rp.y} ${rp.x - toRealLength(1)}, ${rp.y} ${rp.x}, ${
+          rp.y + toRealLength(1)
+        } ${rp.x + toRealLength(1)}, ${rp.y}`}
         stroke="black"
         strokeWidth={2}
         fill="none"
@@ -36,56 +30,59 @@ const createLabel = (rp: RealPoint, label: string, pitch: number) => {
 };
 
 const Label: React.FC = () => {
-  const nodeIdToLabel = useRecoilValue(nodeIdToLabelAtom);
-  const [previewLabelName, setLabelName] = useRecoilState(previewLabelNameAtom);
-  const [previewLabelPosition, setPreviewLabelPoision] = useRecoilState(previewLabelPositionAtom);
-  const nodeList = useRecoilValue(nodeListAtom);
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
-  const { removeLabel } = useLabel();
-  const mode = useRecoilValue(modeAtom);
-  const setLogs = useSetRecoilState(logSelector);
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
+  const { cursorPosition, setCursorPosition } = useCursorPosition();
+  const { nodeList } = useNode();
+  const { toRealGrid, toRealLength } = useGrid();
+  const { labelList, deleteLabel } = useLabel();
+  const { getLabelPreview, setLabelPreview } = useLabelPreview();
+  const { isIsolatedNode } = useIsolatedNode();
+  const { removeNode } = useNode();
+  const { setLog } = useLog();
+  const { mode, setCopyObjectType } = useMode();
 
-  const prp = previewLabelPosition && toRealGrid(previewLabelPosition, pitch, upperLeft);
+  const prp = cursorPosition && toRealGrid(cursorPosition);
 
   return (
     <svg>
-      {Array.from(nodeIdToLabel.entries()).map(([nodeId, label]) => {
+      {Array.from(labelList.entries()).map(([nodeId, label]) => {
         const node = nodeList.get(nodeId);
         if (!node) return null;
 
-        const rp = toRealGrid(node.point, pitch, upperLeft);
+        const rp = toRealGrid(node.point);
         return (
           <svg
             onClick={() => {
               switch (mode) {
                 case Mode.CUT:
-                  removeLabel(nodeId);
-                  setLogs();
+                  deleteLabel(nodeId);
+                  if (isIsolatedNode(nodeId)) removeNode(nodeId);
+
+                  setLog();
                   break;
                 case Mode.MOVE:
-                  removeLabel(nodeId);
-                  setLogs();
+                  deleteLabel(nodeId);
+                  if (isIsolatedNode(nodeId)) removeNode(nodeId);
+
+                  setLog();
                   setCopyObjectType(Mode.LABEL);
-                  setLabelName(label);
-                  setPreviewLabelPoision(node.point);
+                  setLabelPreview(label);
+                  setCursorPosition(node.point);
                   break;
                 case Mode.COPY:
                   setCopyObjectType(Mode.LABEL);
-                  setLabelName(label);
-                  setPreviewLabelPoision(node.point);
+                  setLabelPreview(label);
+                  setCursorPosition(node.point);
                   break;
                 default:
               }
             }}
             key={`label_${nodeId}`}
           >
-            {createLabel(rp, label, pitch)}
+            {createLabel(rp, label, toRealLength)}
           </svg>
         );
       })}
-      {prp && createLabel(prp, previewLabelName, pitch)}
+      {prp && createLabel(prp, getLabelPreview() ?? '', toRealLength)}
     </svg>
   );
 };

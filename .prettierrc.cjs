@@ -5,4 +5,6 @@ module.exports = {
   trailingComma: 'es5', //複数行の場合は可能な限り末尾のカンマを表示
   tabWidth: 2, //タグのスペース２ デフォルトは2
   useTabs: false, //スペースをタブに代える デフォルトはfalse
+  importOrder: ['^@foo/(.*)$', '^[./]'],
+  importOrderSeparation: true,
 };

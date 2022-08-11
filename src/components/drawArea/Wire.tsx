@@ -1,29 +1,25 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  logSelector,
-  modeAtom,
-  nodeListAtom,
-  pitchAtom,
-  previewPointsAtom,
-  upperLeftAtom,
-} from '../../atoms';
-import { RealPoint, toFixedVirtualGrid, toRealGrid } from '../../helpers/gridhelper';
+import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
-import { useWire } from '../../hooks/useWire';
+import { useEdge } from '../../states/edgeState';
+import { useGrid } from '../../states/gridState';
+import { useLog } from '../../states/logState';
+import { useMode } from '../../states/modeState';
+import { useNode } from '../../states/nodeState';
+import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
 
 const Wire: React.FC = () => {
-  const pitch = useRecoilValue(pitchAtom);
-  const mode = useRecoilValue(modeAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
-  const nodeList = useRecoilValue(nodeListAtom);
-  const [previewPoints, setPreviewPoints] = useRecoilState(previewPointsAtom);
-  const { cutWire, edgeList } = useWire();
-  const setLogs = useSetRecoilState(logSelector);
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
+  const { toRealGrid, toFixedVirtualGrid } = useGrid();
+  const { mode, setCopyObjectType } = useMode();
+  const { nodeList } = useNode();
+  const { edgeList } = useEdge();
+  const { cutWire } = useWire();
+  const { setLog } = useLog();
 
-  const pa = previewPoints[0] && toRealGrid(previewPoints[0], pitch, upperLeft);
-  const pb = previewPoints[1] && toRealGrid(previewPoints[1], pitch, upperLeft);
+  const { getWirePreviewWithNode } = useWirePreviewWithNode();
+  const { getWirePreviewWithoutNode, initializeWirePreviewWithoutNode } = useWirePreviewWithoutNode();
+  const [vp1, vp2] = mode === Mode.WIRE ? getWirePreviewWithNode() : getWirePreviewWithoutNode();
+  const point1 = vp1 && toRealGrid(vp1);
+  const point2 = vp2 && toRealGrid(vp2);
 
   return (
     <svg>
@@ -32,8 +28,8 @@ const Wire: React.FC = () => {
         const node2 = nodeList.get(edge.node2);
         if (!node1 || !node2) return null;
 
-        const a = toRealGrid(node1.point, pitch, upperLeft);
-        const b = toRealGrid(node2.point, pitch, upperLeft);
+        const a = toRealGrid(node1.point);
+        const b = toRealGrid(node2.point);
         return (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
           <svg key={`wire_${id}`}>
@@ -48,21 +44,21 @@ const Wire: React.FC = () => {
               strokeWidth={10}
               onClick={(e) => {
                 const pos: RealPoint = { x: e.clientX, y: e.clientY };
-                const vpos = toFixedVirtualGrid(pos, pitch, upperLeft);
+                const vpos = toFixedVirtualGrid(pos);
                 switch (mode) {
                   case Mode.CUT:
                     cutWire(id);
-                    setLogs();
+                    setLog();
                     break;
                   case Mode.MOVE:
                     cutWire(id);
-                    setLogs();
+                    setLog();
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewPoints([node1.point, node2.point, vpos]);
+                    initializeWirePreviewWithoutNode(node1.point, node2.point, vpos);
                     break;
                   case Mode.COPY:
                     setCopyObjectType(Mode.WIRE);
-                    setPreviewPoints([node1.point, node2.point, vpos]);
+                    initializeWirePreviewWithoutNode(node1.point, node2.point, vpos);
                     break;
                   default:
                 }
@@ -71,8 +67,8 @@ const Wire: React.FC = () => {
           </svg>
         );
       })}
-      {pa && pb ? (
-        <line key="prev_wire" x1={pa.x} x2={pb.x} y1={pa.y} y2={pb.y} stroke="black" strokeWidth={2} />
+      {point1 && point2 ? (
+        <line key="prev_wire" x1={point1.x} x2={point2.x} y1={point1.y} y2={point2.y} stroke="black" strokeWidth={2} />
       ) : null}
     </svg>
   );

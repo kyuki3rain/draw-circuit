@@ -1,9 +1,12 @@
+import { Button, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { Button, TextField } from '@mui/material';
-import { labelModalAtom, modeAtom, previewLabelNameAtom } from '../atoms';
+import { useState } from 'react';
+
 import { Mode } from '../helpers/modehelper';
+import { useLabelPreview } from '../states/labelState';
+import { ModalTypes, useSingleModal } from '../states/modalState';
+import { useMode } from '../states/modeState';
 
 const style = {
   position: 'absolute' as const,
@@ -18,19 +21,21 @@ const style = {
 };
 
 const LabelModal = () => {
-  const [open, setOpen] = useRecoilState(labelModalAtom);
-  const [labelName, setLabelName] = useRecoilState(previewLabelNameAtom);
-  const setMode = useSetRecoilState(modeAtom);
-  const handleClose = () => {
-    setOpen(false);
-    if (labelName === '') setMode(Mode.NONE);
+  const { open, setClosed } = useSingleModal(ModalTypes.LABEL);
+  const [label, setLabel] = useState('');
+  const { initializeLabelPreview } = useLabelPreview();
+  const { setMode } = useMode();
+  const handleClose = (ok?: boolean) => {
+    setClosed();
+    if (!ok) setMode(Mode.NONE);
+    else initializeLabelPreview(label);
   };
 
   return (
     <div>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -39,10 +44,10 @@ const LabelModal = () => {
             placeholder="gnd"
             label="LABEL"
             variant="standard"
-            value={labelName}
-            onChange={(e) => setLabelName(e.target.value)}
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
           />
-          <Button onClick={handleClose}>OK</Button>
+          <Button onClick={() => handleClose(true)}>OK</Button>
         </Box>
       </Modal>
     </div>

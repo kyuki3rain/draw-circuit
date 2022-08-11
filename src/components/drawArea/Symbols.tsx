@@ -1,80 +1,65 @@
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  copyObjectTypeAtom,
-  logSelector,
-  modeAtom,
-  pitchAtom,
-  previewSymbolAtom,
-  symbolConfigAtom,
-  symbolConfigModalAtom,
-  symbolsAtom,
-  symbolTypeAtom,
-  upperLeftAtom,
-} from '../../atoms';
 import { Mode } from '../../helpers/modehelper';
-import { useSymbol } from '../../hooks/useSymbol';
+import { useIsolatedNode } from '../../hooks/useIsoratedNode';
+import { useCursorPosition } from '../../states/cursorPositionState';
+import { useLog } from '../../states/logState';
+import { ModalTypes, useSingleModal } from '../../states/modalState';
+import { useMode } from '../../states/modeState';
+import { useNode } from '../../states/nodeState';
+import { useSymbol, useSymbolPreview } from '../../states/symbolState';
 import Symbol from './Symbol';
 
 export const Symbols: React.FC = () => {
-  const pitch = useRecoilValue(pitchAtom);
-  const upperLeft = useRecoilValue(upperLeftAtom);
-  const symbols = useRecoilValue(symbolsAtom);
-  const [previewSymbol, setPreviewSymbol] = useRecoilState(previewSymbolAtom);
-  const mode = useRecoilValue(modeAtom);
+  const { symbols } = useSymbol();
+  const { cursorPosition, setCursorPosition } = useCursorPosition();
+  const { getSymbolPreview, setSymbolPreview } = useSymbolPreview();
+  const { mode, setCopyObjectType } = useMode();
   const { removeSymbol } = useSymbol();
-  const setLogs = useSetRecoilState(logSelector);
-  const setCopyObjectType = useSetRecoilState(copyObjectTypeAtom);
-  const setSymbolType = useSetRecoilState(symbolTypeAtom);
-  const setConfigSymbolModal = useSetRecoilState(symbolConfigModalAtom);
-  const setConfigSymbol = useSetRecoilState(symbolConfigAtom);
+  const { isIsolatedNode } = useIsolatedNode();
+  const { removeNode } = useNode();
+  const { setLog } = useLog();
+  const { setOpen } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
 
   return (
     <>
       {Array.from(symbols.values())
         .flat()
-        .map((c) => (
-          <Symbol
-            symbolState={c}
-            upperLeft={upperLeft}
-            point={c.point}
-            pitch={pitch}
-            key={`symbol_${c.key}`}
-            onContextMenu={() => {
-              setConfigSymbolModal(true);
-              setConfigSymbol(c);
-            }}
-            onClick={() => {
-              switch (mode) {
-                case Mode.CUT:
-                  removeSymbol(c);
-                  setLogs();
-                  break;
-                case Mode.MOVE:
-                  removeSymbol(c);
-                  setLogs();
-                  setCopyObjectType(Mode.SYMBOL);
-                  setSymbolType(c.type);
-                  setPreviewSymbol(null);
-                  break;
-                case Mode.COPY:
-                  setCopyObjectType(Mode.SYMBOL);
-                  setSymbolType(c.type);
-                  setPreviewSymbol(null);
-                  break;
-                default:
-              }
-            }}
-          />
-        ))}
-      {previewSymbol && (
-        <Symbol
-          symbolState={previewSymbol}
-          upperLeft={upperLeft}
-          point={previewSymbol.point}
-          pitch={pitch}
-          key="symbol_preview"
-        />
-      )}
+        .map(
+          (s) =>
+            s.point && (
+              <Symbol
+                symbolState={s}
+                point={s.point}
+                key={`symbol_${s.key}`}
+                onContextMenu={() => {
+                  setOpen(s);
+                }}
+                onClick={() => {
+                  switch (mode) {
+                    case Mode.CUT:
+                      removeSymbol(s);
+                      s.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
+                      setLog();
+                      break;
+                    case Mode.MOVE:
+                      removeSymbol(s);
+                      s.nodeIds.filter((n) => isIsolatedNode(n)).map(removeNode);
+                      setLog();
+                      setCopyObjectType(Mode.SYMBOL);
+                      setSymbolPreview({ ...s, key: '', nodeIds: [] });
+                      if (s.point) setCursorPosition(s.point);
+                      break;
+                    case Mode.COPY:
+                      setCopyObjectType(Mode.SYMBOL);
+                      setSymbolPreview({ ...s, key: '', nodeIds: [] });
+                      if (s.point) setCursorPosition(s.point);
+                      break;
+                    default:
+                  }
+                }}
+              />
+            )
+        )}
+      {cursorPosition && <Symbol symbolState={getSymbolPreview()} point={cursorPosition} key="symbol_preview" />}
     </>
   );
 };

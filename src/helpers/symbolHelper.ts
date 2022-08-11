@@ -1,11 +1,11 @@
-import { ComponentType } from './componentHelper';
+import { ComponentName, ComponentType } from './componentHelper';
 import { VirtualPoint } from './gridhelper';
 import { NodeId } from './wireHelper';
 
 export type SymbolState = {
-  type: string;
-  point: VirtualPoint;
+  componentName: ComponentName;
   componentType: ComponentType;
+  point?: VirtualPoint;
   value: string;
   modelName: string;
   config: { key: string; value: string; name: string }[];

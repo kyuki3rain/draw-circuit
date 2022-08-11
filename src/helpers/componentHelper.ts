@@ -1,21 +1,23 @@
 import cell from '../assets/builtinComponents/SVG/CELL.svg';
-import signal from '../assets/builtinComponents/SVG/SIGNAL.svg';
 import nmos4 from '../assets/builtinComponents/SVG/NMOS4.svg';
 import pmos4 from '../assets/builtinComponents/SVG/PMOS4.svg';
+import signal from '../assets/builtinComponents/SVG/SIGNAL.svg';
 import { VirtualPoint } from './gridhelper';
 
 export type ComponentState = {
-  componentName: string;
-  componentType: ComponentType;
+  name: ComponentName;
+  type: ComponentType;
   center: VirtualPoint;
   width: number;
   height: number;
   nodePoints: VirtualPoint[];
   svg: string;
-  value?: string;
-  modelName?: string;
+  defaultValue?: string;
+  defaultModelName?: string;
   defaultConfig?: { key: string; value: string; name: string }[];
 };
+
+export type ComponentName = string & { _brand: 'ComponentName' };
 
 export const ComponentTypes = {
   VOLTAGE: 'V',
@@ -25,14 +27,14 @@ export const ComponentTypes = {
 
 export type ComponentType = typeof ComponentTypes[keyof typeof ComponentTypes];
 
-export const builtinComponentList = ['cell', 'signal', 'nmos4', 'pmos4'];
+export const builtinComponentList = ['cell', 'signal', 'nmos4', 'pmos4'] as ComponentName[];
 
 export const builtinComponents = (cn: string): ComponentState | null => {
   switch (cn) {
     case 'cell':
       return {
-        componentName: 'cell' as string,
-        componentType: ComponentTypes.VOLTAGE,
+        name: 'cell' as ComponentName,
+        type: ComponentTypes.VOLTAGE,
         center: { vx: 2, vy: 2 },
         width: 4,
         height: 4,
@@ -41,12 +43,12 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 0, vy: 2 },
         ],
         svg: cell,
-        value: '1.8',
+        defaultValue: '1.8',
       };
     case 'signal':
       return {
-        componentName: 'signal' as string,
-        componentType: ComponentTypes.VOLTAGE,
+        name: 'signal' as ComponentName,
+        type: ComponentTypes.VOLTAGE,
         center: { vx: 2, vy: 2 },
         width: 4,
         height: 5,
@@ -55,12 +57,12 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 0, vy: 3 },
         ],
         svg: signal,
-        value: 'PULSE(0 1.8 50p 5p 5p 150p 300p)',
+        defaultValue: 'PULSE(0 1.8 50p 5p 5p 150p 300p)',
       };
     case 'nmos4':
       return {
-        componentName: 'nmos4' as string,
-        componentType: ComponentTypes.MOS,
+        name: 'nmos4' as ComponentName,
+        type: ComponentTypes.MOS,
         center: { vx: 1, vy: 3 },
         width: 3,
         height: 6,
@@ -71,7 +73,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 2, vy: 0 },
         ],
         svg: nmos4,
-        modelName: 'NMOS',
+        defaultModelName: 'NMOS',
         defaultConfig: [
           { key: 'l', value: '180n', name: 'length' },
           { key: 'w', value: '1u', name: 'width' },
@@ -79,8 +81,8 @@ export const builtinComponents = (cn: string): ComponentState | null => {
       };
     case 'pmos4':
       return {
-        componentName: 'pmos4' as string,
-        componentType: ComponentTypes.MOS,
+        name: 'pmos4' as ComponentName,
+        type: ComponentTypes.MOS,
         center: { vx: 1, vy: 3 },
         width: 3,
         height: 6,
@@ -91,7 +93,7 @@ export const builtinComponents = (cn: string): ComponentState | null => {
           { vx: 2, vy: 0 },
         ],
         svg: pmos4,
-        modelName: 'PMOS',
+        defaultModelName: 'PMOS',
         defaultConfig: [
           { key: 'l', value: '180n', name: 'length' },
           { key: 'w', value: '1u', name: 'width' },
