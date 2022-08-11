@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { atom, useRecoilState } from 'recoil';
+
 import { Mode, ModeType } from '../helpers/modehelper';
 
 const modeAtom = atom({

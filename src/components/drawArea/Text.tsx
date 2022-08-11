@@ -1,10 +1,11 @@
 import { useRecoilValue } from 'recoil';
-import { textsAtom, useText, useTextPreview } from '../../states/textState';
+
 import { Mode } from '../../helpers/modehelper';
-import { useLog } from '../../states/logState';
 import { useCursorPosition } from '../../states/cursorPositionState';
 import { useGrid } from '../../states/gridState';
+import { useLog } from '../../states/logState';
 import { useMode } from '../../states/modeState';
+import { textsAtom, useText, useTextPreview } from '../../states/textState';
 
 const Text: React.FC = () => {
   const { previewTextState, setTextPreview } = useTextPreview();

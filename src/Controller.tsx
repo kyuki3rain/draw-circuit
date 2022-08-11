@@ -1,14 +1,17 @@
 /* eslint-disable jsx-a11y/tabindex-no-positive */
+
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useRef } from 'react';
+
 import './App.css';
 import { RealPoint } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';
 import { usePreview } from './hooks/usePreview';
+import { useGrid } from './states/gridState';
 import { useRoll } from './states/logState';
 import { useModal } from './states/modalState';
-import { useGrid } from './states/gridState';
 import { useMode } from './states/modeState';
 
 type Props = {

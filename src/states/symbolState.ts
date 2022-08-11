@@ -1,10 +1,11 @@
-import { atom, atomFamily, useRecoilState, useRecoilValue } from 'recoil';
 import { useCallback } from 'react';
+import { atom, atomFamily, useRecoilState, useRecoilValue } from 'recoil';
+
 import { ComponentName, ComponentType, ComponentTypes } from '../helpers/componentHelper';
 import { add, VirtualPoint } from '../helpers/gridhelper';
+import { SymbolState } from '../helpers/symbolHelper';
 import { useComponent, useComponentStateFamily } from './componentState';
 import { useNode } from './nodeState';
-import { SymbolState } from '../helpers/symbolHelper';
 
 const symbolsAtom = atom({
   key: 'symbols',

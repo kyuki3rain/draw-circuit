@@ -1,14 +1,15 @@
+import { Button, Select } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { Button, Select } from '@mui/material';
-import SVG from 'react-inlinesvg';
 import { useState } from 'react';
-import { Mode } from '../helpers/modehelper';
+import SVG from 'react-inlinesvg';
+
 import { ComponentName } from '../helpers/componentHelper';
+import { Mode } from '../helpers/modehelper';
 import { useComponent, useComponentStateFamily } from '../states/componentState';
-import { useSymbolPreview } from '../states/symbolState';
 import { ModalTypes, useSingleModal } from '../states/modalState';
 import { useMode } from '../states/modeState';
+import { useSymbolPreview } from '../states/symbolState';
 
 const style = {
   display: 'flex',

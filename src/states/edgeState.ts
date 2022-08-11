@@ -1,5 +1,6 @@
-import { atom, useRecoilState } from 'recoil';
 import { useCallback } from 'react';
+import { atom, useRecoilState } from 'recoil';
+
 import { getRandomId } from '../helpers/createIdHelper';
 import { EdgeList, NodeIdToEdgeIdMap, NodeId, EdgeId } from '../helpers/wireHelper';
 

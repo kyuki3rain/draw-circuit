@@ -1,21 +1,22 @@
 import React, { useEffect } from 'react';
-import Grid from './drawArea/Grid';
-import { Symbols } from './drawArea/Symbols';
+
 import { RealPoint } from '../helpers/gridhelper';
-import { useWindowSize } from '../hooks/useWindowSize';
 import { Mode } from '../helpers/modehelper';
-import Wire from './drawArea/Wire';
+import { usePreview } from '../hooks/usePreview';
+import { useWindowSize } from '../hooks/useWindowSize';
+import { useGrid } from '../states/gridState';
+import { useLabel } from '../states/labelState';
+import { useLog } from '../states/logState';
+import { useMode } from '../states/modeState';
+import { useSymbol } from '../states/symbolState';
+import { useText } from '../states/textState';
+import { useWire } from '../states/wireState';
+import Grid from './drawArea/Grid';
 import Label from './drawArea/Label';
 import Node from './drawArea/Node';
+import { Symbols } from './drawArea/Symbols';
 import Text from './drawArea/Text';
-import { usePreview } from '../hooks/usePreview';
-import { useLog } from '../states/logState';
-import { useWire } from '../states/wireState';
-import { useLabel } from '../states/labelState';
-import { useText } from '../states/textState';
-import { useSymbol } from '../states/symbolState';
-import { useGrid } from '../states/gridState';
-import { useMode } from '../states/modeState';
+import Wire from './drawArea/Wire';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();

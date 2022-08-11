@@ -1,12 +1,12 @@
 import { Mode } from '../../helpers/modehelper';
-import { useLog } from '../../states/logState';
-import Symbol from './Symbol';
-import { useCursorPosition } from '../../states/cursorPositionState';
-import { useSymbol, useSymbolPreview } from '../../states/symbolState';
 import { useIsolatedNode } from '../../hooks/useIsoratedNode';
-import { useNode } from '../../states/nodeState';
+import { useCursorPosition } from '../../states/cursorPositionState';
+import { useLog } from '../../states/logState';
 import { ModalTypes, useSingleModal } from '../../states/modalState';
 import { useMode } from '../../states/modeState';
+import { useNode } from '../../states/nodeState';
+import { useSymbol, useSymbolPreview } from '../../states/symbolState';
+import Symbol from './Symbol';
 
 export const Symbols: React.FC = () => {
   const { symbols } = useSymbol();

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { atom, useRecoilState } from 'recoil';
+
 import { VirtualPoint } from '../helpers/gridhelper';
 
 const cursorPositionAtom = atom({

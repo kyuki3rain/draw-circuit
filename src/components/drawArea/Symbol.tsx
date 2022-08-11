@@ -1,4 +1,5 @@
 import SVG from 'react-inlinesvg';
+
 import { sub, VirtualPoint } from '../../helpers/gridhelper';
 import { getConfig, SymbolState } from '../../helpers/symbolHelper';
 import { useComponent } from '../../states/componentState';
