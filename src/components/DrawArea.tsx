@@ -11,12 +11,12 @@ import { useMode } from '../states/modeState';
 import { useSymbol } from '../states/symbolState';
 import { useText } from '../states/textState';
 import { useWire } from '../states/wireState';
-import Grids from './drawArea/Grids';
-import Labels from './drawArea/Labels';
-import Nodes from './drawArea/Nodes';
-import Symbols from './drawArea/Symbols';
-import Texts from './drawArea/Texts';
-import Wires from './drawArea/Wires';
+import Grids from './DrawArea/Grids';
+import Labels from './DrawArea/Labels';
+import Nodes from './DrawArea/Nodes';
+import Symbols from './DrawArea/Symbols';
+import Texts from './DrawArea/Texts';
+import Wires from './DrawArea/Wires';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
