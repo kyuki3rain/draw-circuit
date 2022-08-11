@@ -1,7 +1,8 @@
+import { Button, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
+
 import { Mode } from '../helpers/modehelper';
 import { useLabelPreview } from '../states/labelState';
 import { ModalTypes, useSingleModal } from '../states/modalState';

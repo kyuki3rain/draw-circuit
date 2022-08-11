@@ -1,11 +1,12 @@
+import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import { useState } from 'react';
+
 import { Mode } from '../helpers/modehelper';
-import { useTextPreview } from '../states/textState';
 import { ModalTypes, useSingleModal } from '../states/modalState';
 import { useMode } from '../states/modeState';
+import { useTextPreview } from '../states/textState';
 
 const style = {
   display: 'flex',

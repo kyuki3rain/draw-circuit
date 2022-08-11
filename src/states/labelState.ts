@@ -1,8 +1,9 @@
-import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { useCallback } from 'react';
+import { atom, useRecoilState, useRecoilValue } from 'recoil';
+
 import { VirtualPoint } from '../helpers/gridhelper';
-import { useNode } from './nodeState';
 import { NodeId } from '../helpers/wireHelper';
+import { useNode } from './nodeState';
 
 const nodeIdToLabelAtom = atom({
   key: 'nodeIdToLabel',

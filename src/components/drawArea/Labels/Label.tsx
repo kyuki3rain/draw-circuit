@@ -1,6 +1,6 @@
 import { VirtualPoint } from '../../../helpers/gridhelper';
-import Gnd from './Gnd';
 import Text from '../../common/Text';
+import Gnd from './Gnd';
 
 type Props = {
   point: VirtualPoint;

@@ -1,21 +1,22 @@
 import React, { useEffect } from 'react';
-import Grid from './drawArea/Grid';
-import { Symbols } from './drawArea/Symbols';
+
 import { RealPoint } from '../helpers/gridhelper';
-import { useWindowSize } from '../hooks/useWindowSize';
 import { Mode } from '../helpers/modehelper';
-import Wire from './drawArea/Wire';
-import Label from './drawArea/Labels';
-import Node from './drawArea/Node';
-import Text from './drawArea/Text';
 import { usePreview } from '../hooks/usePreview';
-import { useLog } from '../states/logState';
-import { useWire } from '../states/wireState';
-import { useLabelState } from '../states/labelState';
-import { useText } from '../states/textState';
-import { useSymbol } from '../states/symbolState';
-import { useMode } from '../states/modeState';
+import { useWindowSize } from '../hooks/useWindowSize';
 import { useGridState } from '../states/gridState';
+import { useLabelState } from '../states/labelState';
+import { useLog } from '../states/logState';
+import { useMode } from '../states/modeState';
+import { useSymbol } from '../states/symbolState';
+import { useText } from '../states/textState';
+import { useWire } from '../states/wireState';
+import Grid from './drawArea/Grid';
+import Labels from './drawArea/Labels';
+import Node from './drawArea/Node';
+import { Symbols } from './drawArea/Symbols';
+import Text from './drawArea/Text';
+import Wire from './drawArea/Wire';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -122,7 +123,7 @@ const DrawArea: React.FC = () => {
       <Grid />
       <Wire />
       <Symbols />
-      <Label />
+      <Labels />
       <Node />
       <Text />
     </svg>

@@ -1,4 +1,5 @@
 import { atom, selector, useRecoilState } from 'recoil';
+
 import { SymbolState } from '../helpers/symbolHelper';
 
 export const ModalTypes = {

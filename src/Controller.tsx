@@ -1,7 +1,10 @@
 /* eslint-disable jsx-a11y/tabindex-no-positive */
+
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useRef } from 'react';
+
 import './App.css';
 import { RealPoint } from './helpers/gridhelper';
 import { Mode, modeToCursorStyle } from './helpers/modehelper';

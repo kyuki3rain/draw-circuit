@@ -1,9 +1,9 @@
 import { RealPoint } from '../../helpers/gridhelper';
 import { usePreviewNodePosition } from '../../hooks/usePreview';
 import { useEdge } from '../../states/edgeState';
+import { useGridState } from '../../states/gridState';
 import { useModal } from '../../states/modalState';
 import { useNode } from '../../states/nodeState';
-import { useGridState } from '../../states/gridState';
 
 const createCircleNode = (rp: RealPoint, key: string) => (
   <circle cx={rp.x} cy={rp.y} fill="black" stroke="black" r={4} key={key} />

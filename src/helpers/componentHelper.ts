@@ -1,7 +1,7 @@
 import cell from '../assets/builtinComponents/SVG/CELL.svg';
-import signal from '../assets/builtinComponents/SVG/SIGNAL.svg';
 import nmos4 from '../assets/builtinComponents/SVG/NMOS4.svg';
 import pmos4 from '../assets/builtinComponents/SVG/PMOS4.svg';
+import signal from '../assets/builtinComponents/SVG/SIGNAL.svg';
 import { VirtualPoint } from './gridhelper';
 
 export type ComponentState = {

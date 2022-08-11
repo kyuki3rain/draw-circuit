@@ -1,11 +1,11 @@
 import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
-import { useLog } from '../../states/logState';
 import { useEdge } from '../../states/edgeState';
+import { useGridState } from '../../states/gridState';
+import { useLog } from '../../states/logState';
+import { useMode } from '../../states/modeState';
 import { useNode } from '../../states/nodeState';
 import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
-import { useMode } from '../../states/modeState';
-import { useGridState } from '../../states/gridState';
 
 const Wire: React.FC = () => {
   const { toRealPoint, toFixedVirtualPoint } = useGridState();

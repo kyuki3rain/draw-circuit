@@ -2,6 +2,7 @@ import { Button, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
+
 import { useLog } from '../states/logState';
 import { ModalTypes, useSingleModal } from '../states/modalState';
 import { useSymbol } from '../states/symbolState';
