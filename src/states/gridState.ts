@@ -25,25 +25,27 @@ const toRealGridWithoutState = (point: VirtualPoint, pitch: number, upperLeft: V
 const toFixedVirtualGridWithoutState = (point: RealPoint, pitch: number, upperLeft: VirtualPoint) =>
   fix(toVirtualGridWithoutState(point, pitch, upperLeft));
 
-export const useGrid = () => {
+export const useGridState = () => {
   const [pitch, setPitch] = useRecoilState(pitchAtom);
   const [upperLeft, setUpperLeft] = useRecoilState(upperLeftAtom);
 
-  const toVirtualGrid = useCallback(
+  const toVirtualPoint = useCallback(
     (point: RealPoint) => toVirtualGridWithoutState(point, pitch, upperLeft),
     [pitch, upperLeft]
   );
-  const toFixedVirtualGrid = useCallback(
+  const toFixedVirtualPoint = useCallback(
     (point: RealPoint) => toFixedVirtualGridWithoutState(point, pitch, upperLeft),
     [pitch, upperLeft]
   );
 
-  const toRealGrid = useCallback(
+  const toRealPoint = useCallback(
     (point: VirtualPoint) => toRealGridWithoutState(point, pitch, upperLeft),
     [pitch, upperLeft]
   );
 
-  const toRealLength = useCallback((realLength: number) => realLength * pitch, [pitch]);
+  const toRealGrid = useCallback((realLength: number) => realLength * pitch, [pitch]);
+  const toVirtualGrid = useCallback((realLength: number) => realLength / pitch, [pitch]);
+  const toFixedVirtualGrid = useCallback((realLength: number) => Math.round(realLength / pitch), [pitch]);
 
   const zoom = useCallback(
     (out: boolean, realPoint?: RealPoint) => {
@@ -66,20 +68,23 @@ export const useGrid = () => {
     [pitch, setUpperLeft]
   );
 
-  const verticalCorrection = Math.ceil(upperLeft.vx) - upperLeft.vx;
-  const horizontalCorrection = Math.ceil(upperLeft.vy) - upperLeft.vy;
+  const correction = {
+    vertical: Math.ceil(upperLeft.vx) - upperLeft.vx,
+    horizontal: Math.ceil(upperLeft.vy) - upperLeft.vy,
+  };
 
   const getGridArray = useCallback((length: number) => [...(Array(Math.ceil(length / pitch)) as number[])], [pitch]);
 
   return {
+    toVirtualPoint,
+    toFixedVirtualPoint,
+    toRealPoint,
     toVirtualGrid,
     toFixedVirtualGrid,
     toRealGrid,
-    toRealLength,
     zoom,
     move,
     getGridArray,
-    verticalCorrection,
-    horizontalCorrection,
+    correction,
   };
 };

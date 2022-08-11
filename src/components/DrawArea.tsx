@@ -5,13 +5,13 @@ import { RealPoint } from '../helpers/gridhelper';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { Mode } from '../helpers/modehelper';
 import Wire from './drawArea/Wire';
-import Label from './drawArea/Label';
+import Label from './drawArea/Labels';
 import Node from './drawArea/Node';
 import Text from './drawArea/Text';
 import { usePreview } from '../hooks/usePreview';
 import { useLog } from '../states/logState';
 import { useWire } from '../states/wireState';
-import { useLabel } from '../states/labelState';
+import { useLabelState } from '../states/labelState';
 import { useText } from '../states/textState';
 import { useSymbol } from '../states/symbolState';
 import { useGrid } from '../states/gridState';
@@ -22,7 +22,7 @@ const DrawArea: React.FC = () => {
 
   const { setWire } = useWire();
   const { setSymbol } = useSymbol();
-  const { setLabel } = useLabel();
+  const { setLabel } = useLabelState();
   const { setText } = useText();
   const { toFixedVirtualGrid } = useGrid();
   const { mode, setMode, copyObjectType } = useMode();

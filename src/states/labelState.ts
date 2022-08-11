@@ -14,7 +14,7 @@ const previewLabelNameAtom = atom({
   default: null as string | null,
 });
 
-export const useLabel = () => {
+export const useLabelState = () => {
   const [labelList, setLabelList] = useRecoilState(nodeIdToLabelAtom);
   const labelName = useRecoilValue(previewLabelNameAtom);
   const { getOrCreateNode } = useNode();

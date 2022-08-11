@@ -1,36 +1,18 @@
-import { useWindowSize } from '../../hooks/useWindowSize';
-import { useGrid } from '../../states/gridState';
+import { useGrid } from '../../hooks/useGrid';
 
-const Grid: React.FC = () => {
-  const { height, width } = useWindowSize();
-  const { getGridArray, toRealLength, verticalCorrection, horizontalCorrection } = useGrid();
+const Grids: React.FC = () => {
+  const { XGridArray, YGridArray } = useGrid();
 
   return (
     <svg>
-      {getGridArray(width).map((_, i) => (
-        <line
-          key={`vertical_grid_${toRealLength(i + verticalCorrection)}`}
-          x1={toRealLength(i + verticalCorrection)}
-          x2={toRealLength(i + verticalCorrection)}
-          y1={0}
-          y2={height}
-          stroke="lightgray"
-          strokeWidth={1}
-        />
+      {XGridArray.map((g) => (
+        <line key={g.key} x1={g.x1} x2={g.x2} y1={g.y1} y2={g.y2} stroke="lightgray" strokeWidth={1} />
       ))}
-      {getGridArray(height).map((_, i) => (
-        <line
-          key={`vertical_grid_${toRealLength(i + horizontalCorrection)}`}
-          x1={0}
-          x2={width}
-          y1={toRealLength(i + horizontalCorrection)}
-          y2={toRealLength(i + horizontalCorrection)}
-          stroke="lightgray"
-          strokeWidth={1}
-        />
+      {YGridArray.map((g) => (
+        <line key={g.key} x1={g.x1} x2={g.x2} y1={g.y1} y2={g.y2} stroke="lightgray" strokeWidth={1} />
       ))}
     </svg>
   );
 };
 
-export default Grid;
+export default Grids;
