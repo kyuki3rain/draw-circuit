@@ -5,7 +5,7 @@ import { NodeId } from '../helpers/wireHelper';
 import { useComponentStateFamily } from '../states/componentState';
 import { useEdge } from '../states/edgeState';
 import { useLabelState } from '../states/labelState';
-import { useNode } from '../states/nodeState';
+import { useNodeState } from '../states/nodeState';
 import { useSymbol } from '../states/symbolState';
 import { useText } from '../states/textState';
 
@@ -19,7 +19,7 @@ function formatDate(dt: Date) {
 
 export const useNetList = () => {
   const { getEdgeIdArray } = useEdge();
-  const { nodeList, getNode } = useNode();
+  const { nodeList, getNode } = useNodeState();
   const { symbols } = useSymbol();
   const { getSpiceDirectives } = useText();
   const { getLabel } = useLabelState();

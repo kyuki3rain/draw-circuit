@@ -4,13 +4,13 @@ import { useEdge } from '../../states/edgeState';
 import { useGridState } from '../../states/gridState';
 import { useLog } from '../../states/logState';
 import { useMode } from '../../states/modeState';
-import { useNode } from '../../states/nodeState';
+import { useNodeState } from '../../states/nodeState';
 import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
 
-const Wire: React.FC = () => {
+const Wires: React.FC = () => {
   const { toRealPoint, toFixedVirtualPoint } = useGridState();
   const { mode, setCopyObjectType } = useMode();
-  const { nodeList } = useNode();
+  const { nodeList } = useNodeState();
   const { edgeList } = useEdge();
   const { cutWire } = useWire();
   const { setLog } = useLog();
@@ -74,4 +74,4 @@ const Wire: React.FC = () => {
   );
 };
 
-export default Wire;
+export default Wires;

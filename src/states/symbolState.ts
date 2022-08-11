@@ -5,7 +5,7 @@ import { ComponentName, ComponentType, ComponentTypes } from '../helpers/compone
 import { add, VirtualPoint } from '../helpers/gridhelper';
 import { SymbolState } from '../helpers/symbolHelper';
 import { useComponent, useComponentStateFamily } from './componentState';
-import { useNode } from './nodeState';
+import { useNodeState } from './nodeState';
 
 const symbolsAtom = atom({
   key: 'symbols',
@@ -27,7 +27,7 @@ export const useSymbol = () => {
   const [symbols, setSymbols] = useRecoilState(symbolsAtom);
   const { componentState } = useComponent(previewSymbol?.componentName);
   const [symbolId, setSymbolId] = useRecoilState(symbolIdAtomFamily(componentState?.type));
-  const { getOrCreateNode } = useNode();
+  const { getOrCreateNode } = useNodeState();
 
   const setSymbol = useCallback(
     (point: VirtualPoint) => {

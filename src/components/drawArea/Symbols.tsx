@@ -4,7 +4,7 @@ import { useCursorPosition } from '../../states/cursorPositionState';
 import { useLog } from '../../states/logState';
 import { ModalTypes, useSingleModal } from '../../states/modalState';
 import { useMode } from '../../states/modeState';
-import { useNode } from '../../states/nodeState';
+import { useNodeState } from '../../states/nodeState';
 import { useSymbol, useSymbolPreview } from '../../states/symbolState';
 import Symbol from './Symbols/Symbol';
 
@@ -15,7 +15,7 @@ const Symbols: React.FC = () => {
   const { mode, setCopyObjectType } = useMode();
   const { removeSymbol } = useSymbol();
   const { isIsolatedNode } = useIsolatedNode();
-  const { removeNode } = useNode();
+  const { removeNode } = useNodeState();
   const { setLog } = useLog();
   const { setOpen } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
 

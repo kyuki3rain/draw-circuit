@@ -6,7 +6,7 @@ import { EdgeId, EdgeList, NodeId, NodeList, NodeIdToEdgeIdMap, PointToNodeIdMap
 import { useIsolatedNode } from '../hooks/useIsoratedNode';
 import { useCursorPosition } from './cursorPositionState';
 import { useEdge, useEdgeView } from './edgeState';
-import { useNode, useNodeView } from './nodeState';
+import { useNodeState, useNodeView } from './nodeState';
 
 const fixedNodeIdAtom = atom({
   key: 'fixedNodeId',
@@ -58,7 +58,7 @@ export const useWirePreviewWithoutNode = () => {
 export const useWirePreviewWithNode = () => {
   const [fixedNodeId, setFixedNodeId] = useRecoilState(fixedNodeIdAtom);
   const { getCursorPosition } = useCursorPosition();
-  const { nodeList, getOrCreateNode } = useNode();
+  const { nodeList, getOrCreateNode } = useNodeState();
 
   const getWirePreviewWithNode = useCallback(
     (specifiedPoint?: VirtualPoint) => {
@@ -93,7 +93,7 @@ export const useWirePreviewWithNode = () => {
 
 export const useWire = () => {
   const { setEdge, removeEdge } = useEdge();
-  const { getOrCreateNode, removeNode } = useNode();
+  const { getOrCreateNode, removeNode } = useNodeState();
   const { isIsolatedNode } = useIsolatedNode();
   const { getWirePreviewWithoutNode } = useWirePreviewWithoutNode();
   const { getWirePreviewWithNode, setWirePreviewWithNode } = useWirePreviewWithNode();
