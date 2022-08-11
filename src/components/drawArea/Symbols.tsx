@@ -6,9 +6,9 @@ import { ModalTypes, useSingleModal } from '../../states/modalState';
 import { useMode } from '../../states/modeState';
 import { useNode } from '../../states/nodeState';
 import { useSymbol, useSymbolPreview } from '../../states/symbolState';
-import Symbol from './Symbol';
+import Symbol from './Symbols/Symbol';
 
-export const Symbols: React.FC = () => {
+const Symbols: React.FC = () => {
   const { symbols } = useSymbol();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const { getSymbolPreview, setSymbolPreview } = useSymbolPreview();

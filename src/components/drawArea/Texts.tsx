@@ -7,7 +7,7 @@ import { useLog } from '../../states/logState';
 import { useMode } from '../../states/modeState';
 import { textsAtom, useText, useTextPreview } from '../../states/textState';
 
-const Text: React.FC = () => {
+const Texts: React.FC = () => {
   const { previewTextState, setTextPreview } = useTextPreview();
   const { cursorPosition, setCursorPosition } = useCursorPosition();
   const textStates = useRecoilValue(textsAtom);
@@ -75,4 +75,4 @@ const Text: React.FC = () => {
   );
 };
 
-export default Text;
+export default Texts;

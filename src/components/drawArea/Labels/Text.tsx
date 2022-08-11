@@ -1,5 +1,5 @@
-import { VirtualPoint } from '../../helpers/gridhelper';
-import { useGridState } from '../../states/gridState';
+import { VirtualPoint } from '../../../helpers/gridhelper';
+import { useGridState } from '../../../states/gridState';
 
 type Props = {
   point: VirtualPoint;

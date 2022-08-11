@@ -13,7 +13,7 @@ const createRectNode = (rp: RealPoint, key: string) => (
   <rect x={rp.x - 4} y={rp.y - 4} fill="white" stroke="black" strokeWidth={1} width={8} height={8} key={key} />
 );
 
-const Node: React.FC = () => {
+const Nodes: React.FC = () => {
   const { toRealPoint } = useGridState();
   const { nodeList } = useNode();
   const { getEdgeIdArray } = useEdge();
@@ -35,4 +35,4 @@ const Node: React.FC = () => {
   );
 };
 
-export default Node;
+export default Nodes;

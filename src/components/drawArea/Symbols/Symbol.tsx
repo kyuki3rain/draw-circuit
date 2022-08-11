@@ -1,9 +1,9 @@
 import SVG from 'react-inlinesvg';
 
-import { sub, VirtualPoint } from '../../helpers/gridhelper';
-import { getConfig, SymbolState } from '../../helpers/symbolHelper';
-import { useComponent } from '../../states/componentState';
-import { useGridState } from '../../states/gridState';
+import { sub, VirtualPoint } from '../../../helpers/gridhelper';
+import { getConfig, SymbolState } from '../../../helpers/symbolHelper';
+import { useComponent } from '../../../states/componentState';
+import { useGridState } from '../../../states/gridState';
 
 type Props = {
   symbolState: SymbolState | null;

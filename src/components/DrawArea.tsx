@@ -11,12 +11,12 @@ import { useMode } from '../states/modeState';
 import { useSymbol } from '../states/symbolState';
 import { useText } from '../states/textState';
 import { useWire } from '../states/wireState';
-import Grid from './drawArea/Grid';
+import Grids from './drawArea/Grids';
 import Labels from './drawArea/Labels';
-import Node from './drawArea/Node';
-import { Symbols } from './drawArea/Symbols';
-import Text from './drawArea/Text';
-import Wire from './drawArea/Wire';
+import Nodes from './drawArea/Nodes';
+import Symbols from './drawArea/Symbols';
+import Texts from './drawArea/Texts';
+import Wires from './drawArea/Wires';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
@@ -120,12 +120,12 @@ const DrawArea: React.FC = () => {
         }
       }}
     >
-      <Grid />
-      <Wire />
+      <Grids />
+      <Wires />
       <Symbols />
       <Labels />
-      <Node />
-      <Text />
+      <Nodes />
+      <Texts />
     </svg>
   );
 };
