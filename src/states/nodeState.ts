@@ -16,7 +16,7 @@ const pointToNodeIdAtom = atom({
   default: new Map() as PointToNodeIdMap,
 });
 
-export const useNode = () => {
+export const useNodeState = () => {
   const [nodeList, setNodeList] = useRecoilState(nodeListAtom);
   const [pointToNodeIdMap, setPointToNodeIdMap] = useRecoilState(pointToNodeIdAtom);
   const { edgeList, removeEdge, setEdge } = useEdge();

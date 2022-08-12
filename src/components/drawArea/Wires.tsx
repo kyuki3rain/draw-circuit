@@ -1,16 +1,16 @@
 import { RealPoint } from '../../helpers/gridhelper';
 import { Mode } from '../../helpers/modehelper';
 import { useEdge } from '../../states/edgeState';
-import { useGrid } from '../../states/gridState';
+import { useGridState } from '../../states/gridState';
 import { useLog } from '../../states/logState';
 import { useMode } from '../../states/modeState';
-import { useNode } from '../../states/nodeState';
+import { useNodeState } from '../../states/nodeState';
 import { useWire, useWirePreviewWithNode, useWirePreviewWithoutNode } from '../../states/wireState';
 
-const Wire: React.FC = () => {
-  const { toRealGrid, toFixedVirtualGrid } = useGrid();
+const Wires: React.FC = () => {
+  const { toRealPoint, toFixedVirtualPoint } = useGridState();
   const { mode, setCopyObjectType } = useMode();
-  const { nodeList } = useNode();
+  const { nodeList } = useNodeState();
   const { edgeList } = useEdge();
   const { cutWire } = useWire();
   const { setLog } = useLog();
@@ -18,8 +18,8 @@ const Wire: React.FC = () => {
   const { getWirePreviewWithNode } = useWirePreviewWithNode();
   const { getWirePreviewWithoutNode, initializeWirePreviewWithoutNode } = useWirePreviewWithoutNode();
   const [vp1, vp2] = mode === Mode.WIRE ? getWirePreviewWithNode() : getWirePreviewWithoutNode();
-  const point1 = vp1 && toRealGrid(vp1);
-  const point2 = vp2 && toRealGrid(vp2);
+  const point1 = vp1 && toRealPoint(vp1);
+  const point2 = vp2 && toRealPoint(vp2);
 
   return (
     <svg>
@@ -28,8 +28,8 @@ const Wire: React.FC = () => {
         const node2 = nodeList.get(edge.node2);
         if (!node1 || !node2) return null;
 
-        const a = toRealGrid(node1.point);
-        const b = toRealGrid(node2.point);
+        const a = toRealPoint(node1.point);
+        const b = toRealPoint(node2.point);
         return (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
           <svg key={`wire_${id}`}>
@@ -44,7 +44,7 @@ const Wire: React.FC = () => {
               strokeWidth={10}
               onClick={(e) => {
                 const pos: RealPoint = { x: e.clientX, y: e.clientY };
-                const vpos = toFixedVirtualGrid(pos);
+                const vpos = toFixedVirtualPoint(pos);
                 switch (mode) {
                   case Mode.CUT:
                     cutWire(id);
@@ -74,4 +74,4 @@ const Wire: React.FC = () => {
   );
 };
 
-export default Wire;
+export default Wires;

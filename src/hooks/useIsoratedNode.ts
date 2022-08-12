@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 import { NodeId } from '../helpers/wireHelper';
 import { useEdge } from '../states/edgeState';
-import { useLabel } from '../states/labelState';
-import { useSymbol } from '../states/symbolState';
+import { useLabelState } from '../states/labelState';
+import { useSymbolState } from '../states/symbolState';
 
 export const useIsolatedNode = () => {
-  const { symbols } = useSymbol();
-  const { getLabel } = useLabel();
+  const { symbols } = useSymbolState();
+  const { getLabel } = useLabelState();
   const { isEdgeVertex } = useEdge();
 
   const isIsolatedNode = useCallback(

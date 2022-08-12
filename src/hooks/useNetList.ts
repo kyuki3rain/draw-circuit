@@ -4,9 +4,9 @@ import { getConfig } from '../helpers/symbolHelper';
 import { NodeId } from '../helpers/wireHelper';
 import { useComponentStateFamily } from '../states/componentState';
 import { useEdge } from '../states/edgeState';
-import { useLabel } from '../states/labelState';
-import { useNode } from '../states/nodeState';
-import { useSymbol } from '../states/symbolState';
+import { useLabelState } from '../states/labelState';
+import { useNodeState } from '../states/nodeState';
+import { useSymbolState } from '../states/symbolState';
 import { useText } from '../states/textState';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
@@ -19,10 +19,10 @@ function formatDate(dt: Date) {
 
 export const useNetList = () => {
   const { getEdgeIdArray } = useEdge();
-  const { nodeList, getNode } = useNode();
-  const { symbols } = useSymbol();
+  const { nodeList, getNode } = useNodeState();
+  const { symbols } = useSymbolState();
   const { getSpiceDirectives } = useText();
-  const { getLabel } = useLabel();
+  const { getLabel } = useLabelState();
   const { getComponentNodePointsFamily } = useComponentStateFamily();
 
   const getNetList = useCallback(() => {

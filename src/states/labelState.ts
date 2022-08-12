@@ -3,7 +3,7 @@ import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
 import { VirtualPoint } from '../helpers/gridhelper';
 import { NodeId } from '../helpers/wireHelper';
-import { useNode } from './nodeState';
+import { useNodeState } from './nodeState';
 
 const nodeIdToLabelAtom = atom({
   key: 'nodeIdToLabel',
@@ -15,10 +15,10 @@ const previewLabelNameAtom = atom({
   default: null as string | null,
 });
 
-export const useLabel = () => {
+export const useLabelState = () => {
   const [labelList, setLabelList] = useRecoilState(nodeIdToLabelAtom);
   const labelName = useRecoilValue(previewLabelNameAtom);
-  const { getOrCreateNode } = useNode();
+  const { getOrCreateNode } = useNodeState();
 
   const getLabel = useCallback((id: NodeId) => labelList.get(id), [labelList]);
 

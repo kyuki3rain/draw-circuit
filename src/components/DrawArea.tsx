@@ -4,28 +4,28 @@ import { RealPoint } from '../helpers/gridhelper';
 import { Mode } from '../helpers/modehelper';
 import { usePreview } from '../hooks/usePreview';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { useGrid } from '../states/gridState';
-import { useLabel } from '../states/labelState';
+import { useGridState } from '../states/gridState';
+import { useLabelState } from '../states/labelState';
 import { useLog } from '../states/logState';
 import { useMode } from '../states/modeState';
-import { useSymbol } from '../states/symbolState';
+import { useSymbolState } from '../states/symbolState';
 import { useText } from '../states/textState';
 import { useWire } from '../states/wireState';
-import Grid from './drawArea/Grid';
-import Label from './drawArea/Label';
-import Node from './drawArea/Node';
-import { Symbols } from './drawArea/Symbols';
-import Text from './drawArea/Text';
-import Wire from './drawArea/Wire';
+import Grids from './DrawArea/Grids';
+import Labels from './DrawArea/Labels';
+import Nodes from './DrawArea/Nodes';
+import Symbols from './DrawArea/Symbols';
+import Texts from './DrawArea/Texts';
+import Wires from './DrawArea/Wires';
 
 const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
 
   const { setWire } = useWire();
-  const { setSymbol } = useSymbol();
-  const { setLabel } = useLabel();
+  const { setSymbol } = useSymbolState();
+  const { setLabel } = useLabelState();
   const { setText } = useText();
-  const { toFixedVirtualGrid } = useGrid();
+  const { toFixedVirtualPoint } = useGridState();
   const { mode, setMode, copyObjectType } = useMode();
   const { setLog } = useLog();
   const { resetPreview } = usePreview();
@@ -43,7 +43,7 @@ const DrawArea: React.FC = () => {
       viewBox={`0, 0, ${width}, ${height}`}
       onClick={(e) => {
         const pos: RealPoint = { x: e.clientX, y: e.clientY };
-        const vpos = toFixedVirtualGrid(pos);
+        const vpos = toFixedVirtualPoint(pos);
 
         switch (mode) {
           case Mode.WIRE:
@@ -120,12 +120,12 @@ const DrawArea: React.FC = () => {
         }
       }}
     >
-      <Grid />
-      <Wire />
+      <Grids />
+      <Wires />
       <Symbols />
-      <Label />
-      <Node />
-      <Text />
+      <Labels />
+      <Nodes />
+      <Texts />
     </svg>
   );
 };
