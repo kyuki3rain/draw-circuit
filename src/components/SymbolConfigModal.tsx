@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { useLog } from '../states/logState';
 import { ModalTypes, useSingleModal } from '../states/modalState';
-import { useSymbol } from '../states/symbolState';
+import { useSymbolState } from '../states/symbolState';
 
 const style = {
   display: 'flex',
@@ -25,7 +25,7 @@ const style = {
 
 const SymbolConfigModal = () => {
   const { open, params: configSymbol, setClosed } = useSingleModal(ModalTypes.SYMBOL_CONFIG);
-  const { updateSymbol } = useSymbol();
+  const { updateSymbol } = useSymbolState();
   const [state, setState] = useState(new Map() as Map<string, string>);
   const { setLog } = useLog();
 

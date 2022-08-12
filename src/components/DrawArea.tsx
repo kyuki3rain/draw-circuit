@@ -8,7 +8,7 @@ import { useGridState } from '../states/gridState';
 import { useLabelState } from '../states/labelState';
 import { useLog } from '../states/logState';
 import { useMode } from '../states/modeState';
-import { useSymbol } from '../states/symbolState';
+import { useSymbolState } from '../states/symbolState';
 import { useText } from '../states/textState';
 import { useWire } from '../states/wireState';
 import Grids from './DrawArea/Grids';
@@ -22,7 +22,7 @@ const DrawArea: React.FC = () => {
   const { height, width } = useWindowSize();
 
   const { setWire } = useWire();
-  const { setSymbol } = useSymbol();
+  const { setSymbol } = useSymbolState();
   const { setLabel } = useLabelState();
   const { setText } = useText();
   const { toFixedVirtualPoint } = useGridState();

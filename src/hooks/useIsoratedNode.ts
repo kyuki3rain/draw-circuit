@@ -3,10 +3,10 @@ import { useCallback } from 'react';
 import { NodeId } from '../helpers/wireHelper';
 import { useEdge } from '../states/edgeState';
 import { useLabelState } from '../states/labelState';
-import { useSymbol } from '../states/symbolState';
+import { useSymbolState } from '../states/symbolState';
 
 export const useIsolatedNode = () => {
-  const { symbols } = useSymbol();
+  const { symbols } = useSymbolState();
   const { getLabel } = useLabelState();
   const { isEdgeVertex } = useEdge();
 

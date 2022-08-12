@@ -22,7 +22,7 @@ const previewSymbolAtom = atom({
   default: null as SymbolState | null,
 });
 
-export const useSymbol = () => {
+export const useSymbolState = () => {
   const previewSymbol = useRecoilValue(previewSymbolAtom);
   const [symbols, setSymbols] = useRecoilState(symbolsAtom);
   const { componentState } = useComponent(previewSymbol?.componentName);

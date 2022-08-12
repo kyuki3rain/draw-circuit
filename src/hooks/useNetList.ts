@@ -6,7 +6,7 @@ import { useComponentStateFamily } from '../states/componentState';
 import { useEdge } from '../states/edgeState';
 import { useLabelState } from '../states/labelState';
 import { useNodeState } from '../states/nodeState';
-import { useSymbol } from '../states/symbolState';
+import { useSymbolState } from '../states/symbolState';
 import { useText } from '../states/textState';
 
 // 日付をYYYY-MM-DDの書式で返すメソッド
@@ -20,7 +20,7 @@ function formatDate(dt: Date) {
 export const useNetList = () => {
   const { getEdgeIdArray } = useEdge();
   const { nodeList, getNode } = useNodeState();
-  const { symbols } = useSymbol();
+  const { symbols } = useSymbolState();
   const { getSpiceDirectives } = useText();
   const { getLabel } = useLabelState();
   const { getComponentNodePointsFamily } = useComponentStateFamily();
